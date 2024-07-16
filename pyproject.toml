@@ -3,7 +3,7 @@ authors = ["dunderrrrrr <emil.bjorkroth@gmail.com>"]
 description = ""
 name = "blocket_api"
 readme = "README.md"
-version = "0.1.0"
+version = "0.1.1"
 
 [tool.poetry.dependencies]
 httpx = "^0.27.0"
