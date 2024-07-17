@@ -1,15 +1,21 @@
 [tool.poetry]
 authors = ["dunderrrrrr <emil.bjorkroth@gmail.com>"]
-description = ""
+description = "A python API wrapper for blocket.se"
 name = "blocket_api"
 readme = "README.md"
-version = "0.1.1"
+version = "0.1.2"
 
 [tool.poetry.dependencies]
 httpx = "^0.27.0"
-python = "^3.12"
+python = "^3.10"
 pre-commit = "^3.7.1"
 ruff = "^0.5.2"
+
+[project.urls]
+Homepage = "https://github.com/dunderrrrrr/blocket_api"
+Repository = "https://github.com/dunderrrrrr/blocket_api"
+Documentation = "https://github.com/dunderrrrrr/blocket_api/blob/main/README.md"
+Issues = "https://github.com/dunderrrrrr/blocket_api/issues"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
