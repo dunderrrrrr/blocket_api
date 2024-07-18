@@ -38,8 +38,10 @@ class Region(Enum):
 BASE_URL = "https://api.blocket.se"
 
 
-class APIError(Exception):
-    ...
+class APIError(Exception): ...
+
+
+class LimitError(Exception): ...
 
 
 def _make_request(*, url, token: str, raise_for_status: bool = True) -> Response:
@@ -101,7 +103,7 @@ class BlocketAPI:
         Retrieve listings/ads based on the provided search criteria.
         """
         if limit > 99:
-            raise AssertionError("Limit cannot be greater than 99.")
+            raise LimitError("Limit cannot be greater than 99.")
 
         if search_id:
             return self._for_search_id(search_id, limit)
@@ -119,10 +121,7 @@ class BlocketAPI:
         Supply a region for filtering. Default is all of Sweden.
         """
         if limit > 99:
-            raise AssertionError("Limit cannot be greater than 99.")
-
-        if not search_query:
-            raise AssertionError("A search query is required.")
+            raise LimitError("Limit cannot be greater than 99.")
 
         return _make_request(
             url=f"{BASE_URL}/search_bff/v2/content?lim={limit}&q={search_query}&r={region.value}&status=active",
