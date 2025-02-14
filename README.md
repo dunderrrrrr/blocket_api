@@ -1,5 +1,7 @@
 # BlocketAPI
 
+[![PyPI version](https://img.shields.io/pypi/v/blocket_api?style=for-the-badge)](https://pypi.org/project/blocket_api/) [![License](https://img.shields.io/badge/license-WTFPL-green?style=for-the-badge)](https://github.com/dunderrrrrr/blocket_api/blob/main/LICENSE) [![Python versions](https://img.shields.io/pypi/pyversions/blocket-api?style=for-the-badge)](https://pypi.org/project/blocket_api/)
+
 BlocketAPI allows users to query saved searches, known as "Bevakningar", on [blocket.se](https://blocket.se/). This means you can either retrieve results from a specific saved search or list all listings/ads across all saved searches. The results from these queries are returned in a `json` format.
 
 > Blocket is one of Sweden's largest online marketplaces. It was founded in 1996 and allows users to buy and sell a wide range of items, including cars, real estate, jobs, services, and second-hand goods. The platform is known for its extensive reach and user-friendly interface, making it a popular choice for Swedes looking to purchase or sell items quickly and efficiently.
@@ -9,6 +11,7 @@ BlocketAPI allows users to query saved searches, known as "Bevakningar", on [blo
 - List saved searches, called "Bevakningar".
 - Query all listings/ads filtered on a region.
 - Query listings related to a saved search.
+- Use motor search to query listings related to a specific car.
 
 ## 🧑‍💻️ Install
 
@@ -25,6 +28,16 @@ pip install blocket-api
 ```
 
 [Where token?](#-blocket-api-token)
+
+
+| Function  | Description  |
+|---|---|
+| `api.saved_searches()` | List your saved searches (bevakningar)  |
+| `api.get_listings()` | List items related to a saved search |
+| `api.custom_search()`  | Search for everything on Blocket and filter by region |
+| `api.motor_search()`  | Advanced search for car-listings. |
+
+## 🤓 Detailed usage
 
 ### saved_searches()
 
