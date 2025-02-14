@@ -1,11 +1,16 @@
 from __future__ import annotations
-import httpx
-from enum import Enum
+
+import urllib
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from enum import Enum
+from typing import TYPE_CHECKING, List, Literal, Optional, Tuple
+
+import httpx
 
 if TYPE_CHECKING:
     from httpx import Response
+
+BASE_URL = "https://api.blocket.se"
 
 
 class Region(Enum):
@@ -35,7 +40,34 @@ class Region(Enum):
     örebro = 8
 
 
-BASE_URL = "https://api.blocket.se"
+MAKE_OPTIONS = Literal[
+    "Audi",
+    "BMW",
+    "Chevrolet",
+    "Citroën",
+    "Ford",
+    "Honda",
+    "Hyundai",
+    "Kia",
+    "Mazda",
+    "Mercedes-Benz",
+    "Nissan",
+    "Opel",
+    "Peugeot",
+    "Renault",
+    "Saab",
+    "Skoda",
+    "Subaru",
+    "Toyota",
+    "Volkswagen",
+    "Volvo",
+]
+
+FUEL_OPTIONS = Literal["Diesel", "Bensin", "El", "Miljöbränsle/Hybrid"]
+CHASSI_OPTIONS = Literal[
+    "Kombi", "SUV", "Sedan", "Halvkombi", "Coupé", "Cab", "Familjebuss", "Yrkesfordon"
+]
+GEARBOX_OPTIONS = Literal["Automat", "Manuell"]
 
 
 class APIError(Exception): ...
@@ -127,3 +159,40 @@ class BlocketAPI:
             url=f"{BASE_URL}/search_bff/v2/content?lim={limit}&q={search_query}&r={region.value}&status=active",
             token=self.token,
         ).json()
+
+    def motor_search(
+        self,
+        page: int,
+        make: List[MAKE_OPTIONS],
+        fuel: Optional[List[FUEL_OPTIONS]] = None,
+        chassi: Optional[List[CHASSI_OPTIONS]] = None,
+        price: Optional[Tuple[int, int]] = None,
+        modelYear: Optional[Tuple[int, int]] = None,
+        milage: Optional[Tuple[int, int]] = None,
+        gearbox: Optional[GEARBOX_OPTIONS] = None,
+    ):
+        range_params = ["price", "modelYear", "milage"]
+        set_params = {
+            key: value
+            for key, value in locals().items()
+            if key not in ["self", "page", "range_params"] and value is not None
+        }
+
+        filters = []
+        for param, value in set_params.items():
+            filter = {"key": param, "values": value}
+            if param in range_params:
+                range_start, range_end = filter.pop("values")
+                filter["range"] = {
+                    "start": str(range_start),
+                    "end": str(range_end),
+                }
+            filter_str = urllib.parse.quote(str(filter).replace("'", '"'))
+            filters.append(filter_str)
+
+        motor_base_url = f"{BASE_URL}/motor-search-service/v4/search/car"
+
+        filters_str = "&".join([f"filter={f}" for f in filters])
+        url = f"{motor_base_url}?{filters_str}&page={page}"
+
+        return _make_request(url=f"{url}", token=self.token).json()
