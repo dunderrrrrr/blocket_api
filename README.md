@@ -122,7 +122,6 @@ Parameters:
 ### motor_search(page, make, fuel, chassi, price, modelYear, milage, gearbox)
 To query listings related to a specific car, supply the following parameters:
 
-Parameters:
 - `page` (`int`, required) - Results are split in pages, set page number here.
 - `make` (`List[MAKE_OPTIONS]`) - Filter a specific make, ex. `Audi`.
 - `fuel` (`Optional[List[FUEL_OPTIONS]]`) - Filter a specific fuel, ex. `Diesel`.
@@ -132,7 +131,6 @@ Parameters:
 - `milage` (`Optional[Tuple[int, int]]`) - Set milage range, ex. `(1000, 2000)`.
 - `gearbox` (`Optional[GEARBOX_OPTIONS]`) - Filter a specific gearbox, ex. `Automat`.
 ```py
->>> from blocket_api import Region
 >>> api.motor_search(
     make=["Audi", "Ford"],
     fuel=["Diesel"],

@@ -171,6 +171,10 @@ class BlocketAPI:
         milage: Optional[Tuple[int, int]] = None,
         gearbox: Optional[GEARBOX_OPTIONS] = None,
     ):
+        """
+        Search specifically in the car section of Blocket
+        with set optional parameters for filtering.
+        """
         range_params = ["price", "modelYear", "milage"]
         set_params = {
             key: value
