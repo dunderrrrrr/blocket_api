@@ -63,3 +63,42 @@ def test_custom_search():
     assert api.custom_search("saab", Region.halland) == {
         "data": {"location": "halland"}
     }
+
+
+class Test_MotorSearchURLs:
+    @respx.mock
+    def test_make_filter(self):
+        expected_url_filter = '?filter={"key": "make", "values": ["Audi", "Toyota"]}'
+        respx.get(
+            f"{BASE_URL}/motor-search-service/v4/search/car"
+            f"{expected_url_filter}"
+            "&page=1"
+        ).mock(
+            return_value=Response(status_code=200, json={"data": "ok"}),
+        )
+        assert api.motor_search(page=1, make=["Audi", "Toyota"]) == {"data": "ok"}
+
+    @respx.mock
+    def test_range_filters(self):
+        expected_url_filter = (
+            '?filter={"key": "make", "values": ["Ford"]}'
+            '&filter={"key": "price", "range": {"start": "1000", "end": "2000"}}'
+            '&filter={"key": "modelYear", "range": {"start": "1995", "end": "2000"}}'
+            '&filter={"key": "milage", "range": {"start": "1000", "end": "5000"}}'
+            '&filter={"key": "gearbox", "values": "Manuell"}'
+        )
+        respx.get(
+            f"{BASE_URL}/motor-search-service/v4/search/car"
+            f"{expected_url_filter}"
+            "&page=5"
+        ).mock(
+            return_value=Response(status_code=200, json={"data": "ok"}),
+        )
+        assert api.motor_search(
+            page=5,
+            make=["Ford"],
+            price=(1000, 2000),
+            modelYear=(1995, 2000),
+            milage=(1000, 5000),
+            gearbox="Manuell",
+        ) == {"data": "ok"}
