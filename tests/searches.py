@@ -60,4 +60,6 @@ def test_custom_search():
     ).mock(
         return_value=Response(status_code=200, json={"data": {"location": "halland"}}),
     )
-    api.custom_search("saab", Region.halland)
+    assert api.custom_search("saab", Region.halland) == {
+        "data": {"location": "halland"}
+    }
