@@ -156,7 +156,14 @@ To query listings related to a specific car, supply the following parameters:
 
 ## 🔓 Blocket API token
 
-Your token is located in the request headers in the "Bevakningar"-section on Blocket.
+There are two ways to acquire your token:
+
+- Log in to Blocket.se with your credentials using any web browser.
+- Go to [this](https://www.blocket.se/api/adout-api-route/refresh-token-and-validate-session) URL and copy the value of `bearerToken`.
+
+If there's a better way of doing this, feel free to help out in [#2](https://github.com/dunderrrrrr/blocket_api/issues/2).
+
+Your token can also be found in the request headers in the "Bevakningar"-section on Blocket.
 
 - **Login to [blocket.se](https**://blocket.se/)**: Sign in with your credentials.
 - **Click "Bevakningar"**: Go to the "Bevakningar" section.
