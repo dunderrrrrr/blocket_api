@@ -76,7 +76,7 @@ class APIError(Exception): ...
 class LimitError(Exception): ...
 
 
-def _make_request(*, url, token: str, raise_for_status: bool = True) -> Response:
+def _make_request(*, url: str, token: str, raise_for_status: bool = True) -> Response:
     try:
         response = httpx.get(
             url,
@@ -170,7 +170,7 @@ class BlocketAPI:
         modelYear: Optional[Tuple[int, int]] = None,
         milage: Optional[Tuple[int, int]] = None,
         gearbox: Optional[GEARBOX_OPTIONS] = None,
-    ):
+    ) -> dict:
         """
         Search specifically in the car section of Blocket
         with set optional parameters for filtering.

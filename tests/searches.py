@@ -6,7 +6,7 @@ api = BlocketAPI("token")
 
 
 @respx.mock
-def test_saved_searches():
+def test_saved_searches() -> None:
     """
     Make sure mobility saved searches are merged with v2/searches.
     """
@@ -35,7 +35,7 @@ def test_saved_searches():
 
 
 @respx.mock
-def test_for_search_id():
+def test_for_search_id() -> None:
     respx.get(f"{BASE_URL}/saved/v2/searches_content/123?lim=99").mock(
         return_value=Response(status_code=200, json={"data": "listings-data"}),
     )
@@ -43,7 +43,7 @@ def test_for_search_id():
 
 
 @respx.mock
-def test_for_search_id_mobility():
+def test_for_search_id_mobility() -> None:
     respx.get(f"{BASE_URL}/saved/v2/searches_content/123?lim=99").mock(
         return_value=Response(status_code=404),
     )
@@ -54,7 +54,7 @@ def test_for_search_id_mobility():
 
 
 @respx.mock
-def test_custom_search():
+def test_custom_search() -> None:
     respx.get(
         f"{BASE_URL}/search_bff/v2/content?lim=99&q=saab&r=20&status=active"
     ).mock(
@@ -67,7 +67,7 @@ def test_custom_search():
 
 class Test_MotorSearchURLs:
     @respx.mock
-    def test_make_filter(self):
+    def test_make_filter(self) -> None:
         expected_url_filter = '?filter={"key": "make", "values": ["Audi", "Toyota"]}'
         respx.get(
             f"{BASE_URL}/motor-search-service/v4/search/car"
@@ -79,7 +79,7 @@ class Test_MotorSearchURLs:
         assert api.motor_search(page=1, make=["Audi", "Toyota"]) == {"data": "ok"}
 
     @respx.mock
-    def test_range_filters(self):
+    def test_range_filters(self) -> None:
         expected_url_filter = (
             '?filter={"key": "make", "values": ["Ford"]}'
             '&filter={"key": "price", "range": {"start": "1000", "end": "2000"}}'
