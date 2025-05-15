@@ -22,20 +22,27 @@ pip install blocket-api
 ```
 
 ## 💁‍♀️ Usage
+
 ```py
 >>> from blocket_api import BlocketAPI
 >>> api = BlocketAPI("YourBlocketTokenHere")
+>>> print(api.saved_searches())
+...
+>>> print(BlocketAPI().custom_search("saab")) # no token required
+...
 ```
+
+Some calls require a bearerToken. However, some calls are public and don't require a token.
 
 [Where token?](#-blocket-api-token)
 
 
-| Function  | Description  |
-|---|---|
-| `api.saved_searches()` | List your saved searches (bevakningar)  |
-| `api.get_listings()` | List items related to a saved search |
-| `api.custom_search()`  | Search for everything on Blocket and filter by region |
-| `api.motor_search()`  | Advanced search for car-listings. |
+| Function  | Token required | Description  |
+|---|---|---|
+| `api.saved_searches()` | 🔐 Yes | List your saved searches (bevakningar)  |
+| `api.get_listings()` | 🔐 Yes | List items related to a saved search |
+| `api.custom_search()`  | 👏 No | Search for everything on Blocket and filter by region |
+| `api.motor_search()`  | 👏 No | Advanced search for car-listings. |
 
 ## 🤓 Detailed usage
 
@@ -154,7 +161,7 @@ To query listings related to a specific car, supply the following parameters:
 ...
 ```
 
-## 🔓 Blocket API token
+## 🔐 Blocket API token
 
 There are two ways to acquire your token:
 

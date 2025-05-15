@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+from collections.abc import Callable
+from functools import wraps
 import urllib
 from dataclasses import dataclass
 from enum import Enum
-from typing import TYPE_CHECKING, List, Literal, Optional, Tuple
+from typing import TYPE_CHECKING, Any, List, Literal, Optional, Tuple
 
 import httpx
 
@@ -11,6 +13,7 @@ if TYPE_CHECKING:
     from httpx import Response
 
 BASE_URL = "https://api.blocket.se"
+SITE_URL = "https://www.blocket.se"
 
 
 class Region(Enum):
@@ -76,15 +79,41 @@ class APIError(Exception): ...
 class LimitError(Exception): ...
 
 
+class TokenError(Exception): ...
+
+
+def auth_token(method: Callable) -> Callable:
+    @wraps(method)
+    def wrapper(self: Any, *args: Any, **kwargs: Any) -> Callable:
+        if not self.token:
+            raise TokenError("Token is required, see documentation.")
+        return method(self, *args, **kwargs)
+
+    return wrapper
+
+
+def public_token(method: Callable) -> Callable:
+    @wraps(method)
+    def wrapper(self: Any, *args: Any, **kwargs: Any) -> Callable:
+        if not self.token:
+            response = httpx.get(
+                f"{SITE_URL}/api/adout-api-route/refresh-token-and-validate-session"
+            )
+            response.raise_for_status()
+            self.token = response.json()["bearerToken"]
+        return method(self, *args, **kwargs)
+
+    return wrapper
+
+
 def _make_request(*, url: str, token: str, raise_for_status: bool = True) -> Response:
+    headers = {
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0"
+    }
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
     try:
-        response = httpx.get(
-            url,
-            headers={
-                "Authorization": f"Bearer {token}",
-                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0",
-            },
-        )
+        response = httpx.get(url, headers=headers)
         if raise_for_status:
             response.raise_for_status()
     except Exception as E:
@@ -94,12 +123,15 @@ def _make_request(*, url: str, token: str, raise_for_status: bool = True) -> Res
 
 @dataclass
 class BlocketAPI:
-    token: str
+    token: str | None = None
 
+    @auth_token
     def saved_searches(self) -> list[dict]:
         """
         Retrieves saved searches data, also known as "Bevakningar".
         """
+        assert self.token
+
         searches = (
             _make_request(url=f"{BASE_URL}/saved/v2/searches", token=self.token)
             .json()
@@ -116,6 +148,7 @@ class BlocketAPI:
         return searches + mobility_searches
 
     def _for_search_id(self, search_id: int, limit: int) -> dict:
+        assert self.token
         searches = _make_request(
             url=f"{BASE_URL}/saved/v2/searches_content/{search_id}?lim={limit}",
             token=self.token,
@@ -130,10 +163,13 @@ class BlocketAPI:
             return mobility_searches.json()
         return searches.json()
 
+    @auth_token
     def get_listings(self, search_id: int | None = None, limit: int = 99) -> dict:
         """
         Retrieve listings/ads based on the provided search criteria.
         """
+        assert self.token
+
         if limit > 99:
             raise LimitError("Limit cannot be greater than 99.")
 
@@ -145,6 +181,7 @@ class BlocketAPI:
             token=self.token,
         ).json()
 
+    @public_token
     def custom_search(
         self, search_query: str, region: Region = Region.hela_sverige, limit: int = 99
     ) -> dict:
@@ -152,6 +189,8 @@ class BlocketAPI:
         Do a custom search through out all of Blocket.
         Supply a region for filtering. Default is all of Sweden.
         """
+        assert self.token
+
         if limit > 99:
             raise LimitError("Limit cannot be greater than 99.")
 
@@ -160,6 +199,7 @@ class BlocketAPI:
             token=self.token,
         ).json()
 
+    @public_token
     def motor_search(
         self,
         page: int,
@@ -175,6 +215,8 @@ class BlocketAPI:
         Search specifically in the car section of Blocket
         with set optional parameters for filtering.
         """
+        assert self.token
+
         range_params = ["price", "modelYear", "milage"]
         set_params = {
             key: value

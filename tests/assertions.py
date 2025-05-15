@@ -16,7 +16,3 @@ def test_typeerrors() -> None:
     with pytest.raises(TypeError):
         # missing search query
         api.custom_search()  # type: ignore[call-arg]
-
-    with pytest.raises(TypeError):
-        # missing token
-        BlocketAPI()  # type: ignore[call-arg]
