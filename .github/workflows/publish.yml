@@ -21,4 +21,4 @@ jobs:
         run: |
           uv pip install twine build
           uv run python -m build
-          twine upload dist/* -u __token__ -p $PYPI_TOKEN
+          uv run twine upload dist/* -u __token__ -p $PYPI_TOKEN
