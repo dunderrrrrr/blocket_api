@@ -37,6 +37,7 @@
         devShells.default = pkgs.mkShell {
           packages = [
             pkgs.poetry
+            pkgs.ruff
             poetryEnv
           ];
           POETRY_VIRTUALENVS_IN_PROJECT = true;
