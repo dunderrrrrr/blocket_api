@@ -39,11 +39,11 @@ Some calls require a bearerToken. However, some calls are public and don't requi
 
 | Function  | Token required | Description  |
 |---|---|---|
-| `api.saved_searches()` | 🔐 Yes | List your saved searches (bevakningar)  |
-| `api.get_listings()` | 🔐 Yes | List items related to a saved search |
-| `api.custom_search()`  | 👏 No | Search for everything on Blocket and filter by region |
-| `api.motor_search()`  | 👏 No | Advanced search for car-listings. |
-| `api.price_eval()`  | 👏 No | Advanced search for car-listings. |
+| [`api.saved_searches()`](#saved_searches) | 🔐 Yes | List your saved searches (bevakningar)  |
+| [`api.get_listings()`](#get_listingssearch_id-limit) | 🔐 Yes | List items related to a saved search |
+| [`api.custom_search()`](#custom_searchsearch_query-region-limit)  | 👏 No | Search for everything on Blocket and filter by region |
+| [`api.motor_search()`](#motor_searchpage-make-fuel-chassi-price-modelyear-milage-gearbox)  | 👏 No | Advanced search for car-listings. |
+| [`api.price_eval()`](#price_evalregistration_number)  | 👏 No | Vehicle purchase valuation and details. | 
 
 ## 🤓 Detailed usage
 
