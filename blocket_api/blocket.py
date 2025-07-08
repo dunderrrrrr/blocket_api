@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 
 BASE_URL = "https://api.blocket.se"
 SITE_URL = "https://www.blocket.se"
+BYTBIL_URL = "https://api.bytbil.com"
 
 
 class Region(Enum):
@@ -106,7 +107,9 @@ def public_token(method: Callable) -> Callable:
     return wrapper
 
 
-def _make_request(*, url: str, token: str, raise_for_status: bool = True) -> Response:
+def _make_request(
+    *, url: str, token: str | None, raise_for_status: bool = True
+) -> Response:
     headers = {
         "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0"
     }
@@ -242,3 +245,17 @@ class BlocketAPI:
         url = f"{motor_base_url}?{filters_str}&page={page}"
 
         return _make_request(url=f"{url}", token=self.token).json()
+
+    @public_token
+    def price_eval(
+        self,
+        registration_number: str,
+    ) -> dict:
+        """
+        Price evaluation for a specific vehicle by using cars
+        registration number (ABC123).
+
+        This is using same api endpoint as https://www.blocket.se/tjanster/vardera-bil.
+        """
+        url = f"{BYTBIL_URL}/blocket-basedata-api/v3/vehicle-data/{registration_number}"
+        return _make_request(url=f"{url}", token=None).json()

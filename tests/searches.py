@@ -1,6 +1,6 @@
 import respx
 from httpx import Response
-from blocket_api.blocket import BASE_URL, BlocketAPI, Region
+from blocket_api.blocket import BASE_URL, BlocketAPI, Region, BYTBIL_URL
 
 api = BlocketAPI("token")
 
@@ -102,3 +102,20 @@ class Test_MotorSearchURLs:
             milage=(1000, 5000),
             gearbox="Manuell",
         ) == {"data": "ok"}
+
+
+@respx.mock
+def test_price_eval() -> None:
+    respx.get(f"{BYTBIL_URL}/blocket-basedata-api/v3/vehicle-data/ABC123").mock(
+        return_value=Response(
+            status_code=200,
+            json={
+                "registration_number": "ABC123",
+                "private_valuation": 108155,
+            },
+        ),
+    )
+    assert api.price_eval("ABC123") == {
+        "registration_number": "ABC123",
+        "private_valuation": 108155,
+    }
