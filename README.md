@@ -43,6 +43,7 @@ Some calls require a bearerToken. However, some calls are public and don't requi
 | `api.get_listings()` | 🔐 Yes | List items related to a saved search |
 | `api.custom_search()`  | 👏 No | Search for everything on Blocket and filter by region |
 | `api.motor_search()`  | 👏 No | Advanced search for car-listings. |
+| `api.price_eval()`  | 👏 No | Advanced search for car-listings. |
 
 ## 🤓 Detailed usage
 
@@ -159,6 +160,25 @@ To query listings related to a specific car, supply the following parameters:
     page=1,
 )
 ...
+```
+
+### price_eval(registration_number)
+Query price evaluation for a specific vehicle by using cars registration number (ABC123). This returns company and private estimated prices, car information, and more. The api queries same endpoint as Blockets ["värdera bil"](https://www.blocket.se/tjanster/vardera-bil) service. 
+
+- `registration_number` (`str`, required) - Registration number of the vehicle.
+```py
+>>> api.price_eval("ABC123)
+{
+   "registration_number": "ABC123",
+   "private_valuation": 108155,
+   "company_valuation": 108155,
+   "car_info": {
+      "make": "Volkswagen",
+      "model": "Polo"
+      ...
+   }
+   ...
+}
 ```
 
 ## 🔐 Blocket API token
