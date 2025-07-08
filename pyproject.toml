@@ -1,6 +1,6 @@
 [project]
 name = "blocket_api"
-version = "0.2.1"
+version = "0.2.2"
 description = "A python API wrapper for blocket.se"
 authors = [{name = "dunderrrrrr", email = "emil.bjorkroth@gmail.com"}]
 readme = "README.md"
