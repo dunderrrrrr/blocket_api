@@ -1,28 +1,18 @@
-[tool.poetry]
-authors = ["dunderrrrrr <emil.bjorkroth@gmail.com>"]
-description = "A python API wrapper for blocket.se"
+[project]
 name = "blocket_api"
-readme = "README.md"
 version = "0.2.1"
-
-[tool.poetry.dependencies]
-httpx = "^0.27.0"
-python = "^3.10"
-pre-commit = "^3.7.1"
-ruff = "^0.5.2"
-pytest = "^8.2.2"
-respx = "^0.21.1"
-mypy = "^1.15.0"
-
-[project.urls]
-Homepage = "https://github.com/dunderrrrrr/blocket_api"
-Repository = "https://github.com/dunderrrrrr/blocket_api"
-Documentation = "https://github.com/dunderrrrrr/blocket_api/blob/main/README.md"
-Issues = "https://github.com/dunderrrrrr/blocket_api/issues"
-
-[build-system]
-build-backend = "poetry.core.masonry.api"
-requires = ["poetry-core"]
+description = "A python API wrapper for blocket.se"
+authors = [{name = "dunderrrrrr", email = "emil.bjorkroth@gmail.com"}]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "httpx>=0.27.0",
+    "pre-commit>=3.7.1",
+    "ruff>=0.5.2",
+    "pytest>=8.2.2",
+    "respx>=0.21.1",
+    "mypy>=1.15.0",
+]
 
 
 [tool.pytest.ini_options]
