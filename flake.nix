@@ -1,50 +1,33 @@
 {
   inputs = {
-    poetry2nix = {
-      url = "github:nix-community/poetry2nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    alejandra = {
-      url = "github:kamadorueda/alejandra/3.0.0";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    flake-parts.url = "github:hercules-ci/flake-parts";
   };
   outputs = inputs @ {
     self,
     nixpkgs,
     flake-parts,
-    systems,
-    poetry2nix,
-    alejandra,
     ...
   }:
     flake-parts.lib.mkFlake {inherit inputs;} {
-      systems = import systems;
+      systems = ["x86_64-linux"];
       perSystem = {
         pkgs,
         lib,
-        system,
-        self',
         ...
       }: let
-        poetryEnv = pkgs.callPackage ./. {};
+        python = pkgs.python3;
       in {
-        _module.args.pkgs = import nixpkgs {
-          inherit system;
-          overlays = [poetry2nix.overlays.default];
-        };
-
         devShells.default = pkgs.mkShell {
           packages = [
-            pkgs.poetry
+            pkgs.uv
             pkgs.ruff
-            poetryEnv
+            python
           ];
-          POETRY_VIRTUALENVS_IN_PROJECT = true;
           shellHook = ''
-            ${lib.getExe pkgs.poetry} env use ${lib.getExe pkgs.python3}
-            ${lib.getExe pkgs.poetry} install --all-extras --no-root --sync
-
+            uv venv
+            source .venv/bin/activate
+            uv pip sync requirements.txt
             pre-commit install --overwrite
             set -a
             source .env 2> /dev/null
