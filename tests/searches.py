@@ -1,6 +1,7 @@
 import respx
 from httpx import Response
 from blocket_api.blocket import BASE_URL, BlocketAPI, Region, BYTBIL_URL
+from blocket_api.qasa import QASA_URL, HomeType, OrderBy
 
 api = BlocketAPI("token")
 
@@ -118,4 +119,27 @@ def test_price_eval() -> None:
     assert api.price_eval("ABC123") == {
         "registration_number": "ABC123",
         "private_valuation": 108155,
+    }
+
+
+@respx.mock
+def test_home_search() -> None:
+    respx.post(f"{QASA_URL}").mock(
+        return_value=Response(
+            status_code=200,
+            json={
+                "bedroomCount": "2",
+                "rent": 9500,
+                "petsAllowed": False,
+            },
+        ),
+    )
+    assert api.home_search(
+        city="Stockholm",
+        type=HomeType.apartment,
+        order_by=OrderBy.price,
+    ) == {
+        "bedroomCount": "2",
+        "rent": 9500,
+        "petsAllowed": False,
     }
