@@ -44,6 +44,7 @@ Some calls require a bearerToken. However, some calls are public and don't requi
 | [`api.custom_search()`](#custom_searchsearch_query-region-limit)  | 👏 No | Search for everything on Blocket and filter by region |
 | [`api.motor_search()`](#motor_searchpage-make-fuel-chassi-price-modelyear-milage-gearbox)  | 👏 No | Advanced search for car-listings. |
 | [`api.price_eval()`](#price_evalregistration_number)  | 👏 No | Vehicle purchase valuation and details. | 
+| [`api.home_search()`](#home_searchcity-type-order_by-ordering-offset)  | 👏 No | Query home listings.
 
 ## 🤓 Detailed usage
 
@@ -179,6 +180,25 @@ Query price evaluation for a specific vehicle by using cars registration number 
    }
    ...
 }
+```
+
+### home_search(city, type, order_by, ordering, offset)
+Query home listings from [bostad.blocket.se](https://bostad.blocket.se/).
+
+- `city` (`str`, required) - City name, ex. Stockholm. 
+- `type` (`HomeType`, optional) - Type of home, ex. `HomeType.apartment`.
+- `order_by` (`OrderBy`, optional) - Sorting order, ex. `OrderBy.price`.
+- `ordering` (`HOME_SEARCH_ORDERING`, optional) - Sorting order, ex. `"descending"`.
+- `offset` (`int`, optional) - Offset for results, ex. `60`.
+
+```py
+>>> api.home_search(
+    city="Stockholm",
+    type=HomeType.apartment,
+    order_by=OrderBy.price,
+    ordering="descending",
+)
+...
 ```
 
 ## 🔐 Blocket API token

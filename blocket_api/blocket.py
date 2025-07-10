@@ -9,6 +9,8 @@ from typing import TYPE_CHECKING, Any, List, Literal, Optional, Tuple
 
 import httpx
 
+from blocket_api.qasa import HOME_SEARCH_ORDERING, HomeType, OrderBy, Qasa
+
 if TYPE_CHECKING:
     from httpx import Response
 
@@ -259,3 +261,24 @@ class BlocketAPI:
         """
         url = f"{BYTBIL_URL}/blocket-basedata-api/v3/vehicle-data/{registration_number}"
         return _make_request(url=f"{url}", token=None).json()
+
+    def home_search(
+        self,
+        city: str,
+        type: HomeType,
+        order_by: OrderBy = OrderBy.published_at,
+        ordering: HOME_SEARCH_ORDERING = "descending",
+        offset: int = 0,
+    ) -> dict:
+        """
+        This returns all available home listings available at
+        https://bostad.blocket.se/. Specify offset to get next page. Each page contains
+        60 items, which is max items returned per api query.
+        """
+        return Qasa(
+            city=city,
+            home_type=type,
+            order_by=order_by,
+            ordering=ordering,
+            offset=offset,
+        ).search()
