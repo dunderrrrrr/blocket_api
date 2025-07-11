@@ -8,7 +8,6 @@ requires-python = ">=3.10"
 dependencies = [
     "httpx>=0.27.0",
     "pre-commit>=3.7.1",
-    "ruff>=0.5.2",
     "pytest>=8.2.2",
     "respx>=0.21.1",
     "mypy>=1.15.0",
