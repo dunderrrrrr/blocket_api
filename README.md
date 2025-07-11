@@ -168,7 +168,7 @@ Query price evaluation for a specific vehicle by using cars registration number 
 
 - `registration_number` (`str`, required) - Registration number of the vehicle.
 ```py
->>> api.price_eval("ABC123)
+>>> api.price_eval("ABC123")
 {
    "registration_number": "ABC123",
    "private_valuation": 108155,
@@ -192,6 +192,7 @@ Query home listings from [bostad.blocket.se](https://bostad.blocket.se/).
 - `offset` (`int`, optional) - Offset for results, ex. `60`.
 
 ```py
+>>> from blocket_api.qasa import HomeType, OrderBy
 >>> api.home_search(
     city="Stockholm",
     type=HomeType.apartment,
