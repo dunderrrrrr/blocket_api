@@ -15,4 +15,5 @@ runs:
       run: |
         uv venv
         uv pip sync requirements.txt
+        uv add ruff
       shell: bash
