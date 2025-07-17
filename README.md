@@ -11,9 +11,9 @@ BlocketAPI allows users to query saved searches, known as "Bevakningar", on [blo
 - List saved searches, called "Bevakningar".
 - Get listings from all or a specific saved search.
 - Search for anything on Blocket with filters for region and category.
-- Advanced search for vehicles with multiple filters.
-- Get vehicle information and price evaluation.
+- Get vehicle information, price evaluation and search for vehicles with multiple filters.
 - Search for homes with filters for city, home type and more.
+- Search for stores and get a specific store's listings.
 
 ## 🧑‍💻️ Install
 
@@ -34,7 +34,7 @@ pip install blocket-api
 ...
 ```
 
-Some calls require a bearerToken. However, some calls are public and don't require a token.
+Some calls require a `bearerToken`. However, some calls are public and don't require a token.
 
 [Where token?](#-blocket-api-token)
 
@@ -47,6 +47,8 @@ Some calls require a bearerToken. However, some calls are public and don't requi
 | [`api.motor_search()`](#motor_searchpage-make-fuel-chassi-price-modelyear-milage-gearbox)  | 👏 No | Advanced search for car-listings. |
 | [`api.price_eval()`](#price_evalregistration_number)  | 👏 No | Vehicle purchase valuation and details. | 
 | [`api.home_search()`](#home_searchcity-type-order_by-ordering-offset)  | 👏 No | Query home listings.
+| [`api.store_search()`](#store_searchsearch_query-page)  | 👏 No | Search for a store.
+| [`api.get_store_listings()`](#get_store_listingsstore_id-page)  | 👏 No | Get listings from a specific store.
 
 ## 🤓 Detailed usage
 
@@ -203,6 +205,48 @@ Query home listings from [bostad.blocket.se](https://bostad.blocket.se/).
     ordering="descending",
 )
 ...
+```
+
+### store_search(search_query, page)
+Search for a store in Blocket stores from [blocket.se/butiker](https://www.blocket.se/butiker).
+
+- `search_query` (`str`, required) - The name of the store. 
+- `page` (`int`, optional) - The page number to return.
+
+```py
+>>> api.store_search("Jannes Car and Kebab")
+{
+  "data": [
+    {
+      "store_id": "1234",
+      "store_name": "Jannes Car and Kebab",
+      ...
+    },
+    ...
+  ]
+}
+```
+
+### get_store_listings(store_id, page)
+Get listings from a specific store.
+
+- `store_id` (`int`, required) - The store id. Can be obtained by calling `store_search()`.
+- `page` (`int`, optional) - The page number to return.
+
+```py
+>>> api.get_store_listings(1234)
+{
+  "data": [
+    {
+      "ad_id": "1234",
+      "price": 316000,
+      "body": "A very nice car.",
+      "images": [],
+      ...
+    },
+    ...
+  ]
+}
 ```
 
 ## 🔐 Blocket API token
