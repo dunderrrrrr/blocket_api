@@ -106,7 +106,8 @@ Make a custom search through out all of blocked. A region can be passed in as pa
 
 Parameters:
 - `search_query` (`str`, required) - A string to search for.
-- `region` (`str`, optional) - Filter results on a region, default is all of Sweden.
+- `region` (`enum`, optional) - Filter results on a region, default is all of Sweden.
+- `category` (`enum`, optional) - Filter for a specific category, ex. `Category.for_hemmet`.
 - `limit` (`int`, optional) - Limit number of results returned, max is 99.
 
 ```py

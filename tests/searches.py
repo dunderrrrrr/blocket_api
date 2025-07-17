@@ -1,6 +1,6 @@
 import respx
 from httpx import Response
-from blocket_api.blocket import BASE_URL, BlocketAPI, Region, BYTBIL_URL
+from blocket_api.blocket import BASE_URL, BlocketAPI, Category, Region, BYTBIL_URL
 from blocket_api.qasa import QASA_URL, HomeType, OrderBy
 
 api = BlocketAPI("token")
@@ -54,16 +54,41 @@ def test_for_search_id_mobility() -> None:
     assert api.get_listings(search_id=123) == {"data": "mobility-data"}
 
 
-@respx.mock
-def test_custom_search() -> None:
-    respx.get(
-        f"{BASE_URL}/search_bff/v2/content?lim=99&q=saab&r=20&status=active"
-    ).mock(
-        return_value=Response(status_code=200, json={"data": {"location": "halland"}}),
-    )
-    assert api.custom_search("saab", Region.halland) == {
-        "data": {"location": "halland"}
-    }
+class Test_CustomSearch:
+    @respx.mock
+    def test_custom_search(self) -> None:
+        respx.get(
+            f"{BASE_URL}/search_bff/v2/content?lim=99&q=saab&r=20&status=active"
+        ).mock(
+            return_value=Response(
+                status_code=200, json={"data": {"location": "halland"}}
+            ),
+        )
+        assert api.custom_search("saab", Region.halland) == {
+            "data": {"location": "halland"}
+        }
+
+    @respx.mock
+    def test_custom_search_with_category(self) -> None:
+        respx.get(
+            f"{BASE_URL}/search_bff/v2/content?lim=99&q=saab&r=20&status=active&cg=2000"
+        ).mock(
+            return_value=Response(
+                status_code=200,
+                json={
+                    "data": {
+                        "location": "halland",
+                        "category": Category.for_hemmet.value,
+                    }
+                },
+            ),
+        )
+        result = api.custom_search(
+            "saab", region=Region.halland, category=Category.for_hemmet
+        )
+        assert result == {
+            "data": {"location": "halland", "category": Category.for_hemmet.value}
+        }
 
 
 class Test_MotorSearchURLs:
@@ -71,9 +96,7 @@ class Test_MotorSearchURLs:
     def test_make_filter(self) -> None:
         expected_url_filter = '?filter={"key": "make", "values": ["Audi", "Toyota"]}'
         respx.get(
-            f"{BASE_URL}/motor-search-service/v4/search/car"
-            f"{expected_url_filter}"
-            "&page=1"
+            f"{BASE_URL}/motor-search-service/v4/search/car{expected_url_filter}&page=1"
         ).mock(
             return_value=Response(status_code=200, json={"data": "ok"}),
         )
@@ -89,9 +112,7 @@ class Test_MotorSearchURLs:
             '&filter={"key": "gearbox", "values": "Manuell"}'
         )
         respx.get(
-            f"{BASE_URL}/motor-search-service/v4/search/car"
-            f"{expected_url_filter}"
-            "&page=5"
+            f"{BASE_URL}/motor-search-service/v4/search/car{expected_url_filter}&page=5"
         ).mock(
             return_value=Response(status_code=200, json={"data": "ok"}),
         )
