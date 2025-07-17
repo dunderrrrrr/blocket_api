@@ -46,6 +46,52 @@ class Region(Enum):
     örebro = 8
 
 
+class Category(Enum):
+    fordon = 1000
+    bilar = 1020
+    bildelar_biltillbehor = 1040
+    batar = 1060
+    batdelar_tillbehor = 1080
+    husvagnar_husbilar = 1100
+    mopeder_a_traktor = 1120
+    motorcyklar = 1140
+    mc_delar_tillbehor = 1160
+    lastbil_truck_entreprenad = 1220
+    skogs_lantbruksmaskiner = 1240
+    snoskotrar = 1180
+    snoskoterdelar_tillbehor = 1200
+    for_hemmet = 2000
+    bygg_tradgard = 2020
+    mobler_heminredning = 2040
+    husgerad_vitvaror = 2060
+    verktyg = 2026
+    bostad = 3000
+    lagenheter = 3020
+    villor = 3100
+    radhus = 3120
+    tomter = 3060
+    gardar = 3070
+    fritidsboende = 3040
+    utland = 3080
+    personligt = 4000
+    klader_skor = 4080
+    accessoarer_klockor = 4060
+    barnklader_skor = 4020
+    barnartiklar_leksaker = 4040
+    elektronik = 5000
+    datorer_tv_spel = 5020
+    ljud_bild = 5040
+    telefoner_tillbehor = 5060
+    fritid_hobby = 6000
+    biljetter_resor = 6020
+    bocker_studentlitteratur = 6040
+    cyklar = 6060
+    djur = 6080
+    hobby_samlarprylar = 6100
+    hastar_ridsport = 6120
+    jakt_fiske = 6140
+
+
 MAKE_OPTIONS = Literal[
     "Audi",
     "BMW",
@@ -188,7 +234,11 @@ class BlocketAPI:
 
     @public_token
     def custom_search(
-        self, search_query: str, region: Region = Region.hela_sverige, limit: int = 99
+        self,
+        search_query: str,
+        region: Region = Region.hela_sverige,
+        category: Category | None = None,
+        limit: int = 99,
     ) -> dict:
         """
         Do a custom search through out all of Blocket.
@@ -199,10 +249,12 @@ class BlocketAPI:
         if limit > 99:
             raise LimitError("Limit cannot be greater than 99.")
 
-        return _make_request(
-            url=f"{BASE_URL}/search_bff/v2/content?lim={limit}&q={search_query}&r={region.value}&status=active",
-            token=self.token,
-        ).json()
+        url = f"{BASE_URL}/search_bff/v2/content?lim={limit}&q={search_query}&r={region.value}&status=active"
+
+        if category:
+            url += f"&cg={category.value}"
+
+        return _make_request(url=url, token=self.token).json()
 
     @public_token
     def motor_search(
