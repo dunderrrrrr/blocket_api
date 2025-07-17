@@ -9,9 +9,11 @@ BlocketAPI allows users to query saved searches, known as "Bevakningar", on [blo
 ## ✨ Features
 
 - List saved searches, called "Bevakningar".
-- Query all listings/ads filtered on a region.
-- Query listings related to a saved search.
-- Use motor search to query listings related to a specific car.
+- Get listings from all or a specific saved search.
+- Search for anything on Blocket with filters for region and category.
+- Advanced search for vehicles with multiple filters.
+- Get vehicle information and price evaluation.
+- Search for homes with filters for city, home type and more.
 
 ## 🧑‍💻️ Install
 
