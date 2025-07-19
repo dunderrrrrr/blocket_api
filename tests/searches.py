@@ -164,3 +164,32 @@ def test_home_search() -> None:
         "rent": 9500,
         "petsAllowed": False,
     }
+
+
+class Test_StoreSearch:
+    @respx.mock
+    def test_search_store(self) -> None:
+        respx.get(f"{BASE_URL}/search_bff/v1/stores?q=bilar&page=0").mock(
+            return_value=Response(
+                status_code=200,
+                json={"data": {"store_id": 1234, "store_name": "Bilar AB"}},
+            ),
+        )
+        assert api.search_store("bilar") == {
+            "data": {"store_id": 1234, "store_name": "Bilar AB"}
+        }
+
+    @respx.mock
+    def test_get_store_listings(self) -> None:
+        respx.get(
+            f"{BASE_URL}/search_bff/v2/content?lim=60&page=0&sort=rel"
+            "&store_id=1234&status=active&gl=3&include=extend_with_shipping"
+        ).mock(
+            return_value=Response(
+                status_code=200,
+                json={"data": {"ad_id": 1234, "body": "A good car"}},
+            ),
+        )
+        assert api.get_store_listings(1234) == {
+            "data": {"ad_id": 1234, "body": "A good car"}
+        }

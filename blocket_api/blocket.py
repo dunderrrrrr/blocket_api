@@ -334,3 +334,32 @@ class BlocketAPI:
             ordering=ordering,
             offset=offset,
         ).search()
+
+    @public_token
+    def search_store(
+        self,
+        search_query: str,
+        page: int = 0,
+    ) -> dict:
+        """
+        Searching through Blocket stores from https://www.blocket.se/butiker.
+        The store_id is used for get_store_listings().
+        """
+        url = f"{BASE_URL}/search_bff/v1/stores?q={search_query}&page={page}"
+        return _make_request(url=f"{url}", token=self.token).json()
+
+    @public_token
+    def get_store_listings(
+        self,
+        store_id: int,
+        page: int = 0,
+    ) -> dict:
+        """
+        Return all listings from a specific store from https://www.blocket.se/butik/<store>.
+        The store_id can be found by searching for the store with search_store().
+        """
+        url = (
+            f"{BASE_URL}/search_bff/v2/content?lim=60&page={page}&sort=rel&store_id={store_id}"
+            "&status=active&gl=3&include=extend_with_shipping"
+        )
+        return _make_request(url=f"{url}", token=self.token).json()
