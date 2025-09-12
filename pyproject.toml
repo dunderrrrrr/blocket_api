@@ -11,6 +11,7 @@ dependencies = [
     "pytest>=8.2.2",
     "respx>=0.21.1",
     "mypy>=1.15.0",
+    "pydantic>=2.11.7",
 ]
 
 

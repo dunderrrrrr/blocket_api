@@ -1,6 +1,24 @@
+import datetime
+
 import respx
 from httpx import Response
-from blocket_api.blocket import BASE_URL, BlocketAPI, Category, Region, BYTBIL_URL
+
+from blocket_api.blocket import BASE_URL, BYTBIL_URL, BlocketAPI, Category, Region
+from blocket_api.models import (
+    CustomSearchImage,
+    CustomSearchLocation,
+    CustomSearchPrice,
+    CustomSearchResult,
+    CustomSearchResults,
+    MotorSearchCar,
+    MotorSearchCarEquipment,
+    MotorSearchCarImage,
+    MotorSearchCarLocation,
+    MotorSearchPrice,
+    MotorSearchResult,
+    MotorSearchResults,
+    MotorSearchSeller,
+)
 from blocket_api.qasa import QASA_URL, HomeType, OrderBy
 
 api = BlocketAPI("token")
@@ -69,6 +87,84 @@ class Test_CustomSearch:
         }
 
     @respx.mock
+    def test_custom_search_as_objects(self) -> None:
+        respx.get(
+            f"{BASE_URL}/search_bff/v2/content?lim=99&q=saab&r=20&status=active"
+        ).mock(
+            return_value=Response(
+                status_code=200,
+                json={
+                    "data": [
+                        {
+                            "ad_id": "ad_12345",
+                            "ad_status": "active",
+                            "body": "A nice car",
+                            "category": [],
+                            "images": [
+                                {
+                                    "height": 600,
+                                    "type": "thumbnail",
+                                    "url": "https://example.com/image1.jpg",
+                                    "width": 800,
+                                },
+                            ],
+                            "list_id": "list_9876",
+                            "list_time": "2025-09-12T15:30:00Z",
+                            "map": {
+                                "image_url": "https://example.com/map.png",
+                                "label": "Downtown",
+                                "query_key": "loc_001",
+                            },
+                            "map_url": "https://maps.example.com/location?loc=001",
+                            "price": {"suffix": "kr", "value": 2500},
+                            "share_url": "https://example.com/share/ad_12345",
+                            "state_id": "SE",
+                            "subject": "Wow a car!",
+                            "type": "rental",
+                            "zipcode": "10001",
+                        },
+                    ],
+                    "total_count": 1,
+                },
+            ),
+        )
+        result = api.custom_search("saab", Region.halland, as_objects=True)
+        assert isinstance(result, CustomSearchResults)
+        [data] = result.data
+
+        assert data.ad_id == "ad_12345"
+        assert data == CustomSearchResult(
+            ad_id="ad_12345",
+            ad_status="active",
+            body="A nice car",
+            category=[],
+            images=[
+                CustomSearchImage(
+                    height=600,
+                    type="thumbnail",
+                    url="https://example.com/image1.jpg",
+                    width=800,
+                )
+            ],
+            list_id="list_9876",
+            list_time=datetime.datetime(
+                2025, 9, 12, 15, 30, tzinfo=datetime.timezone.utc
+            ),
+            map=CustomSearchLocation(
+                image_url="https://example.com/map.png",
+                label="Downtown",
+                query_key="loc_001",
+            ),
+            map_url="https://maps.example.com/location?loc=001",
+            price=CustomSearchPrice(suffix="kr", value=2500),
+            share_url="https://example.com/share/ad_12345",
+            state_id="SE",
+            subject="Wow a car!",
+            type="rental",
+            zipcode="10001",
+        )
+
+    @respx.mock
     def test_custom_search_with_category(self) -> None:
         respx.get(
             f"{BASE_URL}/search_bff/v2/content?lim=99&q=saab&r=20&status=active&cg=2000"
@@ -101,6 +197,119 @@ class Test_MotorSearchURLs:
             return_value=Response(status_code=200, json={"data": "ok"}),
         )
         assert api.motor_search(page=1, make=["Audi", "Toyota"]) == {"data": "ok"}
+
+    @respx.mock
+    def test_motor_search_as_objects(self) -> None:
+        expected_url_filter = '?filter={"key": "make", "values": ["Audi", "Toyota"]}'
+        respx.get(
+            f"{BASE_URL}/motor-search-service/v4/search/car{expected_url_filter}&page=1"
+        ).mock(
+            return_value=Response(
+                status_code=200,
+                json={
+                    "cars": [
+                        {
+                            "dealId": "deal_001",
+                            "link": "https://example.com/car/001",
+                            "listTime": "2025-09-12T14:00:00Z",
+                            "originalListTime": "2025-09-10T09:00:00Z",
+                            "seller": {
+                                "type": "dealer",
+                                "name": "Super Cars Ltd.",
+                                "id": "seller_001",
+                            },
+                            "heading": "2020 BMW 3 Series 320i",
+                            "price": {
+                                "amount": "25000",
+                                "billingPeriod": "one-time",
+                                "oldPrice": None,
+                            },
+                            "thumbnail": "https://example.com/images/bmw_thumb.jpg",
+                            "car": {
+                                "images": [
+                                    {
+                                        "height": 800,
+                                        "width": 1200,
+                                        "image": "https://example.com/images/bmw1.jpg",
+                                    },
+                                    {
+                                        "height": 600,
+                                        "width": 900,
+                                        "image": "https://example.com/images/bmw2.jpg",
+                                    },
+                                ],
+                                "location": {
+                                    "region": "SE",
+                                    "municipality": "Stockholm",
+                                    "area": "Downtown",
+                                },
+                                "fuel": "Petrol",
+                                "gearbox": "Automatic",
+                                "regDate": 2020,
+                                "mileage": 15000,
+                                "equipment": [
+                                    {"label": "Air Conditioning"},
+                                    {"label": "GPS Navigation"},
+                                    {"label": "Heated Seats"},
+                                ],
+                            },
+                            "description": "A nice car, yea?",
+                        },
+                    ],
+                    "hits": 1,
+                    "pages": 1,
+                },
+            ),
+        )
+        result = api.motor_search(page=1, make=["Audi", "Toyota"], as_objects=True)
+        assert isinstance(result, MotorSearchResults)
+
+        [car_ad] = result.cars
+        assert car_ad == MotorSearchResult(
+            dealId="deal_001",
+            link="https://example.com/car/001",
+            listTime=datetime.datetime(
+                2025, 9, 12, 14, 0, tzinfo=datetime.timezone.utc
+            ),
+            originalListTime=datetime.datetime(
+                2025, 9, 10, 9, 0, tzinfo=datetime.timezone.utc
+            ),
+            seller=MotorSearchSeller(
+                type="dealer", name="Super Cars Ltd.", id="seller_001"
+            ),
+            heading="2020 BMW 3 Series 320i",
+            price=MotorSearchPrice(
+                amount="25000", billingPeriod="one-time", oldPrice=None
+            ),
+            thumbnail="https://example.com/images/bmw_thumb.jpg",
+            car=MotorSearchCar(
+                images=[
+                    MotorSearchCarImage(
+                        height=800,
+                        width=1200,
+                        image="https://example.com/images/bmw1.jpg",
+                    ),
+                    MotorSearchCarImage(
+                        height=600,
+                        width=900,
+                        image="https://example.com/images/bmw2.jpg",
+                    ),
+                ],
+                location=MotorSearchCarLocation(
+                    region="SE", municipality="Stockholm", area="Downtown"
+                ),
+                fuel="Petrol",
+                gearbox="Automatic",
+                regDate=2020,
+                mileage=15000,
+                equipment=[
+                    MotorSearchCarEquipment(label="Air Conditioning"),
+                    MotorSearchCarEquipment(label="GPS Navigation"),
+                    MotorSearchCarEquipment(label="Heated Seats"),
+                ],
+            ),
+            description="A nice car, yea?",
+        )
 
     @respx.mock
     def test_range_filters(self) -> None:

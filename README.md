@@ -39,20 +39,20 @@ Some calls require a `bearerToken`. However, some calls are public and don't req
 [Where token?](#-blocket-api-token)
 
 
-| Function  | Token required | Description  |
-|---|---|---|
-| [`api.saved_searches()`](#saved_searches) | 🔐 Yes | List your saved searches (bevakningar)  |
-| [`api.get_listings()`](#get_listingssearch_id-limit) | 🔐 Yes | List items related to a saved search |
-| [`api.custom_search()`](#custom_searchsearch_query-region-limit)  | 👏 No | Search for everything on Blocket and filter by region |
-| [`api.motor_search()`](#motor_searchpage-make-fuel-chassi-price-modelyear-milage-gearbox)  | 👏 No | Advanced search for car-listings. |
-| [`api.price_eval()`](#price_evalregistration_number)  | 👏 No | Vehicle purchase valuation and details. | 
-| [`api.home_search()`](#home_searchcity-type-order_by-ordering-offset)  | 👏 No | Query home listings.
-| [`api.store_search()`](#store_searchsearch_query-page)  | 👏 No | Search for a store.
-| [`api.get_store_listings()`](#get_store_listingsstore_id-page)  | 👏 No | Get listings from a specific store.
+| Function  | Token required | `as_objects` | Description  |
+|---|---|---|---|
+| [`api.saved_searches()`](#saved_searches) | 🔐 Yes | - | List your saved searches (bevakningar)  |
+| [`api.get_listings()`](#get_listings) | 🔐 Yes | - | List items related to a saved search |
+| [`api.custom_search()`](#custom_search)  | 👏 No | Yes | Search for everything on Blocket and filter by region |
+| [`api.motor_search()`](#motor_search)  | 👏 No | Yes | Advanced search for car-listings. |
+| [`api.price_eval()`](#price_eval)  | 👏 No | - | Vehicle purchase valuation and details. | 
+| [`api.home_search()`](#home_search)  | 👏 No | - | Query home listings.
+| [`api.store_search()`](#store_search)  | 👏 No | Yes | Search for a store.
+| [`api.get_store_listings()`](#get_store_listings)  | 👏 No | - | Get listings from a specific store.
 
 ## 🤓 Detailed usage
 
-### saved_searches()
+### saved_searches
 
 Saved searches are your so called "Bevakningar" and can be found [here](https://www.blocket.se/sparade/bevakningar). Each saved search has and unique `id` which can be used as a parameter to `get_listings()`, see below.
 
@@ -71,7 +71,7 @@ Saved searches are your so called "Bevakningar" and can be found [here](https://
 ]
 ```
 
-### get_listings(search_id, limit)
+### get_listings
 Returns all listings related to a saved search.
 
 Parameters:
@@ -105,7 +105,7 @@ Parameters:
 }
 ```
 
-### custom_search(search_query, region, limit)
+### custom_search
 Make a custom search through out all of blocked. A region can be passed in as parameter for filtering.
 
 Parameters:
@@ -113,6 +113,7 @@ Parameters:
 - `region` (`enum`, optional) - Filter results on a region, default is all of Sweden.
 - `category` (`enum`, optional) - Filter for a specific category, ex. `Category.for_hemmet`.
 - `limit` (`int`, optional) - Limit number of results returned, max is 99.
+- `as_objects` (`bool`, optional) - Return results as pydantic models, default is `False`.
 
 ```py
 >>> from blocket_api import Region
@@ -146,7 +147,7 @@ Parameters:
 }
 ```
 
-### motor_search(page, make, fuel, chassi, price, modelYear, milage, gearbox)
+### motor_search
 To query listings related to a specific car, supply the following parameters:
 
 - `page` (`int`, required) - Results are split in pages, set page number here.
@@ -157,6 +158,8 @@ To query listings related to a specific car, supply the following parameters:
 - `modelYear` (`Optional[Tuple[int, int]]`) - Set model year range, ex. `(2000, 2020)`.
 - `milage` (`Optional[Tuple[int, int]]`) - Set milage range, ex. `(1000, 2000)`.
 - `gearbox` (`Optional[GEARBOX_OPTIONS]`) - Filter a specific gearbox, ex. `Automat`.
+- `as_objects` (`bool`, optional) - Return results as pydantic models, default is `False`.
+
 ```py
 >>> api.motor_search(
     make=["Audi", "Ford"],
@@ -168,7 +171,7 @@ To query listings related to a specific car, supply the following parameters:
 ...
 ```
 
-### price_eval(registration_number)
+### price_eval
 Query price evaluation for a specific vehicle by using cars registration number (ABC123). This returns company and private estimated prices, car information, and more. The api queries same endpoint as Blockets ["värdera bil"](https://www.blocket.se/tjanster/vardera-bil) service. 
 
 - `registration_number` (`str`, required) - Registration number of the vehicle.
@@ -187,7 +190,7 @@ Query price evaluation for a specific vehicle by using cars registration number 
 }
 ```
 
-### home_search(city, type, order_by, ordering, offset)
+### home_search
 Query home listings from [bostad.blocket.se](https://bostad.blocket.se/).
 
 - `city` (`str`, required) - City name, ex. Stockholm. 
@@ -207,11 +210,13 @@ Query home listings from [bostad.blocket.se](https://bostad.blocket.se/).
 ...
 ```
 
-### store_search(search_query, page)
+### store_search
 Search for a store in Blocket stores from [blocket.se/butiker](https://www.blocket.se/butiker).
 
 - `search_query` (`str`, required) - The name of the store. 
 - `page` (`int`, optional) - The page number to return.
+- `as_objects` (`bool`, optional) - Return results as pydantic models, default is `False`.
+
 
 ```py
 >>> api.store_search("Jannes Car and Kebab")
@@ -227,7 +232,7 @@ Search for a store in Blocket stores from [blocket.se/butiker](https://www.block
 }
 ```
 
-### get_store_listings(store_id, page)
+### get_store_listings
 Get listings from a specific store.
 
 - `store_id` (`int`, required) - The store id. Can be obtained by calling `store_search()`.
