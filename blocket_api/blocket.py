@@ -1,14 +1,19 @@
 from __future__ import annotations
 
-from collections.abc import Callable
-from functools import wraps
 import urllib
+from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum
-from typing import TYPE_CHECKING, Any, List, Literal, Optional, Tuple
+from functools import wraps
+from typing import TYPE_CHECKING, Any, List, Literal, Optional, Tuple, Union, overload
 
 import httpx
 
+from blocket_api.models import (
+    CustomSearchResults,
+    MotorSearchResults,
+    StoreSearchResults,
+)
 from blocket_api.qasa import HOME_SEARCH_ORDERING, HomeType, OrderBy, Qasa
 
 if TYPE_CHECKING:
@@ -232,6 +237,39 @@ class BlocketAPI:
             token=self.token,
         ).json()
 
+    @overload
+    def custom_search(
+        self,
+        search_query: str,
+        region: Region = Region.hela_sverige,
+        category: Category | None = None,
+        limit: int = 99,
+        *,
+        as_objects: Literal[True],
+    ) -> CustomSearchResults: ...
+
+    @overload
+    def custom_search(
+        self,
+        search_query: str,
+        region: Region = Region.hela_sverige,
+        category: Category | None = None,
+        limit: int = 99,
+        *,
+        as_objects: Literal[False] = False,
+    ) -> dict: ...
+
+    @overload
+    def custom_search(
+        self,
+        search_query: str,
+        region: Region = Region.hela_sverige,
+        category: Category | None = None,
+        limit: int = 99,
+        *,
+        as_objects: bool = False,
+    ) -> Union[dict, CustomSearchResults]: ...
+
     @public_token
     def custom_search(
         self,
@@ -239,10 +277,11 @@ class BlocketAPI:
         region: Region = Region.hela_sverige,
         category: Category | None = None,
         limit: int = 99,
-    ) -> dict:
+        *,
+        as_objects: bool = False,
+    ) -> dict | CustomSearchResults:
         """
-        Do a custom search through out all of Blocket.
-        Supply a region for filtering. Default is all of Sweden.
+        Do a custom search throughout all of Blocket.
         """
         assert self.token
 
@@ -254,7 +293,53 @@ class BlocketAPI:
         if category:
             url += f"&cg={category.value}"
 
-        return _make_request(url=url, token=self.token).json()
+        response = _make_request(url=url, token=self.token).json()
+        return CustomSearchResults.model_validate(response) if as_objects else response
+
+    @overload
+    def motor_search(
+        self,
+        page: int,
+        make: List[MAKE_OPTIONS],
+        fuel: Optional[List[FUEL_OPTIONS]] = None,
+        chassi: Optional[List[CHASSI_OPTIONS]] = None,
+        price: Optional[Tuple[int, int]] = None,
+        modelYear: Optional[Tuple[int, int]] = None,
+        milage: Optional[Tuple[int, int]] = None,
+        gearbox: Optional[GEARBOX_OPTIONS] = None,
+        *,
+        as_objects: Literal[True],
+    ) -> MotorSearchResults: ...
+
+    @overload
+    def motor_search(
+        self,
+        page: int,
+        make: List[MAKE_OPTIONS],
+        fuel: Optional[List[FUEL_OPTIONS]] = None,
+        chassi: Optional[List[CHASSI_OPTIONS]] = None,
+        price: Optional[Tuple[int, int]] = None,
+        modelYear: Optional[Tuple[int, int]] = None,
+        milage: Optional[Tuple[int, int]] = None,
+        gearbox: Optional[GEARBOX_OPTIONS] = None,
+        *,
+        as_objects: Literal[False] = False,
+    ) -> dict: ...
+
+    @overload
+    def motor_search(
+        self,
+        page: int,
+        make: List[MAKE_OPTIONS],
+        fuel: Optional[List[FUEL_OPTIONS]] = None,
+        chassi: Optional[List[CHASSI_OPTIONS]] = None,
+        price: Optional[Tuple[int, int]] = None,
+        modelYear: Optional[Tuple[int, int]] = None,
+        milage: Optional[Tuple[int, int]] = None,
+        gearbox: Optional[GEARBOX_OPTIONS] = None,
+        *,
+        as_objects: bool = False,
+    ) -> Union[dict, MotorSearchResults]: ...
 
     @public_token
     def motor_search(
@@ -267,7 +352,9 @@ class BlocketAPI:
         modelYear: Optional[Tuple[int, int]] = None,
         milage: Optional[Tuple[int, int]] = None,
         gearbox: Optional[GEARBOX_OPTIONS] = None,
-    ) -> dict:
+        *,
+        as_objects: bool = False,
+    ) -> dict | MotorSearchResults:
         """
         Search specifically in the car section of Blocket
         with set optional parameters for filtering.
@@ -278,7 +365,8 @@ class BlocketAPI:
         set_params = {
             key: value
             for key, value in locals().items()
-            if key not in ["self", "page", "range_params"] and value is not None
+            if key not in ["self", "page", "range_params", "as_objects"]
+            and value is not None
         }
 
         filters = []
@@ -298,7 +386,8 @@ class BlocketAPI:
         filters_str = "&".join([f"filter={f}" for f in filters])
         url = f"{motor_base_url}?{filters_str}&page={page}"
 
-        return _make_request(url=f"{url}", token=self.token).json()
+        response = _make_request(url=f"{url}", token=self.token).json()
+        return MotorSearchResults.model_validate(response) if as_objects else response
 
     @public_token
     def price_eval(
@@ -335,18 +424,54 @@ class BlocketAPI:
             offset=offset,
         ).search()
 
+    @overload
+    def search_store(
+        self,
+        search_query: str,
+        page: int = 0,
+        *,
+        as_objects: Literal[True],
+    ) -> StoreSearchResults: ...
+
+    @overload
+    def search_store(
+        self,
+        search_query: str,
+        page: int = 0,
+        *,
+        as_objects: Literal[False] = False,
+    ) -> dict: ...
+
+    @overload
+    def search_store(
+        self,
+        page: int,
+        make: List[MAKE_OPTIONS],
+        fuel: Optional[List[FUEL_OPTIONS]] = None,
+        chassi: Optional[List[CHASSI_OPTIONS]] = None,
+        price: Optional[Tuple[int, int]] = None,
+        modelYear: Optional[Tuple[int, int]] = None,
+        milage: Optional[Tuple[int, int]] = None,
+        gearbox: Optional[GEARBOX_OPTIONS] = None,
+        *,
+        as_objects: bool = False,
+    ) -> Union[dict, StoreSearchResults]: ...
+
     @public_token
     def search_store(
         self,
         search_query: str,
         page: int = 0,
-    ) -> dict:
+        *,
+        as_objects: bool = False,
+    ) -> dict | StoreSearchResults:
         """
         Searching through Blocket stores from https://www.blocket.se/butiker.
         The store_id is used for get_store_listings().
         """
         url = f"{BASE_URL}/search_bff/v1/stores?q={search_query}&page={page}"
-        return _make_request(url=f"{url}", token=self.token).json()
+        response = _make_request(url=f"{url}", token=self.token).json()
+        return StoreSearchResults.model_validate(response) if as_objects else response
 
     @public_token
     def get_store_listings(
