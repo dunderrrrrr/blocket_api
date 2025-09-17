@@ -116,7 +116,7 @@ Parameters:
 - `as_objects` (`bool`, optional) - Return results as pydantic models, default is `False`.
 
 ```py
->>> from blocket_api import Region
+>>> from blocket_api.blocket import Region, Category
 >>> api.custom_search("saab", Region.blekinge) # search for term "saab" in region of "Blekinge"
 {
    "data":[
