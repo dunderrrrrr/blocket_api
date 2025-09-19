@@ -11,7 +11,11 @@ import httpx
 
 from blocket_api.models import (
     CustomSearchResults,
+    HomeSearchResponse,
+    ListingResults,
     MotorSearchResults,
+    PriceEvaluation,
+    SavedSearch,
     StoreSearchResults,
 )
 from blocket_api.qasa import HOME_SEARCH_ORDERING, HomeType, OrderBy, Qasa
@@ -181,8 +185,21 @@ def _make_request(
 class BlocketAPI:
     token: str | None = None
 
+    @overload
+    def saved_searches(self, *, as_objects: Literal[True]) -> list[SavedSearch]: ...
+
+    @overload
+    def saved_searches(self, *, as_objects: Literal[False] = False) -> list[dict]: ...
+
+    @overload
+    def saved_searches(
+        self, *, as_objects: bool = False
+    ) -> list[dict] | list[SavedSearch]: ...
+
     @auth_token
-    def saved_searches(self) -> list[dict]:
+    def saved_searches(
+        self, *, as_objects: bool = False
+    ) -> list[dict] | list[SavedSearch]:
         """
         Retrieves saved searches data, also known as "Bevakningar".
         """
@@ -201,7 +218,10 @@ class BlocketAPI:
             .get("data", [])
         )
 
-        return searches + mobility_searches
+        results = searches + mobility_searches
+        if as_objects:
+            return [SavedSearch.model_validate(entry) for entry in results]
+        return results
 
     def _for_search_id(self, search_id: int, limit: int) -> dict:
         assert self.token
@@ -220,7 +240,37 @@ class BlocketAPI:
         return searches.json()
 
     @auth_token
-    def get_listings(self, search_id: int | None = None, limit: int = 99) -> dict:
+    @overload
+    def get_listings(
+        self, search_id: int | None = None, limit: int = 99, *, as_objects: Literal[True]
+    ) -> ListingResults: ...
+
+    @overload
+    def get_listings(
+        self,
+        search_id: int | None = None,
+        limit: int = 99,
+        *,
+        as_objects: Literal[False] = False,
+    ) -> dict: ...
+
+    @overload
+    def get_listings(
+        self,
+        search_id: int | None = None,
+        limit: int = 99,
+        *,
+        as_objects: bool = False,
+    ) -> dict | ListingResults: ...
+
+    @auth_token
+    def get_listings(
+        self,
+        search_id: int | None = None,
+        limit: int = 99,
+        *,
+        as_objects: bool = False,
+    ) -> dict | ListingResults:
         """
         Retrieve listings/ads based on the provided search criteria.
         """
@@ -230,12 +280,14 @@ class BlocketAPI:
             raise LimitError("Limit cannot be greater than 99.")
 
         if search_id:
-            return self._for_search_id(search_id, limit)
+            response = self._for_search_id(search_id, limit)
+        else:
+            response = _make_request(
+                url=BASE_URL + f"/saved/v2/searches_content?lim={limit}",
+                token=self.token,
+            ).json()
 
-        return _make_request(
-            url=BASE_URL + f"/saved/v2/searches_content?lim={limit}",
-            token=self.token,
-        ).json()
+        return ListingResults.model_validate(response) if as_objects else response
 
     @overload
     def custom_search(
@@ -389,11 +441,25 @@ class BlocketAPI:
         response = _make_request(url=f"{url}", token=self.token).json()
         return MotorSearchResults.model_validate(response) if as_objects else response
 
+    @overload
+    def price_eval(
+        self, registration_number: str, *, as_objects: Literal[True]
+    ) -> PriceEvaluation: ...
+
+    @overload
+    def price_eval(
+        self, registration_number: str, *, as_objects: Literal[False] = False
+    ) -> dict: ...
+
+    @overload
+    def price_eval(
+        self, registration_number: str, *, as_objects: bool = False
+    ) -> dict | PriceEvaluation: ...
+
     @public_token
     def price_eval(
-        self,
-        registration_number: str,
-    ) -> dict:
+        self, registration_number: str, *, as_objects: bool = False
+    ) -> dict | PriceEvaluation:
         """
         Price evaluation for a specific vehicle by using cars
         registration number (ABC123).
@@ -401,7 +467,44 @@ class BlocketAPI:
         This is using same api endpoint as https://www.blocket.se/tjanster/vardera-bil.
         """
         url = f"{BYTBIL_URL}/blocket-basedata-api/v3/vehicle-data/{registration_number}"
-        return _make_request(url=f"{url}", token=None).json()
+        response = _make_request(url=f"{url}", token=None).json()
+        return PriceEvaluation.model_validate(response) if as_objects else response
+
+    @overload
+    def home_search(
+        self,
+        city: str,
+        type: HomeType,
+        order_by: OrderBy = OrderBy.published_at,
+        ordering: HOME_SEARCH_ORDERING = "descending",
+        offset: int = 0,
+        *,
+        as_objects: Literal[True],
+    ) -> HomeSearchResponse: ...
+
+    @overload
+    def home_search(
+        self,
+        city: str,
+        type: HomeType,
+        order_by: OrderBy = OrderBy.published_at,
+        ordering: HOME_SEARCH_ORDERING = "descending",
+        offset: int = 0,
+        *,
+        as_objects: Literal[False] = False,
+    ) -> dict: ...
+
+    @overload
+    def home_search(
+        self,
+        city: str,
+        type: HomeType,
+        order_by: OrderBy = OrderBy.published_at,
+        ordering: HOME_SEARCH_ORDERING = "descending",
+        offset: int = 0,
+        *,
+        as_objects: bool = False,
+    ) -> dict | HomeSearchResponse: ...
 
     def home_search(
         self,
@@ -410,19 +513,22 @@ class BlocketAPI:
         order_by: OrderBy = OrderBy.published_at,
         ordering: HOME_SEARCH_ORDERING = "descending",
         offset: int = 0,
-    ) -> dict:
+        *,
+        as_objects: bool = False,
+    ) -> dict | HomeSearchResponse:
         """
         This returns all available home listings available at
         https://bostad.blocket.se/. Specify offset to get next page. Each page contains
         60 items, which is max items returned per api query.
         """
-        return Qasa(
+        response = Qasa(
             city=city,
             home_type=type,
             order_by=order_by,
             ordering=ordering,
             offset=offset,
         ).search()
+        return HomeSearchResponse.model_validate(response) if as_objects else response
 
     @overload
     def search_store(
@@ -473,12 +579,41 @@ class BlocketAPI:
         response = _make_request(url=f"{url}", token=self.token).json()
         return StoreSearchResults.model_validate(response) if as_objects else response
 
+    @overload
+    def get_store_listings(
+        self,
+        store_id: int,
+        page: int = 0,
+        *,
+        as_objects: Literal[True],
+    ) -> ListingResults: ...
+
+    @overload
+    def get_store_listings(
+        self,
+        store_id: int,
+        page: int = 0,
+        *,
+        as_objects: Literal[False] = False,
+    ) -> dict: ...
+
+    @overload
+    def get_store_listings(
+        self,
+        store_id: int,
+        page: int = 0,
+        *,
+        as_objects: bool = False,
+    ) -> dict | ListingResults: ...
+
     @public_token
     def get_store_listings(
         self,
         store_id: int,
         page: int = 0,
-    ) -> dict:
+        *,
+        as_objects: bool = False,
+    ) -> dict | ListingResults:
         """
         Return all listings from a specific store from https://www.blocket.se/butik/<store>.
         The store_id can be found by searching for the store with search_store().
@@ -487,4 +622,5 @@ class BlocketAPI:
             f"{BASE_URL}/search_bff/v2/content?lim=60&page={page}&sort=rel&store_id={store_id}"
             "&status=active&gl=3&include=extend_with_shipping"
         )
-        return _make_request(url=f"{url}", token=self.token).json()
+        response = _make_request(url=f"{url}", token=self.token).json()
+        return ListingResults.model_validate(response) if as_objects else response
