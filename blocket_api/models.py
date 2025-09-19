@@ -1,6 +1,13 @@
 import datetime
+from typing import Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
+
+
+class BlocketBaseModel(BaseModel):
+    """Base model that allows unknown fields from the Blocket APIs."""
+
+    model_config = ConfigDict(extra="allow")
 
 ### CustomSearch ###
 
@@ -149,3 +156,108 @@ class StoreSearchResults(BaseModel):
     data: list[StoreSearchResult]
     total_count: int
     total_page_count: int
+
+
+### Saved searches ###
+
+
+class SavedSearch(BlocketBaseModel):
+    id: str
+    name: str
+    query: str | None = None
+    new_count: int | None = None
+    total_count: int | None = None
+    push_enabled: bool | None = None
+    push_available: bool | None = None
+
+
+### Search content listings ###
+
+
+class SearchContentPrice(BlocketBaseModel):
+    value: Any | None = None
+    suffix: str | None = None
+
+
+class SearchContentAd(BlocketBaseModel):
+    ad_id: str | None = None
+    list_id: str | None = None
+    subject: str | None = None
+    body: str | None = None
+    price: SearchContentPrice | None = None
+
+
+class SearchContentResult(BlocketBaseModel):
+    ad: SearchContentAd | None = None
+
+
+class SearchContentResults(BlocketBaseModel):
+    data: list[SearchContentResult]
+    total_count: int | None = None
+    total_page_count: int | None = None
+    timestamp: datetime.datetime | None = None
+
+
+### Price evaluation ###
+
+
+class PriceEvaluation(BlocketBaseModel):
+    registration_number: str | None = None
+    private_valuation: int | None = None
+
+
+### Home search ###
+
+
+class HomeSearchPoint(BlocketBaseModel):
+    lat: float | None = None
+    lon: float | None = None
+
+
+class HomeSearchLocation(BlocketBaseModel):
+    id: str | None = None
+    locality: str | None = None
+    countryCode: str | None = None
+    streetNumber: str | None = None
+    route: str | None = None
+    point: HomeSearchPoint | None = None
+
+
+class HomeSearchUpload(BlocketBaseModel):
+    id: str | None = None
+    order: int | None = None
+    type: str | None = None
+    url: str | None = None
+
+
+class HomeSearchDocument(BlocketBaseModel):
+    id: str | None = None
+    title: str | None = None
+    bedroomCount: int | None = None
+    roomCount: int | None = None
+    rent: int | None = None
+    currency: str | None = None
+    monthlyCost: int | None = None
+    homeType: str | None = None
+    location: HomeSearchLocation | None = None
+    uploads: list[HomeSearchUpload] | None = None
+
+
+class HomeSearchDocuments(BlocketBaseModel):
+    hasNextPage: bool | None = None
+    hasPreviousPage: bool | None = None
+    nodes: list[HomeSearchDocument] | None = None
+    pagesCount: int | None = None
+    totalCount: int | None = None
+
+
+class HomeIndexSearch(BlocketBaseModel):
+    documents: HomeSearchDocuments | None = None
+
+
+class HomeSearchData(BlocketBaseModel):
+    homeIndexSearch: HomeIndexSearch | None = None
+
+
+class HomeSearchResponse(BlocketBaseModel):
+    data: HomeSearchData | None = None
