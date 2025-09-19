@@ -17,11 +17,13 @@ BlocketAPI allows users to query saved searches, known as "Bevakningar", on [blo
 
 ## 🧑‍💻️ Install
 
-BlocketAPI is available on PyPI.
+Install BlocketAPI via PyPI...
 
 ```sh
 pip install blocket-api
 ```
+
+or use [blocket-api.se](https://blocket-api.se) without installing anything!
 
 ## 💁‍♀️ Usage
 
