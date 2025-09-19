@@ -10,6 +10,7 @@ from blocket_api.models import (
     CustomSearchPrice,
     CustomSearchResult,
     CustomSearchResults,
+    HomeSearchResponse,
     MotorSearchCar,
     MotorSearchCarEquipment,
     MotorSearchCarImage,
@@ -18,6 +19,12 @@ from blocket_api.models import (
     MotorSearchResult,
     MotorSearchResults,
     MotorSearchSeller,
+    PriceEvaluation,
+    SavedSearch,
+    SearchContentAd,
+    SearchContentPrice,
+    SearchContentResult,
+    SearchContentResults,
 )
 from blocket_api.qasa import QASA_URL, HomeType, OrderBy
 
@@ -34,8 +41,16 @@ def test_saved_searches() -> None:
             status_code=200,
             json={
                 "data": [
-                    {"id": "1", "name": '"buggy", Bilar säljes i hela Sverige'},
-                    {"id": "2", "name": "Cyklar säljes i flera kommuner"},
+                    {
+                        "id": "1",
+                        "name": '"buggy", Bilar säljes i hela Sverige',
+                        "new_count": 1,
+                    },
+                    {
+                        "id": "2",
+                        "name": "Cyklar säljes i flera kommuner",
+                        "total_count": 12,
+                    },
                 ],
             },
         ),
@@ -43,22 +58,83 @@ def test_saved_searches() -> None:
     respx.get(f"{BASE_URL}/mobility-saved-searches/v1/searches").mock(
         return_value=Response(
             status_code=200,
-            json={"data": [{"id": "3", "name": "Bilar säljes i hela Sverige"}]},
+            json={
+                "data": [
+                    {
+                        "id": "3",
+                        "name": "Bilar säljes i hela Sverige",
+                        "push_enabled": True,
+                    }
+                ]
+            },
         ),
     )
-    assert api.saved_searches() == [
-        {"id": "1", "name": '"buggy", Bilar säljes i hela Sverige'},
-        {"id": "2", "name": "Cyklar säljes i flera kommuner"},
-        {"id": "3", "name": "Bilar säljes i hela Sverige"},
+    searches = api.saved_searches()
+    assert searches == [
+        {
+            "id": "1",
+            "name": '"buggy", Bilar säljes i hela Sverige',
+            "new_count": 1,
+        },
+        {
+            "id": "2",
+            "name": "Cyklar säljes i flera kommuner",
+            "total_count": 12,
+        },
+        {
+            "id": "3",
+            "name": "Bilar säljes i hela Sverige",
+            "push_enabled": True,
+        },
     ]
+
+    searches_as_objects = api.saved_searches(as_objects=True)
+    assert isinstance(searches_as_objects, list)
+    assert all(isinstance(item, SavedSearch) for item in searches_as_objects)
+    assert searches_as_objects[0].name == '"buggy", Bilar säljes i hela Sverige'
+    assert searches_as_objects[0].new_count == 1
 
 
 @respx.mock
 def test_for_search_id() -> None:
     respx.get(f"{BASE_URL}/saved/v2/searches_content/123?lim=99").mock(
-        return_value=Response(status_code=200, json={"data": "listings-data"}),
+        return_value=Response(
+            status_code=200,
+            json={
+                "data": [
+                    {
+                        "ad": {
+                            "ad_id": "1401053984",
+                            "list_id": "1401053984",
+                            "subject": "Volkswagen 1500 lim 113 chassi",
+                            "body": "Säljer ett chassi/bottenplatta",
+                            "price": {"value": 10000, "suffix": "kr"},
+                        }
+                    }
+                ],
+                "total_count": 41,
+                "timestamp": "2024-07-16T08:08:43.810828006Z",
+                "total_page_count": 1,
+            },
+        ),
     )
-    assert api.get_listings(search_id=123) == {"data": "listings-data"}
+    response = api.get_listings(search_id=123)
+    assert response == {
+        "data": [
+            {
+                "ad": {
+                    "ad_id": "1401053984",
+                    "list_id": "1401053984",
+                    "subject": "Volkswagen 1500 lim 113 chassi",
+                    "body": "Säljer ett chassi/bottenplatta",
+                    "price": {"value": 10000, "suffix": "kr"},
+                }
+            }
+        ],
+        "total_count": 41,
+        "timestamp": "2024-07-16T08:08:43.810828006Z",
+        "total_page_count": 1,
+    }
 
 
 @respx.mock
@@ -67,9 +143,63 @@ def test_for_search_id_mobility() -> None:
         return_value=Response(status_code=404),
     )
     respx.get(f"{BASE_URL}/mobility-saved-searches/v1/searches/123/ads?lim=99").mock(
-        return_value=Response(status_code=200, json={"data": "mobility-data"}),
+        return_value=Response(
+            status_code=200,
+            json={
+                "data": [
+                    {
+                        "ad": {
+                            "ad_id": "mobility-ad",
+                            "list_id": "mobility-ad",
+                            "subject": "Mobility listing",
+                        }
+                    }
+                ]
+            },
+        ),
     )
-    assert api.get_listings(search_id=123) == {"data": "mobility-data"}
+    assert api.get_listings(search_id=123) == {
+        "data": [
+            {
+                "ad": {
+                    "ad_id": "mobility-ad",
+                    "list_id": "mobility-ad",
+                    "subject": "Mobility listing",
+                }
+            }
+        ]
+    }
+
+
+@respx.mock
+def test_get_listings_as_objects() -> None:
+    respx.get(f"{BASE_URL}/saved/v2/searches_content/456?lim=10").mock(
+        return_value=Response(
+            status_code=200,
+            json={
+                "data": [
+                    {
+                        "ad": {
+                            "ad_id": "ad-1",
+                            "list_id": "list-1",
+                            "subject": "A listing",
+                            "body": "Body text",
+                            "price": {"value": 2500, "suffix": "kr"},
+                        }
+                    }
+                ],
+                "total_count": 1,
+                "timestamp": "2024-01-01T00:00:00Z",
+            },
+        ),
+    )
+    results = api.get_listings(search_id=456, limit=10, as_objects=True)
+    assert isinstance(results, SearchContentResults)
+    [listing] = results.data
+    assert isinstance(listing, SearchContentResult)
+    assert isinstance(listing.ad, SearchContentAd)
+    assert listing.ad.ad_id == "ad-1"
+    assert isinstance(listing.ad.price, SearchContentPrice)
 
 
 class Test_CustomSearch:
@@ -346,10 +476,16 @@ def test_price_eval() -> None:
             },
         ),
     )
-    assert api.price_eval("ABC123") == {
+    response = api.price_eval("ABC123")
+    assert response == {
         "registration_number": "ABC123",
         "private_valuation": 108155,
     }
+
+    modelled = api.price_eval("ABC123", as_objects=True)
+    assert isinstance(modelled, PriceEvaluation)
+    assert modelled.registration_number == "ABC123"
+    assert modelled.private_valuation == 108155
 
 
 @respx.mock
@@ -358,21 +494,98 @@ def test_home_search() -> None:
         return_value=Response(
             status_code=200,
             json={
-                "bedroomCount": "2",
-                "rent": 9500,
-                "petsAllowed": False,
+                "data": {
+                    "homeIndexSearch": {
+                        "documents": {
+                            "hasNextPage": False,
+                            "hasPreviousPage": False,
+                            "nodes": [
+                                {
+                                    "id": "home-1",
+                                    "title": "Central apartment",
+                                    "bedroomCount": 2,
+                                    "rent": 9500,
+                                    "currency": "SEK",
+                                    "location": {
+                                        "id": "loc-1",
+                                        "locality": "Stockholm",
+                                        "countryCode": "SE",
+                                        "point": {"lat": 59.33, "lon": 18.07},
+                                    },
+                                    "uploads": [
+                                        {
+                                            "id": "upload-1",
+                                            "order": 1,
+                                            "type": "image",
+                                            "url": "https://example.com/image.jpg",
+                                        }
+                                    ],
+                                }
+                            ],
+                            "pagesCount": 1,
+                            "totalCount": 1,
+                        }
+                    }
+                },
             },
         ),
     )
-    assert api.home_search(
+    result = api.home_search(
         city="Stockholm",
         type=HomeType.apartment,
         order_by=OrderBy.price,
-    ) == {
-        "bedroomCount": "2",
-        "rent": 9500,
-        "petsAllowed": False,
+    )
+
+    expected = {
+        "data": {
+            "homeIndexSearch": {
+                "documents": {
+                    "hasNextPage": False,
+                    "hasPreviousPage": False,
+                    "nodes": [
+                        {
+                            "id": "home-1",
+                            "title": "Central apartment",
+                            "bedroomCount": 2,
+                            "rent": 9500,
+                            "currency": "SEK",
+                            "location": {
+                                "id": "loc-1",
+                                "locality": "Stockholm",
+                                "countryCode": "SE",
+                                "point": {"lat": 59.33, "lon": 18.07},
+                            },
+                            "uploads": [
+                                {
+                                    "id": "upload-1",
+                                    "order": 1,
+                                    "type": "image",
+                                    "url": "https://example.com/image.jpg",
+                                }
+                            ],
+                        }
+                    ],
+                    "pagesCount": 1,
+                    "totalCount": 1,
+                }
+            }
+        }
     }
+
+    assert result == expected
+
+    model_result = api.home_search(
+        city="Stockholm",
+        type=HomeType.apartment,
+        order_by=OrderBy.price,
+        as_objects=True,
+    )
+    assert isinstance(model_result, HomeSearchResponse)
+    documents = model_result.data.homeIndexSearch.documents
+    assert documents is not None
+    assert documents.totalCount == 1
+    assert documents.nodes is not None
+    assert documents.nodes[0].title == "Central apartment"
 
 
 class Test_StoreSearch:
@@ -396,9 +609,58 @@ class Test_StoreSearch:
         ).mock(
             return_value=Response(
                 status_code=200,
-                json={"data": {"ad_id": 1234, "body": "A good car"}},
+                json={
+                    "data": [
+                        {
+                            "ad": {
+                                "ad_id": "store-ad-1",
+                                "list_id": "store-list-1",
+                                "subject": "A good car",
+                            }
+                        }
+                    ]
+                },
             ),
         )
         assert api.get_store_listings(1234) == {
-            "data": {"ad_id": 1234, "body": "A good car"}
+            "data": [
+                {
+                    "ad": {
+                        "ad_id": "store-ad-1",
+                        "list_id": "store-list-1",
+                        "subject": "A good car",
+                    }
+                }
+            ]
         }
+
+    @respx.mock
+    def test_get_store_listings_as_objects(self) -> None:
+        respx.get(
+            f"{BASE_URL}/search_bff/v2/content?lim=60&page=1&sort=rel"
+            "&store_id=4321&status=active&gl=3&include=extend_with_shipping"
+        ).mock(
+            return_value=Response(
+                status_code=200,
+                json={
+                    "data": [
+                        {
+                            "ad": {
+                                "ad_id": "store-ad-2",
+                                "list_id": "store-list-2",
+                                "subject": "A better car",
+                                "price": {"value": 9999, "suffix": "kr"},
+                            }
+                        }
+                    ],
+                    "total_count": 10,
+                },
+            ),
+        )
+
+        response = api.get_store_listings(4321, page=1, as_objects=True)
+        assert isinstance(response, SearchContentResults)
+        assert response.total_count == 10
+        [listing] = response.data
+        assert isinstance(listing.ad, SearchContentAd)
+        assert listing.ad.subject == "A better car"
