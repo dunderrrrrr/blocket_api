@@ -280,5 +280,6 @@ My token has never expired or changed during this project. However, if your're m
 
 ## 📝 Notes
 
+- REST API: https://blocket-api.se
 - Source repo: https://github.com/dunderrrrrr/blocket_api
 - PyPI: https://pypi.org/project/blocket-api/
