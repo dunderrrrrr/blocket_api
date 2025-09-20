@@ -43,20 +43,22 @@ Some calls require a `bearerToken`. However, some calls are public and don't req
 
 | Function  | Token required | `as_objects` | Description  |
 |---|---|---|---|
-| [`api.saved_searches()`](#saved_searches) | 🔐 Yes | - | List your saved searches (bevakningar)  |
-| [`api.get_listings()`](#get_listings) | 🔐 Yes | - | List items related to a saved search |
+| [`api.saved_searches()`](#saved_searches) | 🔐 Yes | Yes | List your saved searches (bevakningar)  |
+| [`api.get_listings()`](#get_listings) | 🔐 Yes | Yes | List items related to a saved search |
 | [`api.custom_search()`](#custom_search)  | 👏 No | Yes | Search for everything on Blocket and filter by region |
 | [`api.motor_search()`](#motor_search)  | 👏 No | Yes | Advanced search for car-listings. |
-| [`api.price_eval()`](#price_eval)  | 👏 No | - | Vehicle purchase valuation and details. | 
-| [`api.home_search()`](#home_search)  | 👏 No | - | Query home listings.
+| [`api.price_eval()`](#price_eval)  | 👏 No | Yes | Vehicle purchase valuation and details. |
+| [`api.home_search()`](#home_search)  | 👏 No | Yes | Query home listings.
 | [`api.store_search()`](#store_search)  | 👏 No | Yes | Search for a store.
-| [`api.get_store_listings()`](#get_store_listings)  | 👏 No | - | Get listings from a specific store.
+| [`api.get_store_listings()`](#get_store_listings)  | 👏 No | Yes | Get listings from a specific store.
 
 ## 🤓 Detailed usage
 
 ### saved_searches
 
 Saved searches are your so called "Bevakningar" and can be found [here](https://www.blocket.se/sparade/bevakningar). Each saved search has and unique `id` which can be used as a parameter to `get_listings()`, see below.
+
+- `as_objects` (`bool`, optional) - Return results as pydantic models, default is `False`.
 
 ```py
 >>> api.saved_searches()
@@ -79,6 +81,7 @@ Returns all listings related to a saved search.
 Parameters:
 - `search_id` (`int`, optional) - Get listings for a specific saved search. If not provided, all saved searches will be combined.
 - `limit` (`int`, optional) - Limit number of results returned, max is 99.
+- `as_objects` (`bool`, optional) - Return results as pydantic models, default is `False`.
 
 ```py
 >>> api.get_listings(4150081)
@@ -174,9 +177,10 @@ To query listings related to a specific car, supply the following parameters:
 ```
 
 ### price_eval
-Query price evaluation for a specific vehicle by using cars registration number (ABC123). This returns company and private estimated prices, car information, and more. The api queries same endpoint as Blockets ["värdera bil"](https://www.blocket.se/tjanster/vardera-bil) service. 
+Query price evaluation for a specific vehicle by using cars registration number (ABC123). This returns company and private estimated prices, car information, and more. The api queries same endpoint as Blockets ["värdera bil"](https://www.blocket.se/tjanster/vardera-bil) service.
 
 - `registration_number` (`str`, required) - Registration number of the vehicle.
+- `as_objects` (`bool`, optional) - Return results as pydantic models, default is `False`.
 ```py
 >>> api.price_eval("ABC123")
 {
@@ -195,11 +199,12 @@ Query price evaluation for a specific vehicle by using cars registration number 
 ### home_search
 Query home listings from [bostad.blocket.se](https://bostad.blocket.se/).
 
-- `city` (`str`, required) - City name, ex. Stockholm. 
+- `city` (`str`, required) - City name, ex. Stockholm.
 - `type` (`HomeType`, optional) - Type of home, ex. `HomeType.apartment`.
 - `order_by` (`OrderBy`, optional) - Sorting order, ex. `OrderBy.price`.
 - `ordering` (`HOME_SEARCH_ORDERING`, optional) - Sorting order, ex. `"descending"`.
 - `offset` (`int`, optional) - Offset for results, ex. `60`.
+- `as_objects` (`bool`, optional) - Return results as pydantic models, default is `False`.
 
 ```py
 >>> from blocket_api.qasa import HomeType, OrderBy
@@ -239,6 +244,7 @@ Get listings from a specific store.
 
 - `store_id` (`int`, required) - The store id. Can be obtained by calling `store_search()`.
 - `page` (`int`, optional) - The page number to return.
+- `as_objects` (`bool`, optional) - Return results as pydantic models, default is `False`.
 
 ```py
 >>> api.get_store_listings(1234)

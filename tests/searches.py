@@ -10,6 +10,18 @@ from blocket_api.models import (
     CustomSearchPrice,
     CustomSearchResult,
     CustomSearchResults,
+    HomeIndexSearch,
+    HomeSearchData,
+    HomeSearchDocuments,
+    HomeSearchLocation,
+    HomeSearchLocationPoint,
+    HomeSearchNode,
+    HomeSearchResponse,
+    HomeSearchUpload,
+    ListingAd,
+    ListingEntry,
+    ListingPrice,
+    ListingResults,
     MotorSearchCar,
     MotorSearchCarEquipment,
     MotorSearchCarImage,
@@ -18,6 +30,8 @@ from blocket_api.models import (
     MotorSearchResult,
     MotorSearchResults,
     MotorSearchSeller,
+    PriceEvaluation,
+    SavedSearch,
 )
 from blocket_api.qasa import QASA_URL, HomeType, OrderBy
 
@@ -34,8 +48,23 @@ def test_saved_searches() -> None:
             status_code=200,
             json={
                 "data": [
-                    {"id": "1", "name": '"buggy", Bilar säljes i hela Sverige'},
-                    {"id": "2", "name": "Cyklar säljes i flera kommuner"},
+                    {
+                        "id": "1",
+                        "name": '"buggy", Bilar säljes i hela Sverige',
+                        "new_count": 2,
+                        "total_count": 41,
+                        "push_enabled": True,
+                        "push_available": True,
+                        "query": "cg=1020&q=buggy&st=s",
+                    },
+                    {
+                        "id": "2",
+                        "name": "Cyklar säljes i flera kommuner",
+                        "new_count": 0,
+                        "total_count": 12,
+                        "push_enabled": False,
+                        "push_available": True,
+                    },
                 ],
             },
         ),
@@ -43,13 +72,103 @@ def test_saved_searches() -> None:
     respx.get(f"{BASE_URL}/mobility-saved-searches/v1/searches").mock(
         return_value=Response(
             status_code=200,
-            json={"data": [{"id": "3", "name": "Bilar säljes i hela Sverige"}]},
+            json={
+                "data": [
+                    {
+                        "id": "3",
+                        "name": "Bilar säljes i hela Sverige",
+                        "new_count": 1,
+                        "total_count": 5,
+                        "push_enabled": True,
+                    }
+                ]
+            },
         ),
     )
     assert api.saved_searches() == [
-        {"id": "1", "name": '"buggy", Bilar säljes i hela Sverige'},
-        {"id": "2", "name": "Cyklar säljes i flera kommuner"},
-        {"id": "3", "name": "Bilar säljes i hela Sverige"},
+        {
+            "id": "1",
+            "name": '"buggy", Bilar säljes i hela Sverige',
+            "new_count": 2,
+            "total_count": 41,
+            "push_enabled": True,
+            "push_available": True,
+            "query": "cg=1020&q=buggy&st=s",
+        },
+        {
+            "id": "2",
+            "name": "Cyklar säljes i flera kommuner",
+            "new_count": 0,
+            "total_count": 12,
+            "push_enabled": False,
+            "push_available": True,
+        },
+        {
+            "id": "3",
+            "name": "Bilar säljes i hela Sverige",
+            "new_count": 1,
+            "total_count": 5,
+            "push_enabled": True,
+        },
+    ]
+
+
+@respx.mock
+def test_saved_searches_as_objects() -> None:
+    respx.get(f"{BASE_URL}/saved/v2/searches").mock(
+        return_value=Response(
+            status_code=200,
+            json={
+                "data": [
+                    {
+                        "id": "1",
+                        "name": '"buggy", Bilar säljes i hela Sverige',
+                        "new_count": 2,
+                        "total_count": 41,
+                        "push_enabled": True,
+                        "push_available": True,
+                        "query": "cg=1020&q=buggy&st=s",
+                    }
+                ]
+            },
+        ),
+    )
+    respx.get(f"{BASE_URL}/mobility-saved-searches/v1/searches").mock(
+        return_value=Response(
+            status_code=200,
+            json={
+                "data": [
+                    {
+                        "id": "3",
+                        "name": "Bilar säljes i hela Sverige",
+                        "new_count": 1,
+                        "total_count": 5,
+                        "push_enabled": True,
+                    }
+                ]
+            },
+        ),
+    )
+
+    result = api.saved_searches(as_objects=True)
+
+    assert result == [
+        SavedSearch(
+            id="1",
+            name='"buggy", Bilar säljes i hela Sverige',
+            new_count=2,
+            total_count=41,
+            push_enabled=True,
+            push_available=True,
+            query="cg=1020&q=buggy&st=s",
+        ),
+        SavedSearch(
+            id="3",
+            name="Bilar säljes i hela Sverige",
+            new_count=1,
+            total_count=5,
+            push_enabled=True,
+        ),
     ]
 
 
@@ -70,6 +189,62 @@ def test_for_search_id_mobility() -> None:
         return_value=Response(status_code=200, json={"data": "mobility-data"}),
     )
     assert api.get_listings(search_id=123) == {"data": "mobility-data"}
+
+
+@respx.mock
+def test_get_listings_as_objects() -> None:
+    listings_response = {
+        "data": [
+            {
+                "ad": {
+                    "ad_id": "1401053984",
+                    "list_id": "1401053984",
+                    "zipcode": "81290",
+                    "ad_status": "active",
+                    "list_time": "2024-07-15T19:07:16+02:00",
+                    "subject": "Volkswagen 1500 lim 113 chassi",
+                    "body": "Säljer ett chassi.",
+                    "price": {"value": 10000, "suffix": "kr"},
+                }
+            }
+        ],
+        "total_count": 41,
+        "timestamp": "2024-07-16T08:08:43.810828006Z",
+        "total_page_count": 1,
+    }
+    respx.get(f"{BASE_URL}/saved/v2/searches_content/123?lim=99").mock(
+        return_value=Response(status_code=200, json=listings_response),
+    )
+
+    result = api.get_listings(search_id=123, as_objects=True)
+
+    assert result == ListingResults(
+        data=[
+            ListingEntry(
+                ad=ListingAd(
+                    ad_id="1401053984",
+                    list_id="1401053984",
+                    zipcode="81290",
+                    ad_status="active",
+                    list_time=datetime.datetime(
+                        2024,
+                        7,
+                        15,
+                        19,
+                        7,
+                        16,
+                        tzinfo=datetime.timezone(datetime.timedelta(hours=2)),
+                    ),
+                    subject="Volkswagen 1500 lim 113 chassi",
+                    body="Säljer ett chassi.",
+                    price=ListingPrice(value=10000, suffix="kr"),
+                )
+            )
+        ],
+        total_count=41,
+        timestamp=datetime.datetime(2024, 7, 16, 8, 8, 43, 810828, tzinfo=datetime.timezone.utc),
+        total_page_count=1,
+    )
 
 
 class Test_CustomSearch:
@@ -353,26 +528,151 @@ def test_price_eval() -> None:
 
 
 @respx.mock
-def test_home_search() -> None:
-    respx.post(f"{QASA_URL}").mock(
+def test_price_eval_as_objects() -> None:
+    respx.get(f"{BYTBIL_URL}/blocket-basedata-api/v3/vehicle-data/ABC123").mock(
         return_value=Response(
             status_code=200,
             json={
-                "bedroomCount": "2",
-                "rent": 9500,
-                "petsAllowed": False,
+                "registration_number": "ABC123",
+                "private_valuation": 108155,
+                "dealer_valuation": 115000,
             },
         ),
+    )
+
+    result = api.price_eval("ABC123", as_objects=True)
+
+    assert result == PriceEvaluation(
+        registration_number="ABC123", private_valuation=108155, dealer_valuation=115000
+    )
+
+
+@respx.mock
+def test_home_search() -> None:
+    response_json = {
+        "data": {
+            "homeIndexSearch": {
+                "documents": {
+                    "hasNextPage": True,
+                    "hasPreviousPage": False,
+                    "nodes": [
+                        {
+                            "bedroomCount": 2,
+                            "rent": 9500,
+                            "petsAllowed": False,
+                            "publishedAt": "2024-01-01T12:00:00Z",
+                            "location": {
+                                "id": "loc-1",
+                                "locality": "Stockholm",
+                                "point": {"lat": 59.3293, "lon": 18.0686},
+                            },
+                            "uploads": [
+                                {
+                                    "id": "upload-1",
+                                    "order": 1,
+                                    "type": "image",
+                                    "url": "https://example.com/image.jpg",
+                                }
+                            ],
+                        }
+                    ],
+                    "pagesCount": 1,
+                    "totalCount": 1,
+                }
+            }
+        }
+    }
+    respx.post(f"{QASA_URL}").mock(
+        return_value=Response(status_code=200, json=response_json),
     )
     assert api.home_search(
         city="Stockholm",
         type=HomeType.apartment,
         order_by=OrderBy.price,
-    ) == {
-        "bedroomCount": "2",
-        "rent": 9500,
-        "petsAllowed": False,
+    ) == response_json
+
+
+@respx.mock
+def test_home_search_as_objects() -> None:
+    response_json = {
+        "data": {
+            "homeIndexSearch": {
+                "documents": {
+                    "hasNextPage": True,
+                    "hasPreviousPage": False,
+                    "nodes": [
+                        {
+                            "bedroomCount": 2,
+                            "rent": 9500,
+                            "petsAllowed": False,
+                            "publishedAt": "2024-01-01T12:00:00Z",
+                            "location": {
+                                "id": "loc-1",
+                                "locality": "Stockholm",
+                                "point": {"lat": 59.3293, "lon": 18.0686},
+                            },
+                            "uploads": [
+                                {
+                                    "id": "upload-1",
+                                    "order": 1,
+                                    "type": "image",
+                                    "url": "https://example.com/image.jpg",
+                                }
+                            ],
+                        }
+                    ],
+                    "pagesCount": 1,
+                    "totalCount": 1,
+                }
+            }
+        }
     }
+    respx.post(f"{QASA_URL}").mock(
+        return_value=Response(status_code=200, json=response_json),
+    )
+
+    result = api.home_search(
+        city="Stockholm",
+        type=HomeType.apartment,
+        order_by=OrderBy.price,
+        as_objects=True,
+    )
+
+    assert result == HomeSearchResponse(
+        data=HomeSearchData(
+            homeIndexSearch=HomeIndexSearch(
+                documents=HomeSearchDocuments(
+                    hasNextPage=True,
+                    hasPreviousPage=False,
+                    nodes=[
+                        HomeSearchNode(
+                            bedroomCount=2,
+                            rent=9500,
+                            petsAllowed=False,
+                            publishedAt=datetime.datetime(
+                                2024, 1, 1, 12, 0, tzinfo=datetime.timezone.utc
+                            ),
+                            location=HomeSearchLocation(
+                                id="loc-1",
+                                locality="Stockholm",
+                                point=HomeSearchLocationPoint(lat=59.3293, lon=18.0686),
+                            ),
+                            uploads=[
+                                HomeSearchUpload(
+                                    id="upload-1",
+                                    order=1,
+                                    type="image",
+                                    url="https://example.com/image.jpg",
+                                )
+                            ],
+                        )
+                    ],
+                    pagesCount=1,
+                    totalCount=1,
+                )
+            )
+        )
+    )
 
 
 class Test_StoreSearch:
@@ -396,9 +696,101 @@ class Test_StoreSearch:
         ).mock(
             return_value=Response(
                 status_code=200,
-                json={"data": {"ad_id": 1234, "body": "A good car"}},
+                json={
+                    "data": [
+                        {
+                            "ad": {
+                                "ad_id": "1401053984",
+                                "list_id": "1401053984",
+                                "zipcode": "81290",
+                                "ad_status": "active",
+                                "list_time": "2024-07-15T19:07:16+02:00",
+                                "subject": "Volkswagen 1500 lim 113 chassi",
+                                "body": "Säljer ett chassi.",
+                                "price": {"value": 10000, "suffix": "kr"},
+                            }
+                        }
+                    ],
+                    "total_count": 41,
+                    "timestamp": "2024-07-16T08:08:43.810828006Z",
+                    "total_page_count": 1,
+                },
             ),
         )
         assert api.get_store_listings(1234) == {
-            "data": {"ad_id": 1234, "body": "A good car"}
+            "data": [
+                {
+                    "ad": {
+                        "ad_id": "1401053984",
+                        "list_id": "1401053984",
+                        "zipcode": "81290",
+                        "ad_status": "active",
+                        "list_time": "2024-07-15T19:07:16+02:00",
+                        "subject": "Volkswagen 1500 lim 113 chassi",
+                        "body": "Säljer ett chassi.",
+                        "price": {"value": 10000, "suffix": "kr"},
+                    }
+                }
+            ],
+            "total_count": 41,
+            "timestamp": "2024-07-16T08:08:43.810828006Z",
+            "total_page_count": 1,
         }
+
+    @respx.mock
+    def test_get_store_listings_as_objects(self) -> None:
+        response_json = {
+            "data": [
+                {
+                    "ad": {
+                        "ad_id": "1401053984",
+                        "list_id": "1401053984",
+                        "zipcode": "81290",
+                        "ad_status": "active",
+                        "list_time": "2024-07-15T19:07:16+02:00",
+                        "subject": "Volkswagen 1500 lim 113 chassi",
+                        "body": "Säljer ett chassi.",
+                        "price": {"value": 10000, "suffix": "kr"},
+                    }
+                }
+            ],
+            "total_count": 41,
+            "timestamp": "2024-07-16T08:08:43.810828006Z",
+            "total_page_count": 1,
+        }
+        respx.get(
+            f"{BASE_URL}/search_bff/v2/content?lim=60&page=0&sort=rel"
+            "&store_id=1234&status=active&gl=3&include=extend_with_shipping"
+        ).mock(
+            return_value=Response(status_code=200, json=response_json),
+        )
+
+        result = api.get_store_listings(1234, as_objects=True)
+
+        assert result == ListingResults(
+            data=[
+                ListingEntry(
+                    ad=ListingAd(
+                        ad_id="1401053984",
+                        list_id="1401053984",
+                        zipcode="81290",
+                        ad_status="active",
+                        list_time=datetime.datetime(
+                            2024,
+                            7,
+                            15,
+                            19,
+                            7,
+                            16,
+                            tzinfo=datetime.timezone(datetime.timedelta(hours=2)),
+                        ),
+                        subject="Volkswagen 1500 lim 113 chassi",
+                        body="Säljer ett chassi.",
+                        price=ListingPrice(value=10000, suffix="kr"),
+                    )
+                )
+            ],
+            total_count=41,
+            timestamp=datetime.datetime(2024, 7, 16, 8, 8, 43, 810828, tzinfo=datetime.timezone.utc),
+            total_page_count=1,
+        )
