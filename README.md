@@ -2,7 +2,7 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/blocket_api?style=for-the-badge)](https://pypi.org/project/blocket_api/) [![License](https://img.shields.io/badge/license-WTFPL-green?style=for-the-badge)](https://github.com/dunderrrrrr/blocket_api/blob/main/LICENSE) ![Python](https://img.shields.io/badge/Python-3.10-blue?style=for-the-badge) ![PyPI - Downloads](https://img.shields.io/pypi/dm/blocket_api?style=for-the-badge&color=%23dbce58) 
 
-BlocketAPI allows users to query saved searches, known as "Bevakningar", on [blocket.se](https://blocket.se/). This means you can either retrieve results from a specific saved search or list all listings/ads across all saved searches. The results from these queries are returned in a `json` format.
+BlocketAPI allows users to query saved searches, known as "Bevakningar", on [blocket.se](https://blocket.se/). This means you can either retrieve results from a specific saved search or list all listings/ads across all saved searches. The results from these queries are returned in a `json` format or as cleaned pydantic objects.
 
 > Blocket is one of Sweden's largest online marketplaces. It was founded in 1996 and allows users to buy and sell a wide range of items, including cars, real estate, jobs, services, and second-hand goods. The platform is known for its extensive reach and user-friendly interface, making it a popular choice for Swedes looking to purchase or sell items quickly and efficiently.
 
