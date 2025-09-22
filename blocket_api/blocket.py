@@ -13,6 +13,7 @@ from blocket_api.models import (
     CustomSearchResults,
     HomeSearchResults,
     MotorSearchResults,
+    StoreListings,
     StoreSearchResults,
 )
 from blocket_api.qasa import HOME_SEARCH_ORDERING, HomeType, OrderBy, Qasa
@@ -501,12 +502,32 @@ class BlocketAPI:
         response = _make_request(url=f"{url}", token=self.token).json()
         return StoreSearchResults.model_validate(response) if as_objects else response
 
+    @overload
+    def get_store_listings(
+        self,
+        store_id: int,
+        page: int = 0,
+        *,
+        as_objects: Literal[True],
+    ) -> StoreListings: ...
+
+    @overload
+    def get_store_listings(
+        self,
+        store_id: int,
+        page: int = 0,
+        *,
+        as_objects: Literal[False] = False,
+    ) -> dict: ...
+
     @public_token
     def get_store_listings(
         self,
         store_id: int,
         page: int = 0,
-    ) -> dict:
+        *,
+        as_objects: bool = False,
+    ) -> dict | StoreListings:
         """
         Return all listings from a specific store from https://www.blocket.se/butik/<store>.
         The store_id can be found by searching for the store with search_store().
@@ -515,4 +536,5 @@ class BlocketAPI:
             f"{BASE_URL}/search_bff/v2/content?lim=60&page={page}&sort=rel&store_id={store_id}"
             "&status=active&gl=3&include=extend_with_shipping"
         )
-        return _make_request(url=f"{url}", token=self.token).json()
+        response = _make_request(url=f"{url}", token=self.token).json()
+        return StoreListings.model_validate(response) if as_objects else response

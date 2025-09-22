@@ -50,7 +50,7 @@ Some calls require a `bearerToken`. However, some calls are public and don't req
 | [`api.price_eval()`](#price_eval)  | 👏 No | - | Vehicle purchase valuation and details. | 
 | [`api.home_search()`](#home_search)  | 👏 No | Yes | Query home listings.
 | [`api.store_search()`](#store_search)  | 👏 No | Yes | Search for a store.
-| [`api.get_store_listings()`](#get_store_listings)  | 👏 No | - | Get listings from a specific store.
+| [`api.get_store_listings()`](#get_store_listings)  | 👏 No | Yes | Get listings from a specific store.
 
 ## 🤓 Detailed usage
 
@@ -240,6 +240,8 @@ Get listings from a specific store.
 
 - `store_id` (`int`, required) - The store id. Can be obtained by calling `store_search()`.
 - `page` (`int`, optional) - The page number to return.
+- `as_objects` (`bool`, optional) - Return results as pydantic models, default is `False`.
+
 
 ```py
 >>> api.get_store_listings(1234)

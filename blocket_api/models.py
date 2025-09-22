@@ -233,3 +233,90 @@ class DataModel(BaseModel):
 
 class HomeSearchResults(BaseModel):
     data: DataModel
+
+
+### StoreListings ###
+
+
+class StoreListingContactMethods(BaseModel):
+    phone: bool
+
+
+class StoreListingAdvertiser(BaseModel):
+    contact_methods: StoreListingContactMethods
+    name: str
+    store_name: str | None = None
+    type: str
+
+
+class StoreListingAttribute(BaseModel):
+    header: str
+    id: str
+    items: list[str]
+
+
+class StoreListingCategory(BaseModel):
+    id: str
+    name: str
+
+
+class StoreListingImage(BaseModel):
+    height: int
+    type: str
+    url: str
+    width: int
+
+
+class StorListingLocationItem(BaseModel):
+    id: str
+    name: str
+    query_key: str
+
+
+class StoreListingParameter(BaseModel):
+    id: str
+    label: str
+    value: str
+    suffix: str | None = None
+
+
+class ParameterGroup(BaseModel):
+    label: str
+    parameters: list[StoreListingParameter]
+    type: str
+
+
+class StoreListingPartnerInfo(BaseModel):
+    external_id: str
+    name: str
+
+
+class StoreListingPrice(BaseModel):
+    suffix: str
+    value: int
+
+
+class StoreListing(BaseModel):
+    ad_id: str
+    ad_status: str
+    advertiser: StoreListingAdvertiser
+    attributes: list[StoreListingAttribute]
+    body: str
+    category: list[StoreListingCategory]
+    images: list[StoreListingImage]
+    license_plate: str | None = None
+    list_id: str
+    list_time: str
+    location: list[StorListingLocationItem]
+    map_url: str | None = None
+    parameter_groups: list[ParameterGroup]
+    partner_info: StoreListingPartnerInfo
+    price: StoreListingPrice
+    share_url: str
+    state_id: str
+    subject: str
+    type: str
+
+
+class StoreListings(BaseModel):
+    data: list[StoreListing]
