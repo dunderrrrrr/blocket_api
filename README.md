@@ -200,6 +200,7 @@ Query home listings from [bostad.blocket.se](https://bostad.blocket.se/).
 - `order_by` (`OrderBy`, optional) - Sorting order, ex. `OrderBy.price`.
 - `ordering` (`HOME_SEARCH_ORDERING`, optional) - Sorting order, ex. `"descending"`.
 - `offset` (`int`, optional) - Offset for results, ex. `60`.
+- `as_objects` (`bool`, optional) - Return results as pydantic models, default is False.
 
 ```py
 >>> from blocket_api.qasa import HomeType, OrderBy
