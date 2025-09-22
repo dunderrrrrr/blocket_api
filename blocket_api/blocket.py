@@ -11,6 +11,7 @@ import httpx
 
 from blocket_api.models import (
     CustomSearchResults,
+    HomeSearchResults,
     MotorSearchResults,
     StoreSearchResults,
 )
@@ -403,6 +404,7 @@ class BlocketAPI:
         url = f"{BYTBIL_URL}/blocket-basedata-api/v3/vehicle-data/{registration_number}"
         return _make_request(url=f"{url}", token=None).json()
 
+    @overload
     def home_search(
         self,
         city: str,
@@ -410,19 +412,45 @@ class BlocketAPI:
         order_by: OrderBy = OrderBy.published_at,
         ordering: HOME_SEARCH_ORDERING = "descending",
         offset: int = 0,
-    ) -> dict:
+        *,
+        as_objects: Literal[True],
+    ) -> HomeSearchResults: ...
+
+    @overload
+    def home_search(
+        self,
+        city: str,
+        type: HomeType,
+        order_by: OrderBy = OrderBy.published_at,
+        ordering: HOME_SEARCH_ORDERING = "descending",
+        offset: int = 0,
+        *,
+        as_objects: Literal[False] = False,
+    ) -> dict: ...
+
+    def home_search(
+        self,
+        city: str,
+        type: HomeType,
+        order_by: OrderBy = OrderBy.published_at,
+        ordering: HOME_SEARCH_ORDERING = "descending",
+        offset: int = 0,
+        *,
+        as_objects: bool = False,
+    ) -> dict | HomeSearchResults:
         """
         This returns all available home listings available at
         https://bostad.blocket.se/. Specify offset to get next page. Each page contains
         60 items, which is max items returned per api query.
         """
-        return Qasa(
+        response = Qasa(
             city=city,
             home_type=type,
             order_by=order_by,
             ordering=ordering,
             offset=offset,
         ).search()
+        return HomeSearchResults.model_validate(response) if as_objects else response
 
     @overload
     def search_store(
