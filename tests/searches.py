@@ -26,6 +26,18 @@ from blocket_api.models import (
     MotorSearchResult,
     MotorSearchResults,
     MotorSearchSeller,
+    ParameterGroup,
+    StoreListing,
+    StoreListingAdvertiser,
+    StoreListingAttribute,
+    StoreListingCategory,
+    StoreListingContactMethods,
+    StoreListingImage,
+    StoreListingParameter,
+    StoreListingPartnerInfo,
+    StoreListingPrice,
+    StoreListings,
+    StorListingLocationItem,
 )
 from blocket_api.qasa import QASA_URL, HomeType, OrderBy
 
@@ -566,3 +578,232 @@ class Test_StoreSearch:
         assert api.get_store_listings(1234) == {
             "data": {"ad_id": 1234, "body": "A good car"}
         }
+
+    @respx.mock
+    def test_get_store_listings_as_objects(self) -> None:
+        respx.get(
+            f"{BASE_URL}/search_bff/v2/content?lim=60&page=0&sort=rel"
+            "&store_id=1234&status=active&gl=3&include=extend_with_shipping"
+        ).mock(
+            return_value=Response(
+                status_code=200,
+                json={
+                    "data": [
+                        {
+                            "ad_id": "1001970418",
+                            "ad_status": "active",
+                            "advertiser": {
+                                "contact_methods": {"phone": True},
+                                "name": "Riddermark Bil – Megastore",
+                                "store_name": "Riddermark Bil – Megastore",
+                                "type": "store",
+                            },
+                            "attributes": [
+                                {
+                                    "header": "Utrustning",
+                                    "id": "car_equipment",
+                                    "items": [
+                                        "ST-Line",
+                                        "Backkamera",
+                                        "Parkeringssensorer bak",
+                                        "Multifunktionsratt",
+                                        "Farthållare",
+                                        "Växelpaddlar/Rattpaddlar",
+                                        "Keyless Start",
+                                        "Bluetooth",
+                                        "2-Zons klimatanläggning",
+                                        "ACC/Klimatanläggning",
+                                        "Sätesvärme fram",
+                                        "Tonade rutor",
+                                        "12V-uttag",
+                                        "Svensksåld",
+                                    ],
+                                }
+                            ],
+                            "body": "A body here",
+                            "category": [
+                                {"id": "1000", "name": "Fordon"},
+                                {"id": "1020", "name": "Bilar"},
+                            ],
+                            "images": [
+                                {
+                                    "height": 1333,
+                                    "type": "image",
+                                    "url": "https://i.blocketcdn.se/pictures/asl/1001970418/0997962324.jpg",
+                                    "width": 2000,
+                                },
+                            ],
+                            "license_plate": "PJD337",
+                            "list_id": "1001970418",
+                            "list_time": "2025-09-22T19:05:59+02:00",
+                            "location": [
+                                {"id": "12", "name": "Södermanland", "query_key": "r"},
+                                {"id": "148", "name": "Strängnäs", "query_key": "m"},
+                            ],
+                            "map_url": "https://www.hitta.se/kartan/partner/blocketv2?ad_id=1001970418",
+                            "parameter_groups": [
+                                {
+                                    "label": "Allmän information",
+                                    "parameters": [
+                                        {
+                                            "id": "fuel",
+                                            "label": "Bränsle",
+                                            "value": "Bensin",
+                                        },
+                                        {
+                                            "id": "gearbox",
+                                            "label": "Växellåda",
+                                            "value": "Automat",
+                                        },
+                                        {
+                                            "id": "mileage",
+                                            "label": "Miltal",
+                                            "value": "6\xa0253",
+                                        },
+                                        {
+                                            "id": "regdate",
+                                            "label": "Modellår",
+                                            "value": "2017",
+                                        },
+                                    ],
+                                    "type": "general",
+                                },
+                                {
+                                    "label": "Information från BytBil",
+                                    "parameters": [
+                                        {
+                                            "id": "cx_make",
+                                            "label": "Märke",
+                                            "value": "Ford",
+                                        },
+                                    ],
+                                    "type": "car",
+                                },
+                            ],
+                            "partner_info": {
+                                "external_id": "18044171",
+                                "name": "bytbil",
+                            },
+                            "price": {"suffix": "kr", "value": 149800},
+                            "share_url": "https://www.blocket.se/annons/sodermanland/ford_focus_kombi_ecoboost_125hk_st_line_kamera_farthallare_/1001970418",
+                            "state_id": "819",
+                            "subject": "Ford Focus Kombi EcoBoost 125hk ST-Line Kamera Farthållare *",
+                            "type": "s",
+                        }
+                    ]
+                },
+            ),
+        )
+        assert api.get_store_listings(1234, as_objects=True) == StoreListings(
+            data=[
+                StoreListing(
+                    ad_id="1001970418",
+                    ad_status="active",
+                    advertiser=StoreListingAdvertiser(
+                        contact_methods=StoreListingContactMethods(phone=True),
+                        name="Riddermark Bil – Megastore",
+                        store_name="Riddermark Bil – Megastore",
+                        type="store",
+                    ),
+                    attributes=[
+                        StoreListingAttribute(
+                            header="Utrustning",
+                            id="car_equipment",
+                            items=[
+                                "ST-Line",
+                                "Backkamera",
+                                "Parkeringssensorer bak",
+                                "Multifunktionsratt",
+                                "Farthållare",
+                                "Växelpaddlar/Rattpaddlar",
+                                "Keyless Start",
+                                "Bluetooth",
+                                "2-Zons klimatanläggning",
+                                "ACC/Klimatanläggning",
+                                "Sätesvärme fram",
+                                "Tonade rutor",
+                                "12V-uttag",
+                                "Svensksåld",
+                            ],
+                        )
+                    ],
+                    body="A body here",
+                    category=[
+                        StoreListingCategory(id="1000", name="Fordon"),
+                        StoreListingCategory(id="1020", name="Bilar"),
+                    ],
+                    images=[
+                        StoreListingImage(
+                            height=1333,
+                            type="image",
+                            url="https://i.blocketcdn.se/pictures/asl/1001970418/0997962324.jpg",
+                            width=2000,
+                        )
+                    ],
+                    license_plate="PJD337",
+                    list_id="1001970418",
+                    list_time="2025-09-22T19:05:59+02:00",
+                    location=[
+                        StorListingLocationItem(
+                            id="12", name="Södermanland", query_key="r"
+                        ),
+                        StorListingLocationItem(
+                            id="148", name="Strängnäs", query_key="m"
+                        ),
+                    ],
+                    map_url="https://www.hitta.se/kartan/partner/blocketv2?ad_id=1001970418",
+                    parameter_groups=[
+                        ParameterGroup(
+                            label="Allmän information",
+                            parameters=[
+                                StoreListingParameter(
+                                    id="fuel",
+                                    label="Bränsle",
+                                    value="Bensin",
+                                    suffix=None,
+                                ),
+                                StoreListingParameter(
+                                    id="gearbox",
+                                    label="Växellåda",
+                                    value="Automat",
+                                    suffix=None,
+                                ),
+                                StoreListingParameter(
+                                    id="mileage",
+                                    label="Miltal",
+                                    value="6\xa0253",
+                                    suffix=None,
+                                ),
+                                StoreListingParameter(
+                                    id="regdate",
+                                    label="Modellår",
+                                    value="2017",
+                                    suffix=None,
+                                ),
+                            ],
+                            type="general",
+                        ),
+                        ParameterGroup(
+                            label="Information från BytBil",
+                            parameters=[
+                                StoreListingParameter(
+                                    id="cx_make",
+                                    label="Märke",
+                                    value="Ford",
+                                    suffix=None,
+                                )
+                            ],
+                            type="car",
+                        ),
+                    ],
+                    partner_info=StoreListingPartnerInfo(
+                        external_id="18044171", name="bytbil"
+                    ),
+                    price=StoreListingPrice(suffix="kr", value=149800),
+                    share_url="https://www.blocket.se/annons/sodermanland/ford_focus_kombi_ecoboost_125hk_st_line_kamera_farthallare_/1001970418",
+                    state_id="819",
+                    subject="Ford Focus Kombi EcoBoost 125hk ST-Line Kamera Farthållare *",
+                    type="s",
+                )
+            ]
+        )
