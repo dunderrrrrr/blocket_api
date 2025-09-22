@@ -149,3 +149,87 @@ class StoreSearchResults(BaseModel):
     data: list[StoreSearchResult]
     total_count: int
     total_page_count: int
+
+
+### HomeSearch ###
+
+
+class HomeSearchGeoPoint(BaseModel):
+    lat: float
+    lon: float
+
+
+class HomeSearchLocation(BaseModel):
+    id: int
+    locality: str
+    countryCode: str
+    streetNumber: str | None = None
+    point: HomeSearchGeoPoint
+    route: str
+
+
+class HomeSearchUpload(BaseModel):
+    id: int
+    order: int | None = None
+    type: str
+    url: str
+
+
+class HomeSearchResult(BaseModel):
+    bedroomCount: int | None = None
+    blockListing: bool
+    rentalLengthSeconds: float | None = None
+    householdSize: int
+    corporateHome: bool
+    description: str
+    endDate: str | None = None
+    firstHand: bool
+    furnished: bool
+    homeType: str
+    id: str
+    instantSign: bool
+    market: str
+    lastBumpedAt: str | None = None
+    monthlyCost: int
+    petsAllowed: bool
+    platform: str
+    publishedAt: str
+    publishedOrBumpedAt: str
+    earlyAccessEndsAt: str | None = None
+    rent: int
+    currency: str
+    roomCount: int
+    seniorHome: bool
+    shared: bool
+    shortcutHome: bool
+    smokingAllowed: bool
+    sortingScore: float
+    squareMeters: int
+    startDate: str
+    studentHome: bool
+    tenantBaseFee: int
+    title: str | None = None
+    wheelchairAccessible: bool
+    location: HomeSearchLocation
+    displayStreetNumber: bool
+    uploads: list[HomeSearchUpload]
+
+
+class Documents(BaseModel):
+    hasNextPage: bool
+    hasPreviousPage: bool
+    nodes: list[HomeSearchResult]
+    pagesCount: int
+    totalCount: int
+
+
+class HomeIndexSearch(BaseModel):
+    documents: Documents
+
+
+class DataModel(BaseModel):
+    homeIndexSearch: HomeIndexSearch
+
+
+class HomeSearchResults(BaseModel):
+    data: DataModel

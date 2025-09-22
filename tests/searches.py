@@ -10,6 +10,14 @@ from blocket_api.models import (
     CustomSearchPrice,
     CustomSearchResult,
     CustomSearchResults,
+    DataModel,
+    Documents,
+    HomeIndexSearch,
+    HomeSearchGeoPoint,
+    HomeSearchLocation,
+    HomeSearchResult,
+    HomeSearchResults,
+    HomeSearchUpload,
     MotorSearchCar,
     MotorSearchCarEquipment,
     MotorSearchCarImage,
@@ -352,27 +360,183 @@ def test_price_eval() -> None:
     }
 
 
-@respx.mock
-def test_home_search() -> None:
-    respx.post(f"{QASA_URL}").mock(
-        return_value=Response(
-            status_code=200,
-            json={
-                "bedroomCount": "2",
-                "rent": 9500,
-                "petsAllowed": False,
-            },
-        ),
-    )
-    assert api.home_search(
-        city="Stockholm",
-        type=HomeType.apartment,
-        order_by=OrderBy.price,
-    ) == {
-        "bedroomCount": "2",
-        "rent": 9500,
-        "petsAllowed": False,
-    }
+class Test_HomeSearch:
+    @respx.mock
+    def test_home_search(self) -> None:
+        respx.post(f"{QASA_URL}").mock(
+            return_value=Response(
+                status_code=200,
+                json={
+                    "bedroomCount": "2",
+                    "rent": 9500,
+                    "petsAllowed": False,
+                },
+            ),
+        )
+        assert api.home_search(
+            city="Stockholm",
+            type=HomeType.apartment,
+            order_by=OrderBy.price,
+        ) == {
+            "bedroomCount": "2",
+            "rent": 9500,
+            "petsAllowed": False,
+        }
+
+    @respx.mock
+    def test_home_search_as_objects(self) -> None:
+        respx.post(f"{QASA_URL}").mock(
+            return_value=Response(
+                status_code=200,
+                json={
+                    "data": {
+                        "homeIndexSearch": {
+                            "documents": {
+                                "hasNextPage": True,
+                                "hasPreviousPage": False,
+                                "nodes": [
+                                    {
+                                        "bedroomCount": None,
+                                        "blockListing": False,
+                                        "rentalLengthSeconds": None,
+                                        "householdSize": 2,
+                                        "corporateHome": False,
+                                        "description": "Charmig och rymlig 1:a med stor balkong",
+                                        "endDate": None,
+                                        "firstHand": False,
+                                        "furnished": True,
+                                        "homeType": "apartment",
+                                        "id": "1205500",
+                                        "instantSign": False,
+                                        "market": "sweden",
+                                        "lastBumpedAt": None,
+                                        "monthlyCost": 12184,
+                                        "petsAllowed": False,
+                                        "platform": "qasa",
+                                        "publishedAt": "2025-09-22T16:20:08Z",
+                                        "publishedOrBumpedAt": "2025-09-22T16:20:08Z",
+                                        "earlyAccessEndsAt": None,
+                                        "rent": 11500,
+                                        "currency": "SEK",
+                                        "roomCount": 1,
+                                        "seniorHome": False,
+                                        "shared": False,
+                                        "shortcutHome": False,
+                                        "smokingAllowed": False,
+                                        "sortingScore": 8.351962081128748,
+                                        "squareMeters": 33,
+                                        "startDate": "2025-11-01T00:00:00+00:00",
+                                        "studentHome": False,
+                                        "tenantBaseFee": 684,
+                                        "title": None,
+                                        "wheelchairAccessible": False,
+                                        "location": {
+                                            "id": 3137542,
+                                            "locality": "Bromma",
+                                            "countryCode": "SE",
+                                            "streetNumber": None,
+                                            "point": {
+                                                "lat": 1.338915,
+                                                "lon": 1.9352853,
+                                                "__typename": "GeoPoint",
+                                            },
+                                            "route": "Snörmakarvägen",
+                                            "__typename": "HomeDocumentLocationType",
+                                        },
+                                        "displayStreetNumber": False,
+                                        "uploads": [
+                                            {
+                                                "id": 17216695,
+                                                "order": 11,
+                                                "type": "home_picture",
+                                                "url": "https://image.here/image.jpg",
+                                                "__typename": "HomeDocumentUploadType",
+                                            },
+                                        ],
+                                        "__typename": "HomeDocument",
+                                    }
+                                ],
+                                "pagesCount": 25,
+                                "totalCount": 1442,
+                                "__typename": "HomeDocumentOffsetLimit",
+                            },
+                            "__typename": "HomeIndexSearchQuery",
+                        }
+                    }
+                },
+            ),
+        )
+        assert api.home_search(
+            city="Stockholm", type=HomeType.apartment, as_objects=True
+        ) == HomeSearchResults(
+            data=DataModel(
+                homeIndexSearch=HomeIndexSearch(
+                    documents=Documents(
+                        hasNextPage=True,
+                        hasPreviousPage=False,
+                        nodes=[
+                            HomeSearchResult(
+                                bedroomCount=None,
+                                blockListing=False,
+                                rentalLengthSeconds=None,
+                                householdSize=2,
+                                corporateHome=False,
+                                description="Charmig och rymlig 1:a med stor balkong",
+                                endDate=None,
+                                firstHand=False,
+                                furnished=True,
+                                homeType="apartment",
+                                id="1205500",
+                                instantSign=False,
+                                market="sweden",
+                                lastBumpedAt=None,
+                                monthlyCost=12184,
+                                petsAllowed=False,
+                                platform="qasa",
+                                publishedAt="2025-09-22T16:20:08Z",
+                                publishedOrBumpedAt="2025-09-22T16:20:08Z",
+                                earlyAccessEndsAt=None,
+                                rent=11500,
+                                currency="SEK",
+                                roomCount=1,
+                                seniorHome=False,
+                                shared=False,
+                                shortcutHome=False,
+                                smokingAllowed=False,
+                                sortingScore=8.351962081128748,
+                                squareMeters=33,
+                                startDate="2025-11-01T00:00:00+00:00",
+                                studentHome=False,
+                                tenantBaseFee=684,
+                                title=None,
+                                wheelchairAccessible=False,
+                                location=HomeSearchLocation(
+                                    id=3137542,
+                                    locality="Bromma",
+                                    countryCode="SE",
+                                    streetNumber=None,
+                                    point=HomeSearchGeoPoint(
+                                        lat=1.338915, lon=1.9352853
+                                    ),
+                                    route="Snörmakarvägen",
+                                ),
+                                displayStreetNumber=False,
+                                uploads=[
+                                    HomeSearchUpload(
+                                        id=17216695,
+                                        order=11,
+                                        type="home_picture",
+                                        url="https://image.here/image.jpg",
+                                    )
+                                ],
+                            )
+                        ],
+                        pagesCount=25,
+                        totalCount=1442,
+                    )
+                )
+            )
+        )
 
 
 class Test_StoreSearch:
