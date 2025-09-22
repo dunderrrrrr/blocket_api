@@ -1,4 +1,5 @@
 import datetime
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -320,3 +321,216 @@ class StoreListing(BaseModel):
 
 class StoreListings(BaseModel):
     data: list[StoreListing]
+
+
+### GetAdById ###
+
+
+class AdByIdReviews(BaseModel):
+    overall_score: int
+    reviews_received_count: int
+
+
+class AdByIdPublicProfile(BaseModel):
+    account_created_at: str
+    badges: list[Any]
+    blocket_account_id: str
+    display_name: str
+    number_of_active_ads: int
+    reviews: AdByIdReviews
+    verified: bool
+    verified_label: str
+
+
+class AdByIdContactMethods(BaseModel):
+    mc: bool
+
+
+class AdByIdAdvertiser(BaseModel):
+    account_id: str
+    contact_methods: AdByIdContactMethods
+    name: str
+    public_profile: AdByIdPublicProfile
+    type: str
+
+
+class AdByIdCategory(BaseModel):
+    id: str
+    name: str
+
+
+class AdByIdImage(BaseModel):
+    height: int
+    type: str
+    url: str
+    width: int
+
+
+class AdByIdLocation(BaseModel):
+    id: str
+    name: str
+    query_key: str
+
+
+class AdByIdMap(BaseModel):
+    image_url: str
+    label: str
+    type: str
+
+
+class AdByIdParameter(BaseModel):
+    id: str
+    label: str
+    value: str
+    suffix: str | None = None
+
+
+class AdByIdParameterGroup(BaseModel):
+    label: str
+    parameters: list[AdByIdParameter]
+    type: str
+
+
+class AdByIdPrice(BaseModel):
+    suffix: str
+    value: int
+
+
+class AdByIdFeatures(BaseModel):
+    is_part_of_merge: bool
+
+
+class AdByIdUrls(BaseModel):
+    seller_activate: str
+
+
+class AdByIdBlocketPackage(BaseModel):
+    activated_providers: list[Any]
+    ad_id: str
+    blocket_payment_backwards_compatability: Any
+    buyers_protection_fee: Any
+    eligible_providers: list[Any]
+    fail_code: Any
+    failure: Any
+    feature_swish: bool
+    features: AdByIdFeatures
+    is_in_dispute: bool
+    partner: str
+    payment_methods: list[Any]
+    payment_request_entrance: Any
+    payment_url: Any
+    service_data: Any
+    shipping_buy_now_entrance: Any
+    state: str
+    transaction_dates: Any
+    urls: AdByIdUrls
+
+
+class AdByIdGamApiKeywords(BaseModel):
+    adid: list[str]
+    adtitle: list[str]
+    adtype: list[str]
+    appmode: list[str]
+    blocket_section: list[str]
+    companyad: list[str]
+    country: list[str]
+    country_code: list[str]
+    county: list[str]
+    id: list[str]
+    itemimage: list[str]
+    itemsecuredthumb: list[str]
+    itemthumb: list[str]
+    livingarea: list[str] | None = None
+    lkf: list[str]
+    municipality: list[str]
+    nmp_vertical: list[str]
+    page: list[str]
+    price: list[str]
+    price_range_2: list[str] | None = None
+    publisher: list[str]
+    services: list[Any]
+
+
+class AdByIdClientKeywords(BaseModel):
+    cmp_advertising: str
+    logged_in: str
+    page_gen: str
+    ppid_1: str
+    ppid_2: str
+    screen_height: str
+    screen_width: str
+    site_mode: str
+    supply_type: str
+    viewport_height: str
+    viewport_width: str
+
+
+class AdByIdGamContext(BaseModel):
+    api_keywords: AdByIdGamApiKeywords
+    client_keywords: AdByIdClientKeywords
+
+
+class AdByIdContext(BaseModel):
+    gam: AdByIdGamContext
+    network_id: str | None = None
+
+
+class AdByIdInventory(BaseModel):
+    context: AdByIdContext
+
+
+class AdByIdGamKeywords(BaseModel):
+    adformat: list[str]
+    adsize: list[str]
+
+
+class AdByIdGamMediaType(BaseModel):
+    height: int | None = None
+    type: str
+    width: int | None = None
+
+
+class AdByIdGamPlacement(BaseModel):
+    keywords: AdByIdGamKeywords
+    media_types: list[AdByIdGamMediaType]
+    path: str
+    target_id: str
+
+
+class AdByIdPlacement(BaseModel):
+    gam: AdByIdGamPlacement | None = None
+    type: str
+    vendor: str
+    viewport: str
+    safe_purchase: dict[str, Any] | None = None
+
+
+class AdByIdData(BaseModel):
+    ad_id: str
+    ad_status: str
+    advertiser: AdByIdAdvertiser
+    body: str
+    category: list[AdByIdCategory]
+    images: list[AdByIdImage]
+    latitude: float | None = None
+    list_id: str
+    list_time: str
+    location: list[AdByIdLocation]
+    longitude: float | None = None
+    map: AdByIdMap
+    map_url: str
+    parameter_groups: list[AdByIdParameterGroup]
+    price: AdByIdPrice
+    saved: bool
+    share_url: str
+    state_id: str
+    subject: str
+    type: str
+    zipcode: str
+    blocket_package: AdByIdBlocketPackage
+
+
+class AdByIdResults(BaseModel):
+    data: AdByIdData
+    inventory: AdByIdInventory
+    placements: list[AdByIdPlacement] | None = None

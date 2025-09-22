@@ -51,6 +51,8 @@ Some calls require a `bearerToken`. However, some calls are public and don't req
 | [`api.home_search()`](#home_search)  | 👏 No | Yes | Query home listings.
 | [`api.store_search()`](#store_search)  | 👏 No | Yes | Search for a store.
 | [`api.get_store_listings()`](#get_store_listings)  | 👏 No | Yes | Get listings from a specific store.
+| [`api.get_ad_by_id()`](#get_ad_by_id)  | 👏 No | Yes | Get ad data from id.
+
 
 ## 🤓 Detailed usage
 
@@ -256,6 +258,30 @@ Get listings from a specific store.
     },
     ...
   ]
+}
+```
+
+### get_ad_by_id
+Get ad data from a specific ad id.
+
+- `ad_id` (`int`, required) - The ad id. Can be found by calling any other method or from ad url.
+- `as_objects` (`bool`, optional) - Return results as pydantic models, default is `False`.
+
+
+```py
+>>> api.get_ad_by_id(1234)
+{
+   "data": {
+      "ad_id": "1234",
+      "ad_status": "active",
+      "advertiser": {...},
+      "body": "A nice ad.",
+      "category": [
+            {"id": "4000", "name": "Personligt"},
+            {"id": "4080", "name": "Kläder & skor"},
+      ],
+      ...
+   }
 }
 ```
 
