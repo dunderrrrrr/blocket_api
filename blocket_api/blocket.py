@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Any, List, Literal, Optional, Tuple, Union, ov
 import httpx
 
 from blocket_api.models import (
+    AdByIdResults,
     CustomSearchResults,
     HomeSearchResults,
     MotorSearchResults,
@@ -538,3 +539,30 @@ class BlocketAPI:
         )
         response = _make_request(url=f"{url}", token=self.token).json()
         return StoreListings.model_validate(response) if as_objects else response
+
+    @overload
+    def get_ad_by_id(
+        self,
+        ad_id: int,
+        *,
+        as_objects: Literal[True],
+    ) -> AdByIdResults: ...
+
+    @overload
+    def get_ad_by_id(
+        self,
+        ad_id: int,
+        *,
+        as_objects: Literal[False] = False,
+    ) -> dict: ...
+
+    @public_token
+    def get_ad_by_id(
+        self,
+        ad_id: int,
+        *,
+        as_objects: bool = False,
+    ) -> dict | AdByIdResults:
+        url = f"{BASE_URL}/search_bff/v2/content/{ad_id}"
+        response = _make_request(url=f"{url}", token=self.token).json()
+        return AdByIdResults.model_validate(response) if as_objects else response
