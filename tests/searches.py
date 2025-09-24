@@ -26,6 +26,13 @@ from blocket_api.models import (
     AdByIdResults,
     AdByIdReviews,
     AdByIdUrls,
+    BlocketUser,
+    BlocketUserAccount,
+    BlocketUserActiveAds,
+    BlocketUserAd,
+    BlocketUserBadge,
+    BlocketUserCO2Savings,
+    BlocketUserProfileInfo,
     CustomSearchImage,
     CustomSearchLocation,
     CustomSearchPrice,
@@ -1644,4 +1651,114 @@ class Test_GetAdById:
                 )
             ),
             placements=None,
+        )
+
+
+class Test_GetUserById:
+    @respx.mock
+    def test_get_user_by_id(self) -> None:
+        respx.get(f"{BASE_URL}/profile-be/v1/public-profiles/1234").mock(
+            return_value=Response(
+                status_code=200,
+                json={
+                    "account": {"account_id": 1234, "name": "Janne"},
+                },
+            ),
+        )
+        assert api.get_user_by_id(1234) == {
+            "account": {"account_id": 1234, "name": "Janne"}
+        }
+
+    @respx.mock
+    def test_get_user_by_id_as_objects(self) -> None:
+        respx.get(f"{BASE_URL}/profile-be/v1/public-profiles/1234").mock(
+            return_value=Response(
+                status_code=200,
+                json={
+                    "account": {
+                        "blocket_account_id": "1234",
+                        "created_at": "2020-10-10T15:45:06.407660",
+                        "is_verified": True,
+                        "name": "Janne",
+                        "on_blocket_since": "På Blocket sedan 2020",
+                        "verified_with": "Verifierad",
+                    },
+                    "active_ads": {
+                        "ads": [
+                            {
+                                "ad_id": "111",
+                                "ad_url": "https://blocket.se/annons/111",
+                                "image_url": "https://i.blocketcdn.se/pictures/recommerce/111/3906d5f8-624e-4738-965d-d57040c5710d.jpg",
+                                "price": "18 000 kr",
+                                "region": "Stockholms stad - Östermalm, Djurgården",
+                                "subject": "B&O Musikanläggning",
+                            },
+                        ],
+                        "label_primary": "Aktiva annonser",
+                        "label_secondary": "(1)",
+                    },
+                    "badges": [
+                        {
+                            "description": "8 annonser inom 6 mån",
+                            "icon": "https://public-assets.blocketcdn.se/static/icons/medal.png",
+                            "icon_blocket_ui": "IconMedalMulticolor",
+                            "id": "active-user",
+                            "label": "Aktiv på Blocket",
+                        },
+                    ],
+                    "co2_savings": {
+                        "date_range": "1 apr - idag",
+                        "equivalent": "Det motsvarar produktionen av ungefär 7 cyklar.",
+                        "text": "Har sparat 696 kg CO₂e.",
+                    },
+                    "profile_info": {
+                        "description": None,
+                        "has_reviews": False,
+                        "name": "Janne",
+                    },
+                    "review_scores": None,
+                },
+            ),
+        )
+        assert api.get_user_by_id(1234, as_objects=True) == BlocketUser(
+            account=BlocketUserAccount(
+                blocket_account_id="1234",
+                created_at=datetime.datetime(2020, 10, 10, 15, 45, 6, 407660),
+                is_verified=True,
+                name="Janne",
+                on_blocket_since="På Blocket sedan 2020",
+                verified_with="Verifierad",
+            ),
+            active_ads=BlocketUserActiveAds(
+                ads=[
+                    BlocketUserAd(
+                        ad_id="111",
+                        ad_url="https://blocket.se/annons/111",
+                        image_url="https://i.blocketcdn.se/pictures/recommerce/111/3906d5f8-624e-4738-965d-d57040c5710d.jpg",
+                        price="18 000 kr",
+                        region="Stockholms stad - Östermalm, Djurgården",
+                        subject="B&O Musikanläggning",
+                    )
+                ],
+                label_primary="Aktiva annonser",
+                label_secondary="(1)",
+            ),
+            badges=[
+                BlocketUserBadge(
+                    description="8 annonser inom 6 mån",
+                    icon="https://public-assets.blocketcdn.se/static/icons/medal.png",
+                    icon_blocket_ui="IconMedalMulticolor",
+                    id="active-user",
+                    label="Aktiv på Blocket",
+                )
+            ],
+            co2_savings=BlocketUserCO2Savings(
+                date_range="1 apr - idag",
+                equivalent="Det motsvarar produktionen av ungefär 7 cyklar.",
+                text="Har sparat 696 kg CO₂e.",
+            ),
+            profile_info=BlocketUserProfileInfo(
+                description=None, has_reviews=False, name="Janne"
+            ),
+            review_scores=None,
         )

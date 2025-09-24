@@ -14,6 +14,7 @@ BlocketAPI allows users to query saved searches, known as "Bevakningar", on [blo
 - Get vehicle information, price evaluation and search for vehicles with multiple filters.
 - Search for homes with filters for city, home type and more.
 - Search for stores and get a specific store's listings.
+- ...and more!
 
 ## 🧑‍💻️ Install
 
@@ -52,6 +53,7 @@ Some calls require a `bearerToken`. However, some calls are public and don't req
 | [`api.store_search()`](#store_search)  | 👏 No | Yes | Search for a store.
 | [`api.get_store_listings()`](#get_store_listings)  | 👏 No | Yes | Get listings from a specific store.
 | [`api.get_ad_by_id()`](#get_ad_by_id)  | 👏 No | Yes | Get ad data from id.
+| [`api.get_user_by_id()`](#get_user_by_id)  | 👏 No | Yes | Get user data from id.
 
 
 ## 🤓 Detailed usage
@@ -282,6 +284,29 @@ Get ad data from a specific ad id.
       ],
       ...
    }
+}
+```
+
+### get_user_by_id
+Get user data from a user id. User id can be found in ads, searches and in blocket url `https://www.blocket.se/profil/<user_id>`.
+
+- `user_id` (`int`, required) - The blocket user id.
+- `as_objects` (`bool`, optional) - Return results as pydantic models, default is `False`.
+
+
+```py
+>>> api.get_user_by_id(1234)
+{
+   'account': {
+         'blocket_account_id': '1234', 
+         'created_at': '2020-10-10T15:45:06.407660', 
+         'is_verified': True, 
+         'name': 'Janne',
+         ...
+   }, 
+   'active_ads': {[
+      ...
+   ]}
 }
 ```
 

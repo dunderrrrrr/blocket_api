@@ -534,3 +534,59 @@ class AdByIdResults(BaseModel):
     data: AdByIdData
     inventory: AdByIdInventory
     placements: list[AdByIdPlacement] | None = None
+
+
+### GetUserById ###
+
+
+class BlocketUserAccount(BaseModel):
+    blocket_account_id: str
+    created_at: datetime.datetime
+    is_verified: bool
+    name: str
+    on_blocket_since: str
+    verified_with: str
+
+
+class BlocketUserAd(BaseModel):
+    ad_id: str
+    ad_url: str
+    image_url: str
+    price: str
+    region: str
+    subject: str
+
+
+class BlocketUserActiveAds(BaseModel):
+    ads: list[BlocketUserAd]
+    label_primary: str
+    label_secondary: str
+
+
+class BlocketUserBadge(BaseModel):
+    description: str
+    icon: str
+    icon_blocket_ui: str
+    id: str
+    label: str
+
+
+class BlocketUserCO2Savings(BaseModel):
+    date_range: str
+    equivalent: str
+    text: str
+
+
+class BlocketUserProfileInfo(BaseModel):
+    description: str | None = None
+    has_reviews: bool
+    name: str
+
+
+class BlocketUser(BaseModel):
+    account: BlocketUserAccount
+    active_ads: BlocketUserActiveAds
+    badges: list[BlocketUserBadge]
+    co2_savings: BlocketUserCO2Savings
+    profile_info: BlocketUserProfileInfo
+    review_scores: dict | None = None

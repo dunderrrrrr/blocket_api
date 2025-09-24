@@ -11,6 +11,7 @@ import httpx
 
 from blocket_api.models import (
     AdByIdResults,
+    BlocketUser,
     CustomSearchResults,
     HomeSearchResults,
     MotorSearchResults,
@@ -541,3 +542,25 @@ class BlocketAPI:
         url = f"{BASE_URL}/search_bff/v2/content/{ad_id}"
         response = _make_request(url=f"{url}", token=self.token).json()
         return AdByIdResults.model_validate(response) if as_objects else response
+
+    @overload
+    def get_user_by_id(
+        self, user_id: int, *, as_objects: Literal[True]
+    ) -> BlocketUser: ...
+
+    @overload
+    def get_user_by_id(
+        self, user_id: int, *, as_objects: Literal[False] = False
+    ) -> dict: ...
+
+    @public_token
+    def get_user_by_id(
+        self, user_id: int, *, as_objects: bool = False
+    ) -> dict | BlocketUser:
+        """
+        Returns a user's profile data. Contains account information, ads and more.
+        Blocket url is https://www.blocket.se/profil/<user_id>.
+        """
+        url = f"{BASE_URL}/profile-be/v1/public-profiles/{user_id}"
+        response = _make_request(url=f"{url}", token=self.token).json()
+        return BlocketUser.model_validate(response) if as_objects else response
