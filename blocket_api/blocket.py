@@ -539,6 +539,10 @@ class BlocketAPI:
     def get_ad_by_id(
         self, ad_id: int, *, as_objects: bool = False
     ) -> dict | AdByIdResults:
+        """
+        Return an ad with it's content. The ad_id can be found by searching or
+        from the blocket ad url.
+        """
         url = f"{BASE_URL}/search_bff/v2/content/{ad_id}"
         response = _make_request(url=f"{url}", token=self.token).json()
         return AdByIdResults.model_validate(response) if as_objects else response
