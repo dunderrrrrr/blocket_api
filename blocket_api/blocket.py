@@ -456,20 +456,12 @@ class BlocketAPI:
 
     @overload
     def search_store(
-        self,
-        search_query: str,
-        page: int = 0,
-        *,
-        as_objects: Literal[True],
+        self, search_query: str, page: int = 0, *, as_objects: Literal[True]
     ) -> StoreSearchResults: ...
 
     @overload
     def search_store(
-        self,
-        search_query: str,
-        page: int = 0,
-        *,
-        as_objects: Literal[False] = False,
+        self, search_query: str, page: int = 0, *, as_objects: Literal[False] = False
     ) -> dict: ...
 
     @overload
@@ -505,20 +497,12 @@ class BlocketAPI:
 
     @overload
     def get_store_listings(
-        self,
-        store_id: int,
-        page: int = 0,
-        *,
-        as_objects: Literal[True],
+        self, store_id: int, page: int = 0, *, as_objects: Literal[True]
     ) -> StoreListings: ...
 
     @overload
     def get_store_listings(
-        self,
-        store_id: int,
-        page: int = 0,
-        *,
-        as_objects: Literal[False] = False,
+        self, store_id: int, page: int = 0, *, as_objects: Literal[False] = False
     ) -> dict: ...
 
     @public_token
@@ -542,26 +526,17 @@ class BlocketAPI:
 
     @overload
     def get_ad_by_id(
-        self,
-        ad_id: int,
-        *,
-        as_objects: Literal[True],
+        self, ad_id: int, *, as_objects: Literal[True]
     ) -> AdByIdResults: ...
 
     @overload
     def get_ad_by_id(
-        self,
-        ad_id: int,
-        *,
-        as_objects: Literal[False] = False,
+        self, ad_id: int, *, as_objects: Literal[False] = False
     ) -> dict: ...
 
     @public_token
     def get_ad_by_id(
-        self,
-        ad_id: int,
-        *,
-        as_objects: bool = False,
+        self, ad_id: int, *, as_objects: bool = False
     ) -> dict | AdByIdResults:
         url = f"{BASE_URL}/search_bff/v2/content/{ad_id}"
         response = _make_request(url=f"{url}", token=self.token).json()
