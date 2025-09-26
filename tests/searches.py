@@ -1762,3 +1762,34 @@ class Test_GetUserById:
             ),
             review_scores=None,
         )
+
+
+class Test_SavedAds:
+    @respx.mock
+    def test_save_ad(self) -> None:
+        respx.put(f"{BASE_URL}/search_bff/v1/saved_content/1234").mock(
+            return_value=Response(
+                status_code=204,
+            ),
+        )
+        assert api.save_ad(1234) == {"status_code": 204}
+
+    @respx.mock
+    def test_get_saved_ads(self) -> None:
+        respx.get(f"{BASE_URL}/search_bff/v1/saved_content?lim=100").mock(
+            return_value=Response(
+                status_code=200,
+                json={
+                    "data": [
+                        {"id": "1", "name": "Nice jeans"},
+                        {"id": "2", "name": "A very fast bike"},
+                    ],
+                },
+            ),
+        )
+        assert api.get_saved_ads() == {
+            "data": [
+                {"id": "1", "name": "Nice jeans"},
+                {"id": "2", "name": "A very fast bike"},
+            ],
+        }

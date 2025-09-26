@@ -54,6 +54,8 @@ Some calls require a `bearerToken`. However, some calls are public and don't req
 | [`api.get_store_listings()`](#get_store_listings)  | 👏 No | Yes | Get listings from a specific store.
 | [`api.get_ad_by_id()`](#get_ad_by_id)  | 👏 No | Yes | Get ad data from id.
 | [`api.get_user_by_id()`](#get_user_by_id)  | 👏 No | Yes | Get user data from id.
+| [`api.save_ad()`](#save_ad)  | 🔐 Yes | - | Save ad to "Saved ads".
+| [`api.get_saved_ads()`](#get_saved_ads)  | 🔐 Yes | - | Save ad to "Saved ads".
 
 
 ## 🤓 Detailed usage
@@ -308,6 +310,33 @@ Get user data from a user id. User id can be found in ads, searches and in block
       ...
    ]}
 }
+```
+
+### save_ad
+This saves the ad to "Saved ads" which can be found here at `https://www.blocket.se/sparade/annonser`. When saving an ad, blocket always responds with 204, even if the ad is already saved or does not exist.
+
+- `ad_id` (`int`, required) - The ad id. Can be found by calling any other method or from ad url.
+
+```py
+>>> api.save_ad(1234)
+```
+
+### get_saved_ads
+Returns all of your saved ads from `https://www.blocket.se/sparade/annonser`.
+
+```py
+>>> api.get_saved_ads()
+{
+   'data': [{
+      'ad_id': '1213682185'
+      'list_id': '1213682185'
+      'subject': 'Jeans från Gina tricot 158'
+      'body': 'Moderna jeans från Gina Tricot!'
+      ...
+   }]
+   ...
+}
+
 ```
 
 ## 🔐 Blocket API token
