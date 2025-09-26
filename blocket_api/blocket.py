@@ -165,7 +165,11 @@ def public_token(method: Callable) -> Callable:
 
 
 def _make_request(
-    *, url: str, token: str | None, raise_for_status: bool = True
+    *,
+    method: Callable[..., Response] = httpx.get,
+    url: str,
+    token: str | None,
+    raise_for_status: bool = True,
 ) -> Response:
     headers = {
         "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0"
@@ -173,11 +177,11 @@ def _make_request(
     if token:
         headers["Authorization"] = f"Bearer {token}"
     try:
-        response = httpx.get(url, headers=headers)
+        response = method(url, headers=headers)
         if raise_for_status:
             response.raise_for_status()
-    except Exception as E:
-        raise APIError(E)
+    except Exception as e:
+        raise APIError(e)
     return response
 
 
@@ -568,3 +572,22 @@ class BlocketAPI:
         url = f"{BASE_URL}/profile-be/v1/public-profiles/{user_id}"
         response = _make_request(url=f"{url}", token=self.token).json()
         return BlocketUser.model_validate(response) if as_objects else response
+
+    @auth_token
+    def save_ad(self, ad_id: int) -> dict:
+        """
+        Save an ad to "Saved ads" which can be found here:
+        https://www.blocket.se/sparade/annonser
+        """
+        url = f"{BASE_URL}/search_bff/v1/saved_content/{ad_id}"
+        response = _make_request(method=httpx.put, url=f"{url}", token=self.token)
+        return {"status_code": response.status_code}
+
+    @auth_token
+    def get_saved_ads(self, limit: int = 100) -> dict:
+        """
+        Returns all of your saved ads from https://www.blocket.se/sparade/annonser.
+        """
+        url = f"{BASE_URL}/search_bff/v1/saved_content?lim={limit}"
+        response = _make_request(url=f"{url}", token=self.token).json()
+        return response
