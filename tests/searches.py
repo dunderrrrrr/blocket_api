@@ -55,6 +55,8 @@ from blocket_api.models import (
     MotorSearchResults,
     MotorSearchSeller,
     ParameterGroup,
+    SavedSearch,
+    SavedSearchResponse,
     StoreListing,
     StoreListingAdvertiser,
     StoreListingAttribute,
@@ -72,33 +74,95 @@ from blocket_api.qasa import QASA_URL, HomeType, OrderBy
 api = BlocketAPI("token")
 
 
-@respx.mock
-def test_saved_searches() -> None:
-    """
-    Make sure mobility saved searches are merged with v2/searches.
-    """
-    respx.get(f"{BASE_URL}/saved/v2/searches").mock(
-        return_value=Response(
-            status_code=200,
-            json={
-                "data": [
-                    {"id": "1", "name": '"buggy", Bilar säljes i hela Sverige'},
-                    {"id": "2", "name": "Cyklar säljes i flera kommuner"},
-                ],
-            },
-        ),
-    )
-    respx.get(f"{BASE_URL}/mobility-saved-searches/v1/searches").mock(
-        return_value=Response(
-            status_code=200,
-            json={"data": [{"id": "3", "name": "Bilar säljes i hela Sverige"}]},
-        ),
-    )
-    assert api.saved_searches() == [
-        {"id": "1", "name": '"buggy", Bilar säljes i hela Sverige'},
-        {"id": "2", "name": "Cyklar säljes i flera kommuner"},
-        {"id": "3", "name": "Bilar säljes i hela Sverige"},
-    ]
+class Test_SavedSearches:
+    @respx.mock
+    def test_saved_searches(self) -> None:
+        respx.get(f"{BASE_URL}/saved/v2/searches").mock(
+            return_value=Response(
+                status_code=200,
+                json={
+                    "data": [
+                        {"id": "1", "name": '"buggy", Bilar säljes i hela Sverige'},
+                        {"id": "2", "name": "Cyklar säljes i flera kommuner"},
+                    ],
+                },
+            ),
+        )
+        respx.get(f"{BASE_URL}/mobility-saved-searches/v1/searches").mock(
+            return_value=Response(
+                status_code=200,
+                json={"data": [{"id": "3", "name": "Bilar säljes i hela Sverige"}]},
+            ),
+        )
+        assert api.saved_searches() == [
+            {"id": "1", "name": '"buggy", Bilar säljes i hela Sverige'},
+            {"id": "2", "name": "Cyklar säljes i flera kommuner"},
+            {"id": "3", "name": "Bilar säljes i hela Sverige"},
+        ]
+
+    @respx.mock
+    def test_saved_searches_as_objects(self) -> None:
+        respx.get(f"{BASE_URL}/saved/v2/searches").mock(
+            return_value=Response(
+                status_code=200,
+                json={
+                    "data": [
+                        {
+                            "id": "1234",
+                            "new_count": 0,
+                            "total_count": 49,
+                            "push_enabled": False,
+                            "push_available": True,
+                            "query": "cg=1020&q=buggy&st=s",
+                            "name": '"buggy", Bilar säljes i hela Sverige',
+                        }
+                    ],
+                },
+            ),
+        )
+        respx.get(f"{BASE_URL}/mobility-saved-searches/v1/searches").mock(
+            return_value=Response(
+                status_code=200,
+                json={
+                    "data": [
+                        {
+                            "id": "555",
+                            "name": "cabriolet säljes i Östergötland",
+                            "query": "filter=heres_a_filter",
+                            "total_count": 118,
+                            "new_count": 1,
+                            "push_enabled": False,
+                            "email_enabled": False,
+                            "push_available": True,
+                        },
+                    ]
+                },
+            ),
+        )
+        assert api.saved_searches(as_objects=True) == SavedSearchResponse(
+            searches=[
+                SavedSearch(
+                    id="1234",
+                    name='"buggy", Bilar säljes i hela Sverige',
+                    query="cg=1020&q=buggy&st=s",
+                    total_count=49,
+                    new_count=0,
+                    push_enabled=False,
+                    push_available=True,
+                    email_enabled=None,
+                ),
+                SavedSearch(
+                    id="555",
+                    name="cabriolet säljes i Östergötland",
+                    query="filter=heres_a_filter",
+                    total_count=118,
+                    new_count=1,
+                    push_enabled=False,
+                    push_available=True,
+                    email_enabled=False,
+                ),
+            ]
+        )
 
 
 @respx.mock
