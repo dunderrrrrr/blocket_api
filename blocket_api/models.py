@@ -590,3 +590,21 @@ class BlocketUser(BaseModel):
     co2_savings: BlocketUserCO2Savings
     profile_info: BlocketUserProfileInfo
     review_scores: dict | None = None
+
+
+### SavedSearchesResult ###
+
+
+class SavedSearch(BaseModel):
+    id: str
+    name: str
+    query: str
+    total_count: int
+    new_count: int
+    push_enabled: bool
+    push_available: bool
+    email_enabled: bool | None = None
+
+
+class SavedSearchResponse(BaseModel):
+    searches: list[SavedSearch]

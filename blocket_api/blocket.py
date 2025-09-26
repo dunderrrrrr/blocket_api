@@ -15,6 +15,7 @@ from blocket_api.models import (
     CustomSearchResults,
     HomeSearchResults,
     MotorSearchResults,
+    SavedSearchResponse,
     StoreListings,
     StoreSearchResults,
 )
@@ -189,8 +190,28 @@ def _make_request(
 class BlocketAPI:
     token: str | None = None
 
+    @overload
+    def saved_searches(
+        self,
+        limit: int = 99,
+        *,
+        as_objects: Literal[True],
+    ) -> SavedSearchResponse: ...
+
+    @overload
+    def saved_searches(
+        self,
+        limit: int = 99,
+        *,
+        as_objects: Literal[False] = False,
+    ) -> list[dict]: ...
+
     @auth_token
-    def saved_searches(self) -> list[dict]:
+    def saved_searches(
+        self,
+        *,
+        as_objects: bool = False,
+    ) -> list[dict] | SavedSearchResponse:
         """
         Retrieves saved searches data, also known as "Bevakningar".
         """
@@ -209,7 +230,8 @@ class BlocketAPI:
             .get("data", [])
         )
 
-        return searches + mobility_searches
+        result = searches + mobility_searches
+        return SavedSearchResponse(searches=result) if as_objects else result
 
     def _for_search_id(self, search_id: int, limit: int) -> dict:
         assert self.token

@@ -44,7 +44,7 @@ Some calls require a `bearerToken`. However, some calls are public and don't req
 
 | Function  | Token required | `as_objects` | Description  |
 |---|---|---|---|
-| [`api.saved_searches()`](#saved_searches) | 🔐 Yes | - | List your saved searches (bevakningar)  |
+| [`api.saved_searches()`](#saved_searches) | 🔐 Yes | Yes | List your saved searches (bevakningar)  |
 | [`api.get_listings()`](#get_listings) | 🔐 Yes | - | List items related to a saved search |
 | [`api.custom_search()`](#custom_search)  | 👏 No | Yes | Search for everything on Blocket and filter by region |
 | [`api.motor_search()`](#motor_search)  | 👏 No | Yes | Advanced search for car-listings. |
@@ -63,6 +63,9 @@ Some calls require a `bearerToken`. However, some calls are public and don't req
 ### saved_searches
 
 Saved searches are your so called "Bevakningar" and can be found [here](https://www.blocket.se/sparade/bevakningar). Each saved search has and unique `id` which can be used as a parameter to `get_listings()`, see below.
+
+Parameters:  
+- `as_objects` (`bool`, optional) - Return results as pydantic models, default is `False`.
 
 ```py
 >>> api.saved_searches()
