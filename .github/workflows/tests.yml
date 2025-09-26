@@ -21,4 +21,4 @@ jobs:
       - name: Check ruff
         run: uv run ruff check .
       - name: Check mypy
-        run: uv run mypy . --check-untyped-defs --disallow-untyped-defs --ignore-missing-imports
+        run: uv run mypy . --check-untyped-defs --disallow-untyped-defs 
