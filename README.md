@@ -55,7 +55,7 @@ Some calls require a `bearerToken`. However, some calls are public and don't req
 | [`api.get_ad_by_id()`](#get_ad_by_id)  | 👏 No | Yes | Get ad data from id.
 | [`api.get_user_by_id()`](#get_user_by_id)  | 👏 No | Yes | Get user data from id.
 | [`api.save_ad()`](#save_ad)  | 🔐 Yes | - | Save ad to "Saved ads".
-| [`api.get_saved_ads()`](#get_saved_ads)  | 🔐 Yes | - | Save ad to "Saved ads".
+| [`api.get_saved_ads()`](#get_saved_ads)  | 🔐 Yes | - | List all saved ads. 
 
 
 ## 🤓 Detailed usage
