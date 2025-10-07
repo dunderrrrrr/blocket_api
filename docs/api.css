@@ -1,0 +1,11 @@
+#operations-tag-default, 
+section.models, 
+.info {
+    display:none;
+}
+body {
+    margin:0px;
+}
+.wrapper {
+    padding:0px !important;
+}

@@ -12,6 +12,9 @@ dependencies = [
     "respx>=0.21.1",
     "mypy>=1.15.0",
     "pydantic>=2.11.7",
+    "mkdocs>=1.6.1",
+    "mkdocs-material>=9.6.21",
+    "mkdocs-swagger-ui-tag>=0.7.2",
 ]
 
 
