@@ -9,3 +9,25 @@ body {
 .wrapper {
     padding:0px !important;
 }
+.opblock-get, .opblock-summary-get {
+    border: 0px !important;
+    background-color: rgb(45, 44, 61);
+}
+.swagger-ui .opblock.opblock-get .opblock-summary-method, .swagger-ui .opblock.opblock-get .tab-header .tab-item.active h4 span::after {
+    background: #775c9b;
+}
+.swagger-ui .model-box-control:focus, .swagger-ui .models-control:focus, .swagger-ui .opblock-summary-control:focus {
+    outline: none;
+}
+.swagger-ui .btn {
+    background: #775C9B;
+    border: none;
+}
+.swagger-ui .btn.execute {
+    background-color: #775c9b;
+    border: none;
+    color: #fff;
+}
+.swagger-ui .btn.cancel, .btn.cancel:hover {
+    outline: none;
+}

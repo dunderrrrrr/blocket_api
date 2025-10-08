@@ -1,5 +1,6 @@
 site_name: Blocket-API.se
 repo_url: https://github.com/dunderrrrrr/blocket_api
+
 theme:
   name: material
   features:
@@ -8,23 +9,31 @@ theme:
     - toc.integrate
   palette:
     scheme: slate
+    primary: deep purple
+    accent: deep purple
   icon:
-    logo: material/code-tags
-  favicon: favicon.ico
+    logo: material/car-lifted-pickup
+
+extra_css:
+  - custom.css  
+
 nav:
   - Main: index.md
   - preparations.md
   - API reference: api-reference.md
   - examples.md
-  - Swagger 🗗: https://blocket-api.se/swagger
+  - Swagger⤴: https://blocket-api.se/swagger
+
 plugins:
    - swagger-ui-tag:
         syntaxHighlightTheme: monokai
         extra_css: ["api.css"]
+
 extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/dunderrrrrr/blocket_api
+
 markdown_extensions:
   - pymdownx.superfences
   - toc:

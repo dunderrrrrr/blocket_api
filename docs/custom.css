@@ -1,0 +1,7 @@
+nav.md-tabs {
+    background-color: hsla(265.2, 89.3%, 78%, 0.1)
+}
+header.md-header {
+    background-color: #1E2029;
+    border-bottom: .05rem solid hsl(265.2, 82%, 76.1%);    
+}
