@@ -1,4 +1,4 @@
-name: "ruff and mypy"
+name: "pytest"
 on:
   push:
     branches: [main]
@@ -6,7 +6,7 @@ on:
     branches: [main]
     
 jobs:
-  format:
+  pytest:
     strategy:
       fail-fast: false
       matrix:
@@ -16,7 +16,5 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/setup
-      - name: Check ruff
-        run: uv run ruff check .
-      - name: Check mypy
-        run: uv run mypy . --check-untyped-defs --disallow-untyped-defs 
+      - name: Run tests
+        run: uv run pytest
