@@ -331,12 +331,14 @@ class BlocketAPI:
         self,
         page: int,
         make: List[MAKE_OPTIONS],
+        q: Optional[str] = None,
         fuel: Optional[List[FUEL_OPTIONS]] = None,
         chassi: Optional[List[CHASSI_OPTIONS]] = None,
         price: Optional[Tuple[int, int]] = None,
         modelYear: Optional[Tuple[int, int]] = None,
         milage: Optional[Tuple[int, int]] = None,
         gearbox: Optional[GEARBOX_OPTIONS] = None,
+        color: Optional[List[str]] = None,
         *,
         as_objects: Literal[True],
     ) -> MotorSearchResults: ...
@@ -346,12 +348,14 @@ class BlocketAPI:
         self,
         page: int,
         make: List[MAKE_OPTIONS],
+        q: Optional[str] = None,
         fuel: Optional[List[FUEL_OPTIONS]] = None,
         chassi: Optional[List[CHASSI_OPTIONS]] = None,
         price: Optional[Tuple[int, int]] = None,
         modelYear: Optional[Tuple[int, int]] = None,
         milage: Optional[Tuple[int, int]] = None,
         gearbox: Optional[GEARBOX_OPTIONS] = None,
+        color: Optional[List[str]] = None,
         *,
         as_objects: Literal[False] = False,
     ) -> dict: ...
@@ -361,12 +365,14 @@ class BlocketAPI:
         self,
         page: int,
         make: List[MAKE_OPTIONS],
+        q: Optional[str] = None,
         fuel: Optional[List[FUEL_OPTIONS]] = None,
         chassi: Optional[List[CHASSI_OPTIONS]] = None,
         price: Optional[Tuple[int, int]] = None,
         modelYear: Optional[Tuple[int, int]] = None,
         milage: Optional[Tuple[int, int]] = None,
         gearbox: Optional[GEARBOX_OPTIONS] = None,
+        color: Optional[List[str]] = None,
         *,
         as_objects: bool = False,
     ) -> Union[dict, MotorSearchResults]: ...
@@ -376,12 +382,14 @@ class BlocketAPI:
         self,
         page: int,
         make: List[MAKE_OPTIONS],
+        q: Optional[str] = None,
         fuel: Optional[List[FUEL_OPTIONS]] = None,
         chassi: Optional[List[CHASSI_OPTIONS]] = None,
         price: Optional[Tuple[int, int]] = None,
         modelYear: Optional[Tuple[int, int]] = None,
         milage: Optional[Tuple[int, int]] = None,
         gearbox: Optional[GEARBOX_OPTIONS] = None,
+        color: Optional[List[str]] = None,
         *,
         as_objects: bool = False,
     ) -> dict | MotorSearchResults:
@@ -395,7 +403,7 @@ class BlocketAPI:
         set_params = {
             key: value
             for key, value in locals().items()
-            if key not in ["self", "page", "range_params", "as_objects"]
+            if key not in ["self", "page", "q", "range_params", "as_objects"]
             and value is not None
         }
 
@@ -415,6 +423,8 @@ class BlocketAPI:
 
         filters_str = "&".join([f"filter={f}" for f in filters])
         url = f"{motor_base_url}?{filters_str}&page={page}"
+        if q:
+            url += f"&q={urllib.parse.quote(q)}"
 
         response = _make_request(url=f"{url}", token=self.token).json()
         return MotorSearchResults.model_validate(response) if as_objects else response
