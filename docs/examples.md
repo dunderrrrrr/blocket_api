@@ -144,3 +144,40 @@ response = httpx.get(
 )
 print(response.json())
 ```
+
+## Using endpoints with token
+
+```sh
+# Token as header (preferred)
+curl -X 'GET' \
+  'https://blocket-api.se/v1/save-ad?ad_id=1234' \
+  -H 'accept: application/json' \
+  -H 'X-Token: abc123'
+
+# Token as query parameter
+curl -X 'GET' \
+  'https://blocket-api.se/v1/save-ad?ad_id=1234&token=abc123' \
+  -H 'accept: application/json'
+```
+
+```python
+# Token as header (preferred)
+httpx.get(
+    "https://blocket-api.se/v1/save-ad",
+    params={"ad_id": 1234},
+    headers={
+        "accept": "application/json",
+        "X-Token": "abc123",
+    }
+)
+
+# Token as query parameter
+httpx.get(
+    "https://blocket-api.se/v1/save-ad",
+    params={
+        "ad_id": 1234,
+        "token": "abc123",
+    },
+    headers={"accept": "application/json"}
+)
+```
