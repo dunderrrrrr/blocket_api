@@ -4,7 +4,7 @@ repo_url: https://github.com/dunderrrrrr/blocket_api
 theme:
   name: material
   features:
-    - navigation.tabs  
+    - navigation.tabs
     - content.code.copy
     - toc.integrate
   palette:
@@ -15,7 +15,7 @@ theme:
     logo: material/car-lifted-pickup
 
 extra_css:
-  - custom.css  
+  - custom.css
 
 nav:
   - Main: index.md
@@ -25,6 +25,7 @@ nav:
   - Swagger⤴: https://blocket-api.se/swagger
 
 plugins:
+   - search
    - swagger-ui-tag:
         syntaxHighlightTheme: monokai
         extra_css: ["api.css"]
