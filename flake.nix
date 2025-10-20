@@ -23,9 +23,6 @@
             pkgs.uv
             pkgs.ruff
             python
-            (pkgs.writeShellScriptBin "logs" ''
-              sudo jq -r '. | "\(.ts | todateiso8601) \(.request.client_ip) \(.request.method) \(.request.uri)"' /var/log/caddy/access-blocket-api.se.log | grep v1
-            '')  
             (pkgs.writeShellScriptBin "build" ''
               git pull
               mkdocs build -d /srv/blocket-api/
