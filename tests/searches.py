@@ -302,13 +302,20 @@ class Test_CustomSearch:
 class Test_MotorSearchURLs:
     @respx.mock
     def test_make_filter(self) -> None:
-        expected_url_filter = '?filter={"key": "make", "values": ["Audi", "Toyota"]}'
+        expected_url_filter = (
+            '?filter={"key": "make", "values": ["Audi", "Toyota"]}'
+            '&filter={"key": "color", "values": ["Blå", "Röd"]}'
+        )
         respx.get(
             f"{BASE_URL}/motor-search-service/v4/search/car{expected_url_filter}&page=1"
         ).mock(
             return_value=Response(status_code=200, json={"data": "ok"}),
         )
-        assert api.motor_search(page=1, make=["Audi", "Toyota"]) == {"data": "ok"}
+        assert api.motor_search(
+            page=1,
+            make=["Audi", "Toyota"],
+            color=["Blå", "Röd"],
+        ) == {"data": "ok"}
 
     @respx.mock
     def test_motor_search_as_objects(self) -> None:
