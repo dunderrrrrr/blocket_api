@@ -22,6 +22,7 @@ from blocket_api.qasa import HOME_SEARCH_ORDERING, HomeType, OrderBy, Qasa
 
 from .constants import BASE_URL, BYTBIL_URL
 from .decorators import auth_token, public_token
+from .sendbird import Sendbird
 
 if TYPE_CHECKING:
     from httpx import Response
@@ -588,3 +589,23 @@ class BlocketAPI:
         url = f"{BASE_URL}/search_bff/v1/saved_content?lim={limit}"
         response = _make_request(url=f"{url}", token=self.token).json()
         return response
+
+    @auth_token
+    def get_threads(self, limit: int = 15) -> dict:
+        """
+        Returns set number of conversations/threads from Blocket, ordered by latest message.
+        """
+        assert self.token
+        sendbird = Sendbird.generate(self.token)
+        return sendbird.get_threads(limit=limit)
+
+    @auth_token
+    def get_messages_from_thread(self, channel_id: str) -> dict:
+        """
+        Returns all messages from a specific channel/thread.
+        Requires a channel_id which can be found by using get_threads().
+        Ex: sendbird_group_channel_12345_abc123abcde
+        """
+        assert self.token
+        sendbird = Sendbird.generate(self.token)
+        return sendbird.get_messages_from_thread(channel_id)
