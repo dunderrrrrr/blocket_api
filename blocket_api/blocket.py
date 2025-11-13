@@ -4,8 +4,7 @@ import urllib
 from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum
-from functools import wraps
-from typing import TYPE_CHECKING, Any, List, Literal, Optional, Tuple, Union, overload
+from typing import TYPE_CHECKING, List, Literal, Optional, Tuple, Union, overload
 
 import httpx
 
@@ -21,12 +20,11 @@ from blocket_api.models import (
 )
 from blocket_api.qasa import HOME_SEARCH_ORDERING, HomeType, OrderBy, Qasa
 
+from .constants import BASE_URL, BYTBIL_URL
+from .decorators import auth_token, public_token
+
 if TYPE_CHECKING:
     from httpx import Response
-
-BASE_URL = "https://api.blocket.se"
-SITE_URL = "https://www.blocket.se"
-BYTBIL_URL = "https://api.bytbil.com"
 
 
 class Region(Enum):
@@ -137,33 +135,6 @@ class APIError(Exception): ...
 
 
 class LimitError(Exception): ...
-
-
-class TokenError(Exception): ...
-
-
-def auth_token(method: Callable) -> Callable:
-    @wraps(method)
-    def wrapper(self: Any, *args: Any, **kwargs: Any) -> Callable:
-        if not self.token:
-            raise TokenError("Token is required, see documentation.")
-        return method(self, *args, **kwargs)
-
-    return wrapper
-
-
-def public_token(method: Callable) -> Callable:
-    @wraps(method)
-    def wrapper(self: Any, *args: Any, **kwargs: Any) -> Callable:
-        if not self.token:
-            response = httpx.get(
-                f"{SITE_URL}/api/adout-api-route/refresh-token-and-validate-session"
-            )
-            response.raise_for_status()
-            self.token = response.json()["bearerToken"]
-        return method(self, *args, **kwargs)
-
-    return wrapper
 
 
 def _make_request(

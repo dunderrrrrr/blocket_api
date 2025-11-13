@@ -1,9 +1,11 @@
 from dataclasses import dataclass
 from enum import Enum
 from typing import Literal
+
 import httpx
 
-QASA_URL = "https://api.qasa.se/graphql"
+from .constants import QASA_URL
+
 HOME_SEARCH_ORDERING = Literal["descending", "ascending"]
 
 

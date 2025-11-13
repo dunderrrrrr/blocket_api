@@ -2,7 +2,8 @@ import httpx
 import pytest
 import respx
 
-from blocket_api.blocket import BASE_URL, APIError, BlocketAPI, _make_request
+from blocket_api.blocket import APIError, BlocketAPI, _make_request
+from blocket_api.constants import BASE_URL
 
 api = BlocketAPI("token")
 

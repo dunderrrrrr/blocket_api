@@ -3,7 +3,8 @@ import datetime
 import respx
 from httpx import Response
 
-from blocket_api.blocket import BASE_URL, BYTBIL_URL, BlocketAPI, Category, Region
+from blocket_api.blocket import BlocketAPI, Category, Region
+from blocket_api.constants import BASE_URL, BYTBIL_URL
 from blocket_api.models import (
     AdByIdAdvertiser,
     AdByIdBlocketPackage,
