@@ -181,3 +181,45 @@ httpx.get(
     headers={"accept": "application/json"}
 )
 ```
+
+## List threads and messages
+
+You can list all your threads and get messages related to that thread using two different endpoints. One lists all threads, the other fetches messages based on a thread id (called channel id). 
+
+This is a very simple script that loops through all threads and prints the messages.
+
+```py
+import json
+import httpx
+
+threads = httpx.get(
+    "https://blocket-api.se/v1/get-threads?limit=15&token=token"
+).json()["channels"]
+
+
+for thread in threads:
+    channel_url = thread["channel_url"]
+    subject = json.loads(thread["data"])["ad"]["subject"]
+    print(f"Subject: {subject}\n")
+
+    messages = httpx.get(
+        f"https://blocket-api.se/v1/get-messages-from-thread?channel_id={channel_url}&token=token"
+    ).json()["messages"]
+
+    for m in messages:
+        print(f'{m["user"]["nickname"]}: {m["message"]}')
+    print("------------------------")
+
+```
+
+Returns:
+
+```
+------------------------
+Subject: Grästrimmer (el), som ny!
+
+Kalle: Tja! Finns denna kvar? 😊
+Nisse: Det går bra, hämta den nu så är den din 👍
+Kalle: Jättebra, kommer direkt!
+------------------------
+```
