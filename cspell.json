@@ -39,5 +39,11 @@
         "ekey",
         "pmce",
         "oweb",
+        "uptodate",
+        "noti",
+        "dedup",
+        "uptodate",
+        "noti",
+        "MESG",        
     ],
 }
