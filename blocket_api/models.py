@@ -1,35 +1,39 @@
 import datetime
 from typing import Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 ### CustomSearch ###
 
 
-class CustomSearchPrice(BaseModel):
+class _BaseModel(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+
+class CustomSearchPrice(_BaseModel):
     suffix: str
     value: int
 
 
-class CustomSearchLocation(BaseModel):
+class CustomSearchLocation(_BaseModel):
     image_url: str
     label: str
     query_key: str | None = None
 
 
-class CustomSearchImage(BaseModel):
+class CustomSearchImage(_BaseModel):
     height: int
     type: str
     url: str
     width: int
 
 
-class CustomSearchCategory(BaseModel):
+class CustomSearchCategory(_BaseModel):
     id: str
     name: str
 
 
-class CustomSearchResult(BaseModel):
+class CustomSearchResult(_BaseModel):
     ad_id: str
     ad_status: str
     body: str
@@ -47,7 +51,7 @@ class CustomSearchResult(BaseModel):
     zipcode: str | None = None
 
 
-class CustomSearchResults(BaseModel):
+class CustomSearchResults(_BaseModel):
     data: list[CustomSearchResult]
     total_count: int
 
@@ -55,23 +59,23 @@ class CustomSearchResults(BaseModel):
 ### MotorSearch ###
 
 
-class MotorSearchCarEquipment(BaseModel):
+class MotorSearchCarEquipment(_BaseModel):
     label: str
 
 
-class MotorSearchCarLocation(BaseModel):
+class MotorSearchCarLocation(_BaseModel):
     region: str
     municipality: str
     area: str
 
 
-class MotorSearchCarImage(BaseModel):
+class MotorSearchCarImage(_BaseModel):
     height: int
     width: int
     image: str
 
 
-class MotorSearchCar(BaseModel):
+class MotorSearchCar(_BaseModel):
     images: list[MotorSearchCarImage]
     location: MotorSearchCarLocation
     fuel: str
@@ -81,19 +85,19 @@ class MotorSearchCar(BaseModel):
     equipment: list[MotorSearchCarEquipment] | None = None
 
 
-class MotorSearchPrice(BaseModel):
+class MotorSearchPrice(_BaseModel):
     amount: str
     billingPeriod: str
     oldPrice: str | None = None
 
 
-class MotorSearchSeller(BaseModel):
+class MotorSearchSeller(_BaseModel):
     type: str
     name: str
     id: str
 
 
-class MotorSearchResult(BaseModel):
+class MotorSearchResult(_BaseModel):
     dealId: str
     link: str
     listTime: datetime.datetime
@@ -106,7 +110,7 @@ class MotorSearchResult(BaseModel):
     description: str
 
 
-class MotorSearchResults(BaseModel):
+class MotorSearchResults(_BaseModel):
     cars: list[MotorSearchResult]
     hits: int
     pages: int
@@ -115,24 +119,24 @@ class MotorSearchResults(BaseModel):
 ### StoreSearch ###
 
 
-class StoreSearchLocation(BaseModel):
+class StoreSearchLocation(_BaseModel):
     longitude: float
     latitude: float
 
 
-class StoreSearchImage(BaseModel):
+class StoreSearchImage(_BaseModel):
     height: int
     width: int
     url: str
 
 
-class StoreSearchLogotype(BaseModel):
+class StoreSearchLogotype(_BaseModel):
     height: int
     width: int
     url: str
 
 
-class StoreSearchResult(BaseModel):
+class StoreSearchResult(_BaseModel):
     address: str | None = None
     id: str
     logotype: StoreSearchLogotype
@@ -146,7 +150,7 @@ class StoreSearchResult(BaseModel):
     category: str
 
 
-class StoreSearchResults(BaseModel):
+class StoreSearchResults(_BaseModel):
     data: list[StoreSearchResult]
     total_count: int
     total_page_count: int
@@ -155,12 +159,12 @@ class StoreSearchResults(BaseModel):
 ### HomeSearch ###
 
 
-class HomeSearchGeoPoint(BaseModel):
+class HomeSearchGeoPoint(_BaseModel):
     lat: float
     lon: float
 
 
-class HomeSearchLocation(BaseModel):
+class HomeSearchLocation(_BaseModel):
     id: int
     locality: str
     countryCode: str
@@ -169,14 +173,14 @@ class HomeSearchLocation(BaseModel):
     route: str
 
 
-class HomeSearchUpload(BaseModel):
+class HomeSearchUpload(_BaseModel):
     id: int
     order: int | None = None
     type: str
     url: str
 
 
-class HomeSearchResult(BaseModel):
+class HomeSearchResult(_BaseModel):
     bedroomCount: int | None = None
     blockListing: bool
     rentalLengthSeconds: float | None = None
@@ -216,7 +220,7 @@ class HomeSearchResult(BaseModel):
     uploads: list[HomeSearchUpload]
 
 
-class Documents(BaseModel):
+class Documents(_BaseModel):
     hasNextPage: bool
     hasPreviousPage: bool
     nodes: list[HomeSearchResult]
@@ -224,80 +228,80 @@ class Documents(BaseModel):
     totalCount: int
 
 
-class HomeIndexSearch(BaseModel):
+class HomeIndexSearch(_BaseModel):
     documents: Documents
 
 
-class DataModel(BaseModel):
+class DataModel(_BaseModel):
     homeIndexSearch: HomeIndexSearch
 
 
-class HomeSearchResults(BaseModel):
+class HomeSearchResults(_BaseModel):
     data: DataModel
 
 
 ### StoreListings ###
 
 
-class StoreListingContactMethods(BaseModel):
+class StoreListingContactMethods(_BaseModel):
     phone: bool
 
 
-class StoreListingAdvertiser(BaseModel):
+class StoreListingAdvertiser(_BaseModel):
     contact_methods: StoreListingContactMethods
     name: str
     store_name: str | None = None
     type: str
 
 
-class StoreListingAttribute(BaseModel):
+class StoreListingAttribute(_BaseModel):
     header: str
     id: str
     items: list[str]
 
 
-class StoreListingCategory(BaseModel):
+class StoreListingCategory(_BaseModel):
     id: str
     name: str
 
 
-class StoreListingImage(BaseModel):
+class StoreListingImage(_BaseModel):
     height: int
     type: str
     url: str
     width: int
 
 
-class StorListingLocationItem(BaseModel):
+class StorListingLocationItem(_BaseModel):
     id: str
     name: str
     query_key: str
 
 
-class StoreListingParameter(BaseModel):
+class StoreListingParameter(_BaseModel):
     id: str
     label: str
     value: str
     suffix: str | None = None
 
 
-class ParameterGroup(BaseModel):
+class ParameterGroup(_BaseModel):
     label: str
     parameters: list[StoreListingParameter]
     type: str
 
 
-class StoreListingPartnerInfo(BaseModel):
+class StoreListingPartnerInfo(_BaseModel):
     external_id: str
     name: str
 
 
-class StoreListingPrice(BaseModel):
+class StoreListingPrice(_BaseModel):
     suffix: str
     value: int
 
 
-class StoreListing(BaseModel):
+class StoreListing(_BaseModel):
     ad_id: str
     ad_status: str
     advertiser: StoreListingAdvertiser
@@ -319,19 +323,19 @@ class StoreListing(BaseModel):
     type: str
 
 
-class StoreListings(BaseModel):
+class StoreListings(_BaseModel):
     data: list[StoreListing]
 
 
 ### GetAdById ###
 
 
-class AdByIdReviews(BaseModel):
+class AdByIdReviews(_BaseModel):
     overall_score: int
     reviews_received_count: int
 
 
-class AdByIdPublicProfile(BaseModel):
+class AdByIdPublicProfile(_BaseModel):
     account_created_at: str
     badges: list[Any]
     blocket_account_id: str
@@ -342,11 +346,11 @@ class AdByIdPublicProfile(BaseModel):
     verified_label: str
 
 
-class AdByIdContactMethods(BaseModel):
+class AdByIdContactMethods(_BaseModel):
     mc: bool
 
 
-class AdByIdAdvertiser(BaseModel):
+class AdByIdAdvertiser(_BaseModel):
     account_id: str
     contact_methods: AdByIdContactMethods
     name: str
@@ -354,57 +358,57 @@ class AdByIdAdvertiser(BaseModel):
     type: str
 
 
-class AdByIdCategory(BaseModel):
+class AdByIdCategory(_BaseModel):
     id: str
     name: str
 
 
-class AdByIdImage(BaseModel):
+class AdByIdImage(_BaseModel):
     height: int
     type: str
     url: str
     width: int
 
 
-class AdByIdLocation(BaseModel):
+class AdByIdLocation(_BaseModel):
     id: str
     name: str
     query_key: str
 
 
-class AdByIdMap(BaseModel):
+class AdByIdMap(_BaseModel):
     image_url: str
     label: str
     type: str
 
 
-class AdByIdParameter(BaseModel):
+class AdByIdParameter(_BaseModel):
     id: str
     label: str
     value: str
     suffix: str | None = None
 
 
-class AdByIdParameterGroup(BaseModel):
+class AdByIdParameterGroup(_BaseModel):
     label: str
     parameters: list[AdByIdParameter]
     type: str
 
 
-class AdByIdPrice(BaseModel):
+class AdByIdPrice(_BaseModel):
     suffix: str
     value: int
 
 
-class AdByIdFeatures(BaseModel):
+class AdByIdFeatures(_BaseModel):
     is_part_of_merge: bool
 
 
-class AdByIdUrls(BaseModel):
+class AdByIdUrls(_BaseModel):
     seller_activate: str
 
 
-class AdByIdBlocketPackage(BaseModel):
+class AdByIdBlocketPackage(_BaseModel):
     activated_providers: list[Any]
     ad_id: str
     blocket_payment_backwards_compatability: Any
@@ -426,7 +430,7 @@ class AdByIdBlocketPackage(BaseModel):
     urls: AdByIdUrls
 
 
-class AdByIdGamApiKeywords(BaseModel):
+class AdByIdGamApiKeywords(_BaseModel):
     adid: list[str]
     adtitle: list[str]
     adtype: list[str]
@@ -451,7 +455,7 @@ class AdByIdGamApiKeywords(BaseModel):
     services: list[Any]
 
 
-class AdByIdClientKeywords(BaseModel):
+class AdByIdClientKeywords(_BaseModel):
     cmp_advertising: str
     logged_in: str
     page_gen: str
@@ -465,39 +469,39 @@ class AdByIdClientKeywords(BaseModel):
     viewport_width: str
 
 
-class AdByIdGamContext(BaseModel):
+class AdByIdGamContext(_BaseModel):
     api_keywords: AdByIdGamApiKeywords
     client_keywords: AdByIdClientKeywords
 
 
-class AdByIdContext(BaseModel):
+class AdByIdContext(_BaseModel):
     gam: AdByIdGamContext
     network_id: str | None = None
 
 
-class AdByIdInventory(BaseModel):
+class AdByIdInventory(_BaseModel):
     context: AdByIdContext
 
 
-class AdByIdGamKeywords(BaseModel):
+class AdByIdGamKeywords(_BaseModel):
     adformat: list[str]
     adsize: list[str]
 
 
-class AdByIdGamMediaType(BaseModel):
+class AdByIdGamMediaType(_BaseModel):
     height: int | None = None
     type: str
     width: int | None = None
 
 
-class AdByIdGamPlacement(BaseModel):
+class AdByIdGamPlacement(_BaseModel):
     keywords: AdByIdGamKeywords
     media_types: list[AdByIdGamMediaType]
     path: str
     target_id: str
 
 
-class AdByIdPlacement(BaseModel):
+class AdByIdPlacement(_BaseModel):
     gam: AdByIdGamPlacement | None = None
     type: str
     vendor: str
@@ -505,7 +509,7 @@ class AdByIdPlacement(BaseModel):
     safe_purchase: dict[str, Any] | None = None
 
 
-class AdByIdData(BaseModel):
+class AdByIdData(_BaseModel):
     ad_id: str
     ad_status: str
     advertiser: AdByIdAdvertiser
@@ -530,7 +534,7 @@ class AdByIdData(BaseModel):
     blocket_package: AdByIdBlocketPackage
 
 
-class AdByIdResults(BaseModel):
+class AdByIdResults(_BaseModel):
     data: AdByIdData
     inventory: AdByIdInventory
     placements: list[AdByIdPlacement] | None = None
@@ -539,7 +543,7 @@ class AdByIdResults(BaseModel):
 ### GetUserById ###
 
 
-class BlocketUserAccount(BaseModel):
+class BlocketUserAccount(_BaseModel):
     blocket_account_id: str
     created_at: datetime.datetime
     is_verified: bool
@@ -548,7 +552,7 @@ class BlocketUserAccount(BaseModel):
     verified_with: str
 
 
-class BlocketUserAd(BaseModel):
+class BlocketUserAd(_BaseModel):
     ad_id: str
     ad_url: str
     image_url: str
@@ -557,13 +561,13 @@ class BlocketUserAd(BaseModel):
     subject: str
 
 
-class BlocketUserActiveAds(BaseModel):
+class BlocketUserActiveAds(_BaseModel):
     ads: list[BlocketUserAd]
     label_primary: str
     label_secondary: str
 
 
-class BlocketUserBadge(BaseModel):
+class BlocketUserBadge(_BaseModel):
     description: str
     icon: str
     icon_blocket_ui: str
@@ -571,19 +575,19 @@ class BlocketUserBadge(BaseModel):
     label: str
 
 
-class BlocketUserCO2Savings(BaseModel):
+class BlocketUserCO2Savings(_BaseModel):
     date_range: str
     equivalent: str
     text: str
 
 
-class BlocketUserProfileInfo(BaseModel):
+class BlocketUserProfileInfo(_BaseModel):
     description: str | None = None
     has_reviews: bool
     name: str
 
 
-class BlocketUser(BaseModel):
+class BlocketUser(_BaseModel):
     account: BlocketUserAccount
     active_ads: BlocketUserActiveAds
     badges: list[BlocketUserBadge]
@@ -595,7 +599,7 @@ class BlocketUser(BaseModel):
 ### SavedSearchesResult ###
 
 
-class SavedSearch(BaseModel):
+class SavedSearch(_BaseModel):
     id: str
     name: str
     query: str
@@ -606,5 +610,5 @@ class SavedSearch(BaseModel):
     email_enabled: bool | None = None
 
 
-class SavedSearchResponse(BaseModel):
+class SavedSearchResponse(_BaseModel):
     searches: list[SavedSearch]
