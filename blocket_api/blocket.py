@@ -130,6 +130,7 @@ CHASSI_OPTIONS = Literal[
     "Kombi", "SUV", "Sedan", "Halvkombi", "Coupé", "Cab", "Familjebuss", "Yrkesfordon"
 ]
 GEARBOX_OPTIONS = Literal["Automat", "Manuell"]
+COLOR_OPTIONS = Literal["Blå", "Brun", "Grå", "Grön", "Gul", "Röd", "Svart", "Vit"]
 
 
 class APIError(Exception): ...
@@ -352,6 +353,7 @@ class BlocketAPI:
         modelYear: Optional[Tuple[int, int]] = None,
         milage: Optional[Tuple[int, int]] = None,
         gearbox: Optional[GEARBOX_OPTIONS] = None,
+        color: Optional[List[COLOR_OPTIONS]] = None,
         *,
         as_objects: Literal[False] = False,
     ) -> dict: ...
@@ -367,6 +369,7 @@ class BlocketAPI:
         modelYear: Optional[Tuple[int, int]] = None,
         milage: Optional[Tuple[int, int]] = None,
         gearbox: Optional[GEARBOX_OPTIONS] = None,
+        color: Optional[List[COLOR_OPTIONS]] = None,
         *,
         as_objects: bool = False,
     ) -> Union[dict, MotorSearchResults]: ...
@@ -382,6 +385,7 @@ class BlocketAPI:
         modelYear: Optional[Tuple[int, int]] = None,
         milage: Optional[Tuple[int, int]] = None,
         gearbox: Optional[GEARBOX_OPTIONS] = None,
+        color: Optional[List[COLOR_OPTIONS]] = None,
         *,
         as_objects: bool = False,
     ) -> dict | MotorSearchResults:
