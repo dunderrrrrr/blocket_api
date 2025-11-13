@@ -36,5 +36,8 @@
         "schenvhash",
         "stjacka",
         "venv",
+        "ekey",
+        "pmce",
+        "oweb",
     ],
 }

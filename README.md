@@ -60,6 +60,8 @@ Some calls require a `bearerToken`. However, some calls are public and don't req
 | [`api.get_user_by_id()`](#get_user_by_id)  | 👏 No | Yes | Get user data from id.
 | [`api.save_ad()`](#save_ad)  | 🔐 Yes | - | Save ad to "Saved ads".
 | [`api.get_saved_ads()`](#get_saved_ads)  | 🔐 Yes | - | List all saved ads. 
+| [`api.get_threads()`](#get_threads)  | 🔐 Yes | - | List all threads (messages).
+| [`api.get_messages_from_thread()`](#get_messages_from_thread)  | 🔐 Yes | - | Get all messages from a thread. 
 
 
 ## 🤓 Detailed usage
@@ -347,6 +349,13 @@ Returns all of your saved ads from `https://www.blocket.se/sparade/annonser`.
 }
 
 ```
+
+### get_threads
+Returns all of your threads/conversations from Blocket. This api requires a token.
+
+
+### get_messages_from_thread
+Returns all of your messages from an existing thread/conversation. This api requires a token as well as the channel id. The channel id can be found by using `get_threads()`. Ex: sendbird_group_channel_12345_abc123abcde.
 
 ## 🔐 Blocket API token
 
