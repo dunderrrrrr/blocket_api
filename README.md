@@ -173,6 +173,7 @@ To query listings related to a specific car, supply the following parameters:
 - `modelYear` (`Optional[Tuple[int, int]]`) - Set model year range, ex. `(2000, 2020)`.
 - `milage` (`Optional[Tuple[int, int]]`) - Set milage range, ex. `(1000, 2000)`.
 - `gearbox` (`Optional[GEARBOX_OPTIONS]`) - Filter a specific gearbox, ex. `Automat`.
+- `color` (`Optional[List[COLOR_OPTIONS]]`) - Filter a specific color.
 - `as_objects` (`bool`, optional) - Return results as pydantic models, default is `False`.
 
 ```py
@@ -180,6 +181,7 @@ To query listings related to a specific car, supply the following parameters:
     make=["Audi", "Ford"],
     fuel=["Diesel"],
     chassi=["Cab"],
+    chassi=["Blå", "Röd"],
     price=(50000, 100000),
     page=1,
 )
