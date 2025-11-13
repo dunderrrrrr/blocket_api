@@ -353,9 +353,55 @@ Returns all of your saved ads from `https://www.blocket.se/sparade/annonser`.
 ### get_threads
 Returns all of your threads/conversations from Blocket. This api requires a token.
 
+- `limit` (`int`, optional) - Number of threads to return, default is 15.
+
+```py
+>>> api = BlocketAPI("YourBlocketTokenHere")
+>>> api.get_threads()
+{
+   "channels": [
+      {     
+         "channel_url": "sendbird_group_channel_123",
+         "name": "from:user-id,ad:1214281684,to:c1-user-id",
+         "data": {
+            "ad": {
+               "id": "1214281684",
+               "advertiser_name": "Kalle",
+               "subject": "Elsparkcykel",
+               "status": "active",
+               "url": "https://www.blocket.se/annons/1214281684",
+               "price": "2 400 kr"
+            },
+         },
+      },
+      ...
+   ],
+}
+```
+
+
 
 ### get_messages_from_thread
-Returns all of your messages from an existing thread/conversation. This api requires a token as well as the channel id. The channel id can be found by using `get_threads()`. Ex: sendbird_group_channel_12345_abc123abcde.
+Returns all of your messages from an existing thread/conversation.
+
+- `channel_id` (`str`, required) - The channel id to fetch messages from.
+
+```py
+>>> api = BlocketAPI("YourBlocketTokenHere")
+>>> api.get_messages_from_thread("sendbird_group_channel_123")
+{
+   "messages": [
+      {
+         "type": "MESG",
+         "message_id": 1354913370,
+         "message": "Hey, is your thing still for sale?",
+         ...
+      },
+   ],
+}
+```
+
+
 
 ## 🔐 Blocket API token
 
