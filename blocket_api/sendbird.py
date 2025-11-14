@@ -175,3 +175,16 @@ class Sendbird:
         )
         response.raise_for_status()
         return response.json()
+
+    def unread_messages_count(self) -> dict:
+        sendbird = SendbirdResponse.model_validate_json(self.sendbird_client.get_data())
+        response = httpx.get(
+            f"{SENDBIRD_URL}/v3/users/{self.sendbird_client.user_id}/unread_message_count",
+            params={"super_mode": "all", "include_feed_channel": False},
+            headers={
+                "Session-Key": sendbird.session_key,
+                "Access-Token": self.sendbird_client.access_token,
+            },
+        )
+        response.raise_for_status()
+        return response.json()

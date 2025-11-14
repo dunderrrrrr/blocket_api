@@ -62,6 +62,7 @@ Some calls require a `bearerToken`. However, some calls are public and don't req
 | [`api.get_saved_ads()`](#get_saved_ads)  | 🔐 Yes | - | List all saved ads. 
 | [`api.get_threads()`](#get_threads)  | 🔐 Yes | - | List all threads (messages).
 | [`api.get_messages_from_thread()`](#get_messages_from_thread)  | 🔐 Yes | - | Get all messages from a thread. 
+| [`api.unread_messages_count()`](#unread_messages_count)  | 🔐 Yes | Yes | Get the total count of unread messages.
 
 
 ## 🤓 Detailed usage
@@ -398,6 +399,17 @@ Returns all of your messages from an existing thread/conversation.
          ...
       },
    ],
+}
+```
+
+### unread_messages_count
+Returns the count of unread messages.
+
+```py
+>>> api = BlocketAPI("YourBlocketTokenHere")
+>>> api.unread_messages_count()
+{
+   "unread_count": 5
 }
 ```
 

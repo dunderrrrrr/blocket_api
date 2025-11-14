@@ -17,6 +17,7 @@ from blocket_api.models import (
     SavedSearchResponse,
     StoreListings,
     StoreSearchResults,
+    UnreadMessagesCount,
 )
 from blocket_api.qasa import HOME_SEARCH_ORDERING, HomeType, OrderBy, Qasa
 
@@ -609,3 +610,22 @@ class BlocketAPI:
         assert self.token
         sendbird = Sendbird.generate(self.token)
         return sendbird.get_messages_from_thread(channel_id)
+
+    @overload
+    def unread_messages_count(
+        self, *, as_objects: Literal[True]
+    ) -> UnreadMessagesCount: ...
+
+    @overload
+    def unread_messages_count(self, *, as_objects: Literal[False] = False) -> dict: ...
+
+    @auth_token
+    def unread_messages_count(
+        self, as_objects: bool = False
+    ) -> dict | UnreadMessagesCount:
+        """
+        Returns the total count of unread messages.
+        """
+        assert self.token
+        response = Sendbird.generate(self.token).unread_messages_count()
+        return UnreadMessagesCount.model_validate(response) if as_objects else response
