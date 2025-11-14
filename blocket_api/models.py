@@ -612,3 +612,10 @@ class SavedSearch(_BaseModel):
 
 class SavedSearchResponse(_BaseModel):
     searches: list[SavedSearch]
+
+
+## UnreadMessagesCount ##
+
+
+class UnreadMessagesCount(_BaseModel):
+    unread_count: int
