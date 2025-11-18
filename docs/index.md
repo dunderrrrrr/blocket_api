@@ -4,9 +4,14 @@ hide:
   - navigation
 ---
 
+!!! danger
+    API is currently unavailable due to updates in underlying blocket.se api updates.<br>
+    More information in [issue #41](https://github.com/dunderrrrrr/blocket_api/issues/41).
+
 <p align="center">
   <img src="https://blocket-api.se/blocket-api.png" />
 </p>
+
 
 
 # Welcome to BlocketAPI
