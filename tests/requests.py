@@ -1,52 +1,95 @@
 import httpx
-import pytest
 import respx
 
-from blocket_api.blocket import APIError, BlocketAPI, _make_request
-from blocket_api.constants import BASE_URL
+from blocket_api import BlocketAPI, Category, Location, SortOrder, SubCategory
+from blocket_api.constants import SITE_URL
 
-api = BlocketAPI("token")
-
-
-def test_make_request_no_raise() -> None:
-    _make_request(url=f"{BASE_URL}/not_found", token="token", raise_for_status=False)
+api = BlocketAPI()
 
 
 @respx.mock
-def test_make_request_raise_404() -> None:
-    respx.get(f"{BASE_URL}/not_found").mock(
-        return_value=httpx.Response(status_code=404),
+def test_search() -> None:
+    expected_url = (
+        f"{SITE_URL}/recommerce-search-page/api/search/SEARCH_ID_BAP_COMMON"
+        "?q=audi+q5"
+        "&sort=RELEVANCE"
     )
-    with pytest.raises(APIError):
-        _make_request(url=f"{BASE_URL}/not_found", token="token", raise_for_status=True)
-
-
-@respx.mock
-def test_make_request_raise_401() -> None:
-    respx.get(f"{BASE_URL}/unauthorized").mock(
-        return_value=httpx.Response(status_code=401),
+    respx.get(expected_url).mock(
+        return_value=httpx.Response(200, json={"status": "ok"})
     )
-    with pytest.raises(APIError):
-        _make_request(url=f"{BASE_URL}/unauthorized", token="token")
+    result = api.search("audi q5")
+    assert result == {"status": "ok"}
 
 
 @respx.mock
-def test_make_request_get() -> None:
-    """Test make_request with GET method."""
-    respx.get(BASE_URL).mock(return_value=httpx.Response(200, json={"success": True}))
-
-    result = _make_request(url=BASE_URL, token="token")
-
-    assert result.status_code == 200
-    assert result.json() == {"success": True}
+def test_search_sortorder_published_desc() -> None:
+    expected_url = (
+        f"{SITE_URL}/recommerce-search-page/api/search/SEARCH_ID_BAP_COMMON"
+        "?q=audi+q5"
+        "&sort=PUBLISHED_DESC"
+    )
+    respx.get(expected_url).mock(
+        return_value=httpx.Response(200, json={"status": "ok"})
+    )
+    result = api.search("audi q5", sort_order=SortOrder.PUBLISHED_DESC)
+    assert result == {"status": "ok"}
 
 
 @respx.mock
-def test_make_request_put() -> None:
-    """Test make_request with PUT method."""
-    respx.put(BASE_URL).mock(return_value=httpx.Response(200, json={"success": True}))
+def test_search_location() -> None:
+    expected_url = (
+        f"{SITE_URL}/recommerce-search-page/api/search/SEARCH_ID_BAP_COMMON"
+        "?q=audi+q5"
+        "&sort=PUBLISHED_DESC"
+        "&location=0.300003"
+        "&location=0.300001"
+    )
+    respx.get(expected_url).mock(
+        return_value=httpx.Response(200, json={"status": "ok"})
+    )
+    result = api.search(
+        "audi q5",
+        sort_order=SortOrder.PUBLISHED_DESC,
+        locations=[
+            Location.UPPSALA,
+            Location.STOCKHOLM,
+        ],
+    )
+    assert result == {"status": "ok"}
 
-    result = _make_request(method=httpx.put, url=BASE_URL, token="token")
 
-    assert result.status_code == 200
-    assert result.json() == {"success": True}
+@respx.mock
+def test_search_category() -> None:
+    expected_url = (
+        f"{SITE_URL}/recommerce-search-page/api/search/SEARCH_ID_BAP_COMMON"
+        "?q=audi+q5"
+        "&sort=PUBLISHED_DESC"
+        "&category=0.90"
+    )
+    respx.get(expected_url).mock(
+        return_value=httpx.Response(200, json={"status": "ok"})
+    )
+    result = api.search(
+        "audi q5",
+        sort_order=SortOrder.PUBLISHED_DESC,
+        category=Category.FORDONSTILLBEHOR,
+    )
+    assert result == {"status": "ok"}
+
+
+@respx.mock
+def test_sub_category() -> None:
+    expected_url = (
+        f"{SITE_URL}/recommerce-search-page/api/search/SEARCH_ID_BAP_COMMON"
+        "?q=hammare"
+        "&sort=RELEVANCE"
+        "&sub_category=1.67.5219"
+    )
+    respx.get(expected_url).mock(
+        return_value=httpx.Response(200, json={"status": "ok"})
+    )
+    result = api.search(
+        "hammare",
+        sub_category=SubCategory.VERKTYG,
+    )
+    assert result == {"status": "ok"}
