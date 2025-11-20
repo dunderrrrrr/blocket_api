@@ -1,7 +1,15 @@
 import httpx
 import respx
 
-from blocket_api import BlocketAPI, Category, Location, SortOrder, SubCategory
+from blocket_api import (
+    BlocketAPI,
+    CarModel,
+    CarSortOrder,
+    Category,
+    Location,
+    SortOrder,
+    SubCategory,
+)
 from blocket_api.constants import SITE_URL
 
 api = BlocketAPI()
@@ -88,5 +96,27 @@ class Test_Search:
         result = api.search(
             "hammare",
             sub_category=SubCategory.VERKTYG,
+        )
+        assert result == {"status": "ok"}
+
+
+class Test_SearchCar:
+    @respx.mock
+    def test_search_car(self) -> None:
+        expected_url = (
+            f"{SITE_URL}/mobility/search/api/search/SEARCH_ID_CAR_USED"
+            "?sort=MILEAGE_ASC"
+            "&make=0.744"
+            "&price_from=1000"
+            "&price_to=50000"
+        )
+        respx.get(expected_url).mock(
+            return_value=httpx.Response(200, json={"status": "ok"})
+        )
+        result = api.search_car(
+            sort_order=CarSortOrder.MILEAGE_ASC,
+            models=[CarModel.AUDI],
+            price_from=1000,
+            price_to=50000,
         )
         assert result == {"status": "ok"}

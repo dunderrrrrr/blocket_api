@@ -1,4 +1,4 @@
-from enum import StrEnum
+from enum import IntEnum, StrEnum
 
 SITE_URL = "https://www.blocket.se"
 HEADERS = {
@@ -12,6 +12,21 @@ class SortOrder(StrEnum):
     PRICE_ASC = "PRICE_ASC"
     PUBLISHED_DESC = "PUBLISHED_DESC"
     PUBLISHED_ASC = "PUBLISHED_ASC"
+
+
+class CarSortOrder(StrEnum):
+    RELEVANCE = "RELEVANCE"
+    PRICE_DESC = "PRICE_DESC"
+    PRICE_ASC = "PRICE_ASC"
+    PUBLISHED_DESC = "PUBLISHED_DESC"
+    PUBLISHED_ASC = "PUBLISHED_ASC"
+
+    # Car specific
+    MILEAGE_DESC = "MILEAGE_DESC"
+    MILEAGE_ASC = "MILEAGE_ASC"
+    MODEL = "MODEL"
+    YEAR_DESC = "YEAR_DESC"
+    YEAR_ASC = "YEAR_ASC"
 
 
 class Location(StrEnum):
@@ -105,3 +120,169 @@ class SubCategory(StrEnum):
     VITVAROR = "1.93.3907"
     ATV_RESERVDELAR = "1.90.3975"
     OVRIGT = "1.90.3974"
+
+
+class CarModel(StrEnum):
+    ABARTH = "0.8093"
+    AC = "0.200673"
+    ACURA = "0.200674"
+    AIWAYS = "0.200681"
+    ALFA_ROMEO = "0.3233"
+    ALPINA = "0.8092"
+    AMC = "0.8103"
+    ARIEL = "0.8110"
+    ARMSTRONG_SIDDELEY = "0.1156"
+    ASTON_MARTIN = "0.6733"
+    AUDI = "0.744"
+    AUSTIN = "0.8076"
+    AUSTIN_HEALEY = "0.200688"
+    AUTO_UNION = "0.200689"
+    AUTOBIANCHI = "0.200690"
+    BEDFORD = "0.200693"
+    BENTLEY = "0.7166"
+    BMW = "0.749"
+    BUGATTI = "0.8111"
+    BUICK = "0.750"
+    BYD = "0.8101"
+    CADILLAC = "0.752"
+    CATERHAM = "0.200704"
+    CHEVROLET = "0.753"
+    CHRYSLER = "0.754"
+    CITROEN = "0.757"
+    CUPRA = "0.8106"
+    DACIA = "0.8079"
+    DAEWOO = "0.760"
+    DAF = "0.8090"
+    DAIHATSU = "0.762"
+    DAIMLER = "0.200711"
+    DATSUN = "0.8089"
+    DE_TOMASO = "0.8069"
+    DELOREAN = "0.8085"
+    DESOTO = "0.200715"
+    DFSK = "0.2174"
+    DKW = "0.200718"
+    DODGE = "0.764"
+    DS = "0.8091"
+    EDSEL = "0.200723"
+    ERSKINE = "0.200726"
+    EXCALIBUR = "0.200727"
+    FERRARI = "0.2999"
+    FIAT = "0.766"
+    FISKER = "0.8073"
+    FORD = "0.767"
+    FORDSON = "0.200730"
+    GAZ = "0.200734"
+    GINETTA = "0.200738"
+    GMC = "0.7547"
+    HEINKEL = "0.200745"
+    HILLMAN = "0.200746"
+    HOLDEN = "0.200747"
+    HONDA = "0.771"
+    HONGQI = "0.8107"
+    HUDSON = "0.200748"
+    HUMBER = "0.200749"
+    HUMMER = "0.7672"
+    HYUNDAI = "0.772"
+    INEOS = "0.2000665"
+    INFINITI = "0.8065"
+    INTERNATIONAL = "0.1160"
+    ISUZU = "0.7179"
+    IVECO = "0.7280"
+    JAC = "0.8114"
+    JAGUAR = "0.775"
+    JEEP = "0.776"
+    JENSEN = "0.774"
+    KAISER_JEEP = "0.1162"
+    KGM = "0.2000649"
+    KIA = "0.777"
+    KTM = "0.200761"
+    LADA = "0.779"
+    LAMBORGHINI = "0.6731"
+    LANCIA = "0.780"
+    LAND_ROVER = "0.781"
+    LEVC = "0.200764"
+    LEXUS = "0.782"
+    LEYLAND = "0.200765"
+    LINCOLN = "0.7153"
+    LOTUS = "0.7191"
+    LYNK_CO = "0.200769"
+    MAN = "0.8097"
+    MASERATI = "0.3001"
+    MAXUS = "0.8096"
+    MAZDA = "0.784"
+    MCLAREN = "0.8087"
+    MERCEDES_BENZ = "0.785"
+    MERCURY = "0.7554"
+    MESSERSCHMITT = "0.200774"
+    MG = "0.786"
+    MINI = "0.7147"
+    MINI_MARCOS = "0.200775"
+    MITSUBISHI = "0.787"
+    MORGAN = "0.788"
+    MORRIS = "0.789"
+    NIO = "0.8109"
+    NISSAN = "0.792"
+    OLDSMOBILE = "0.794"
+    OPEL = "0.795"
+    PACKARD = "0.8077"
+    PEUGEOT = "0.796"
+    PLYMOUTH = "0.797"
+    POLESTAR = "0.8102"
+    PONTIAC = "0.800"
+    PORSCHE = "0.801"
+    PRO_SPORT = "0.200792"
+    RADICAL = "0.8088"
+    RAM = "0.8100"
+    RENAULT = "0.804"
+    ROLLS_ROYCE = "0.7170"
+    ROVER = "0.805"
+    SAAB = "0.806"
+    SCION = "0.822"
+    SEAT = "0.807"
+    SERES = "0.8108"
+    SHELBY = "0.1142"
+    SIMCA = "0.200807"
+    SKODA = "0.808"
+    SMART = "0.7137"
+    SSANGYONG = "0.7190"
+    STANDARD = "0.200812"
+    STUDEBAKER = "0.200815"
+    SUBARU = "0.810"
+    SUZUKI = "0.811"
+    TESLA = "0.8078"
+    TOYOTA = "0.813"
+    TRABANT = "0.200824"
+    TRIUMPH = "0.814"
+    TVR = "0.820"
+    VAUXHALL = "0.200827"
+    VOLKSWAGEN = "0.817"
+    VOLVO = "0.818"
+    WILLYS = "0.200834"
+    XPENG = "0.8104"
+    ZEEKR = "0.200841"
+    ZIMMER = "0.200844"
+    OVRIGA = "0.2252"
+
+
+class CarColor(IntEnum):
+    BEIGE = 1
+    BLA = 2
+    BRONS = 3
+    BRUN = 4
+    GRA = 6
+    GRON = 5
+    GUL = 7
+    GULD = 8
+    VIT = 9
+    LILA = 10
+    ORANGE = 11
+    ROSA = 12
+    ROD = 13
+    SILVER = 15
+    SVART = 14
+    TURKOS = 16
+
+
+class CarTransmission(IntEnum):
+    AUTOMATIC = 2
+    MANUAL = 1
