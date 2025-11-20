@@ -4,7 +4,9 @@ from dataclasses import dataclass
 from typing import Any
 
 import httpx
+from httpx import Response
 
+from .ad_parser import CarAd, RecommerceAd
 from .constants import (
     HEADERS,
     SITE_URL,
@@ -29,14 +31,14 @@ def _request(
     *,
     url: str,
     params: list[QueryParam],
-) -> Any:
+) -> Response:
     response = httpx.get(
         url,
         headers=HEADERS,
         params=[(param.name, param.value) for param in params],
     )
     response.raise_for_status()
-    return response.json()
+    return response
 
 
 @dataclass(frozen=True)
@@ -62,7 +64,7 @@ class BlocketAPI:
             *([QueryParam("sub_category", sub_category.value)] if sub_category else []),
         ]
 
-        return _request(url=url, params=params)
+        return _request(url=url, params=params).json()
 
     def search_car(
         self,
@@ -96,4 +98,8 @@ class BlocketAPI:
             *[QueryParam("transmission", t.value) for t in transmission],
         ]
 
-        return _request(url=url, params=params)
+        return _request(url=url, params=params).json()
+
+    def get_ad(self, ad: RecommerceAd | CarAd) -> dict:
+        response = _request(url=ad.url, params=[])
+        return ad.parse(response)

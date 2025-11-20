@@ -16,6 +16,7 @@ dependencies = [
     "mkdocs-material>=9.6.21",
     "mkdocs-swagger-ui-tag>=0.7.2",
     "websockets>=15.0.1",
+    "beautifulsoup4>=4.14.2",
 ]
 
 
