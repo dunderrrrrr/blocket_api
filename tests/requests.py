@@ -3,10 +3,12 @@ import respx
 
 from blocket_api import (
     BlocketAPI,
+    CarAd,
     CarModel,
     CarSortOrder,
     Category,
     Location,
+    RecommerceAd,
     SortOrder,
     SubCategory,
 )
@@ -120,3 +122,81 @@ class Test_SearchCar:
             price_to=50000,
         )
         assert result == {"status": "ok"}
+
+
+class Test_GetAd:
+    @respx.mock
+    def test_get_ad_recommerce(self) -> None:
+        expected_url = f"{SITE_URL}/recommerce/forsale/item/12345567"
+        respx.get(expected_url).mock(
+            return_value=httpx.Response(
+                200,
+                content=b'<script>window.__staticRouterHydrationData = JSON.parse("{"some": "json here"}");</script>',
+            )
+        )
+        result = api.get_ad(RecommerceAd(12345567))
+        assert result == {"some": "json here"}
+
+    @respx.mock
+    def test_get_ad_car(self) -> None:
+        expected_url = f"{SITE_URL}/mobility/item/123456"
+        html = """
+            <div class="grid grid-cols-1 md:grid-cols-3 md:gap-x-32">
+
+                <h1 class="t1">Volvo V60</h1>
+                <p class="s-text-subtle mt-8">D4 AWD Momentum</p>
+
+                <div class="grid gap-24">
+                    <div class="flex gap-16 hyphens-auto">
+                        <span class="s-text-subtle">Modellår</span>
+                        <p class="m-0 font-bold">2020</p>
+                    </div>
+                    <div class="flex gap-16 hyphens-auto">
+                        <span class="s-text-subtle">Miltal</span>
+                        <p class="m-0 font-bold">4500</p>
+                    </div>
+                </div>
+
+                <div class="border-t pt-40 mt-40">
+                    <p class="s-text-subtle mb-0">Pris</p>
+                    <span class="t2">389 000 kr</span>
+                </div>
+
+                <section class="border-t mt-40 pt-40">
+                    <h2 class="t3 mb-0">Beskrivning</h2>
+                    <div class="whitespace-pre-wrap">Mycket fin bil i nyskick.</div>
+                </section>
+
+                <section class="border-t pt-40 mt-40">
+                    <h2 class="t3 mb-0">Utrustning</h2>
+                    <ul>
+                        <li>ACC Klimatanläggning</li>
+                        <li>Adaptiv farthållare</li>
+                    </ul>
+                </section>
+
+            </div>
+
+            <div class="dealer">Återförsäljare</div>
+
+            <div class="text-m flex md:flex-row flex-col md:gap-x-56 gap-y-16">
+                <p class="s-text-subtle mb-0">Annons-ID</p>
+                <p>123456</p>
+            </div>
+        """
+        respx.get(expected_url).mock(
+            return_value=httpx.Response(200, content=html.encode("utf-8"))
+        )
+        result = api.get_ad(CarAd(123456))
+        assert result == {
+            "url": "https://www.blocket.se/mobility/item/123456",
+            "title": "Volvo V60",
+            "subtitle": "D4 AWD Momentum",
+            "model_year": "2020",
+            "mileage": "4500",
+            "price": "389 000 kr",
+            "description": "Mycket fin bil i nyskick.",
+            "equipment": ["ACC Klimatanläggning", "Adaptiv farthållare"],
+            "seller_type": "dealer",
+            "ad_id": "123456",
+        }

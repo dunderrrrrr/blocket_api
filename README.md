@@ -38,8 +38,8 @@ from blocket_api import (
 
 api = BlocketAPI()
 
-# will search all of blocket
-result = api.search(
+# search all of blocket
+api.search(
     "Vinterdäck Audi",
     sort_order=SortOrder.PRICE_ASC,
     locations=[Location.STOCKHOLM, Location.UPPSALA],
@@ -47,7 +47,7 @@ result = api.search(
 )
 
 # search for cars only
-result = api.search_car(
+api.search_car(
     "Audi", # query is optional
     sort_order=CarSortOrder.MILEAGE_ASC,
     models=[CarModel.AUDI],
@@ -57,6 +57,12 @@ result = api.search_car(
     transmission=CarTransmission.MANUAL,
     locations=[Location.STOCKHOLM],
 )
+
+# Get a recommerce or car ad
+from blocket_api import CarAd, RecommerceAd
+
+api.get_ad(RecommerceAd(12345678))
+api.get_ad(CarAd(12345678))
 ```
 
 ## 📝 Notes

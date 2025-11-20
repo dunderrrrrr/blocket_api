@@ -1,3 +1,5 @@
+from .ad_parser import CarAd as CarAd
+from .ad_parser import RecommerceAd as RecommerceAd
 from .blocket import BlocketAPI as BlocketAPI
 from .blocket import Location as Location
 from .constants import CarColor as CarColor
