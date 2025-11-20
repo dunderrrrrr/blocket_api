@@ -19,9 +19,7 @@ extra_css:
 
 nav:
   - Main: index.md
-  - preparations.md
   - API reference: api-reference.md
-  - examples.md
   - Swagger⤴: https://blocket-api.se/swagger
 
 plugins:
