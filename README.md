@@ -26,15 +26,36 @@ or use [blocket-api.se](https://blocket-api.se) without installing anything!
 ## 💁‍♀️ Usage
 
 ```py
-from blocket_api import BlocketAPI, Category, Location, SortOrder
+from blocket_api import (
+    BlocketAPI,
+    Category,
+    CarColor,
+    CarModel,
+    CarSortOrder,
+    CarTransmission,
+    Location,
+)
 
 api = BlocketAPI()
 
+# will search all of blocket
 result = api.search(
     "Vinterdäck Audi",
     sort_order=SortOrder.PRICE_ASC,
     locations=[Location.STOCKHOLM, Location.UPPSALA],
     category=Category.FORDONSTILLBEHOR,
+)
+
+# search for cars only
+result = api.search_car(
+    "Audi", # query is optional
+    sort_order=CarSortOrder.MILEAGE_ASC,
+    models=[CarModel.AUDI],
+    colors=[CarColor.GULD],
+    price_from=10000,
+    price_to=50000,
+    transmission=CarTransmission.MANUAL,
+    locations=[Location.STOCKHOLM],
 )
 ```
 

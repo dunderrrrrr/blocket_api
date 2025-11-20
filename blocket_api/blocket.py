@@ -5,13 +5,23 @@ from typing import Any
 
 import httpx
 
-from .constants import HEADERS, SITE_URL, Category, Location, SortOrder, SubCategory
+from .constants import (
+    HEADERS,
+    SITE_URL,
+    CarColor,
+    CarModel,
+    CarSortOrder,
+    Category,
+    Location,
+    SortOrder,
+    SubCategory,
+)
 
 
 @dataclass(frozen=True)
 class QueryParam:
     name: str
-    value: str
+    value: str | int
 
 
 def _request(
@@ -49,6 +59,40 @@ class BlocketAPI:
             *[QueryParam("location", location.value) for location in locations],
             *([QueryParam("category", category.value)] if category else []),
             *([QueryParam("sub_category", sub_category.value)] if sub_category else []),
+        ]
+
+        return _request(url=url, params=params)
+
+    def search_car(
+        self,
+        query: str | None = None,
+        *,
+        sort_order: CarSortOrder = CarSortOrder.RELEVANCE,
+        locations: list[Location] = [],
+        models: list[CarModel] = [],
+        price_from: int | None = None,
+        price_to: int | None = None,
+        year_from: int | None = None,
+        year_to: int | None = None,
+        milage_from: int | None = None,
+        milage_to: int | None = None,
+        colors: list[CarColor] = [],
+        transmission: int | None = None,
+    ) -> Any:
+        url = f"{SITE_URL}/mobility/search/api/search/SEARCH_ID_CAR_USED"
+        params = [
+            *([QueryParam("q", query)] if query else []),
+            QueryParam("sort", sort_order.value),
+            *[QueryParam("location", location.value) for location in locations],
+            *[QueryParam("make", model.value) for model in models],
+            *([QueryParam("price_from", price_from)] if price_from else []),
+            *([QueryParam("price_to", price_to)] if price_to else []),
+            *([QueryParam("year_from", year_from)] if year_from else []),
+            *([QueryParam("year_to", year_to)] if year_to else []),
+            *([QueryParam("milage_from", milage_from)] if milage_from else []),
+            *([QueryParam("milage_to", milage_to)] if milage_to else []),
+            *[QueryParam("exterior_colour", color.value) for color in colors],
+            *([QueryParam("transmission", transmission)] if transmission else []),
         ]
 
         return _request(url=url, params=params)
