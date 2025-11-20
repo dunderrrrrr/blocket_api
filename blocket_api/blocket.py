@@ -80,7 +80,7 @@ class BlocketAPI:
         milage_from: int | None = None,
         milage_to: int | None = None,
         colors: list[CarColor] = [],
-        transmission: list[CarTransmission] = [],
+        transmissions: list[CarTransmission] = [],
     ) -> Any:
         url = f"{SITE_URL}/mobility/search/api/search/SEARCH_ID_CAR_USED"
         params = [
@@ -95,7 +95,7 @@ class BlocketAPI:
             *([QueryParam("milage_from", milage_from)] if milage_from else []),
             *([QueryParam("milage_to", milage_to)] if milage_to else []),
             *[QueryParam("exterior_colour", color.value) for color in colors],
-            *[QueryParam("transmission", t.value) for t in transmission],
+            *[QueryParam("transmission", t.value) for t in transmissions],
         ]
 
         return _request(url=url, params=params).json()

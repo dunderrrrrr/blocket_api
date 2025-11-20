@@ -6,6 +6,7 @@ from blocket_api import (
     CarAd,
     CarModel,
     CarSortOrder,
+    CarTransmission,
     Category,
     Location,
     RecommerceAd,
@@ -111,6 +112,7 @@ class Test_SearchCar:
             "&make=0.744"
             "&price_from=1000"
             "&price_to=50000"
+            "&transmission=2"
         )
         respx.get(expected_url).mock(
             return_value=httpx.Response(200, json={"status": "ok"})
@@ -120,6 +122,7 @@ class Test_SearchCar:
             models=[CarModel.AUDI],
             price_from=1000,
             price_to=50000,
+            transmissions=[CarTransmission.AUTOMATIC],
         )
         assert result == {"status": "ok"}
 

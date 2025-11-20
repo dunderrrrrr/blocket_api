@@ -54,7 +54,7 @@ api.search_car(
     colors=[CarColor.GULD],
     price_from=10000,
     price_to=50000,
-    transmission=CarTransmission.MANUAL,
+    transmissions=[CarTransmission.MANUAL],
     locations=[Location.STOCKHOLM],
 )
 
