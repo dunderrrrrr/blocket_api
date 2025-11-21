@@ -21,10 +21,26 @@ class CarSortOrder(StrEnum):
     PUBLISHED_DESC = "PUBLISHED_DESC"
     PUBLISHED_ASC = "PUBLISHED_ASC"
 
-    # Car specific
+    # car specific
     MILEAGE_DESC = "MILEAGE_DESC"
     MILEAGE_ASC = "MILEAGE_ASC"
     MODEL = "MODEL"
+    YEAR_DESC = "YEAR_DESC"
+    YEAR_ASC = "YEAR_ASC"
+
+
+class BoatSortOrder(StrEnum):
+    RELEVANCE = "RELEVANCE"
+    PRICE_DESC = "PRICE_DESC"
+    PRICE_ASC = "PRICE_ASC"
+    PUBLISHED_DESC = "PUBLISHED_DESC"
+    PUBLISHED_ASC = "PUBLISHED_ASC"
+
+    # boat specific
+    LENGTH_DESC = "LENGTH_DESC"
+    LENGTH_ASC = "LENGTH_ASC"
+    SPEED_DESC = "SPEED_DESC"
+    SPEED_ASC = "SPEED_ASC"
     YEAR_DESC = "YEAR_DESC"
     YEAR_ASC = "YEAR_ASC"
 
@@ -348,3 +364,20 @@ class CarColor(IntEnum):
 class CarTransmission(IntEnum):
     AUTOMATIC = 2
     MANUAL = 1
+
+
+class BoatType(IntEnum):
+    BOWRIDER = 7961
+    DAYCRUISER = 2184
+    FISKEBAT_ARBETSBAT = 6921
+    HYTTBAT = 7962
+    KABINBAT = 6923
+    POWERBOAT = 7960
+    RIB = 7343
+    SEGELBAT_MOTORSEGLARE = 2188
+    SMABAT_GUMMIBAT = 2186
+    SNIPA = 6922
+    STYRPULPETBAT = 3827
+    VATTENSKOTER = 2190
+    YACHT = 7959
+    ANNAT = 2258

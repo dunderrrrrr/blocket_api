@@ -6,10 +6,11 @@ from typing import Any
 import httpx
 from httpx import Response
 
-from .ad_parser import CarAd, RecommerceAd
+from .ad_parser import BoatAd, CarAd, RecommerceAd
 from .constants import (
     HEADERS,
     SITE_URL,
+    BoatType,
     CarColor,
     CarModel,
     CarSortOrder,
@@ -27,11 +28,7 @@ class QueryParam:
     value: str | int
 
 
-def _request(
-    *,
-    url: str,
-    params: list[QueryParam],
-) -> Response:
+def _request(*, url: str, params: list[QueryParam]) -> Response:
     response = httpx.get(
         url,
         headers=HEADERS,
@@ -100,6 +97,31 @@ class BlocketAPI:
 
         return _request(url=url, params=params).json()
 
-    def get_ad(self, ad: RecommerceAd | CarAd) -> dict:
+    def search_boat(
+        self,
+        query: str | None = None,
+        *,
+        sort_order: CarSortOrder = CarSortOrder.RELEVANCE,
+        types: list[BoatType] = [],
+        locations: list[Location] = [],
+        price_from: int | None = None,
+        price_to: int | None = None,
+        length_from: int | None = None,
+        length_to: int | None = None,
+    ) -> Any:
+        url = f"{SITE_URL}/mobility/search/api/search/SEARCH_ID_BOAT_USED"
+        params = [
+            *([QueryParam("q", query)] if query else []),
+            QueryParam("sort", sort_order.value),
+            *[QueryParam("class", t.value) for t in types],
+            *[QueryParam("location", location.value) for location in locations],
+            *([QueryParam("price_from", price_from)] if price_from else []),
+            *([QueryParam("price_to", price_to)] if price_to else []),
+            *([QueryParam("length_feet_from", length_from)] if length_from else []),
+            *([QueryParam("length_feet_to", length_to)] if length_to else []),
+        ]
+        return _request(url=url, params=params).json()
+
+    def get_ad(self, ad: RecommerceAd | CarAd | BoatAd) -> dict:
         response = _request(url=ad.url, params=[])
         return ad.parse(response)

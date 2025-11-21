@@ -1,7 +1,9 @@
+from .ad_parser import BoatAd as BoatAd
 from .ad_parser import CarAd as CarAd
 from .ad_parser import RecommerceAd as RecommerceAd
 from .blocket import BlocketAPI as BlocketAPI
 from .blocket import Location as Location
+from .constants import BoatType as BoatType
 from .constants import CarColor as CarColor
 from .constants import CarModel as CarModel
 from .constants import CarSortOrder as CarSortOrder
