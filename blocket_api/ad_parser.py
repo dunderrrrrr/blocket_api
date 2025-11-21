@@ -3,7 +3,7 @@ import re
 from dataclasses import dataclass
 from typing import Any
 
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup, NavigableString, Tag
 from httpx import Response
 
 from .constants import SITE_URL
@@ -34,7 +34,7 @@ class RecommerceAd:
 
 
 @dataclass(frozen=True)
-class CarAd:
+class MobilityAd:
     id: int
 
     @property
@@ -55,128 +55,130 @@ class CarAd:
         self._extract_price(grid, data)
         self._extract_description(grid, data)
         self._extract_specifications(grid, data)
-        self._extract_equipment(grid, data)
         self._extract_seller_type(soup, data)
         self._extract_ad_id(soup, data)
 
+        self.extend(data, soup, grid)
+
         return data
 
-    def _extract_title_and_subtitle(self, grid: Tag, data: dict[str, Any]) -> None:
+    def _extract_title_and_subtitle(self, grid: Tag, data: dict) -> None:
         if title := grid.find("h1", class_=lambda x: x and "t1" in x):
             data["title"] = title.get_text(strip=True)
 
-        if subtitle := grid.find(
-            "p", class_=lambda x: x and "s-text-subtle" in x and "mt-8" in x
-        ):
+        if subtitle := grid.find("p", class_=lambda x: x and "s-text-subtle" in x):
             data["subtitle"] = subtitle.get_text(strip=True)
 
-    def _extract_quick_specs(self, grid: Tag, data: dict[str, Any]) -> None:
+    def _extract_quick_specs(self, grid: Tag, data: dict) -> None:
         if specs_grid := grid.find(
             "div", class_=lambda x: x and "grid" in x and "gap-24" in x
         ):
-            spec_items = specs_grid.find_all("div", class_="flex gap-16 hyphens-auto")
-            for item in spec_items:
+            for item in specs_grid.find_all("div", class_="flex gap-16 hyphens-auto"):
                 label = item.find("span", class_="s-text-subtle")
                 value = item.find("p", class_="m-0 font-bold")
                 if label and value:
                     label_text = label.get_text(strip=True)
                     value_text = value.get_text(strip=True)
-
-                    key_mapping = {
-                        "Modellår": "model_year",
-                        "Miltal": "mileage",
-                        "Växellåda": "transmission",
-                        "Drivmedel": "fuel",
-                    }
-                    key = key_mapping.get(
+                    key = getattr(self, "quick_spec_mapping", {}).get(
                         label_text, label_text.lower().replace(" ", "_")
                     )
                     data[key] = value_text
 
-    def _extract_price(self, grid: Tag, data: dict[str, Any]) -> None:
+    def _extract_price(self, grid: Tag, data: dict) -> None:
         if price_section := grid.find("div", class_="border-t pt-40 mt-40"):
-            price_labels = price_section.find_all("p", class_="s-text-subtle mb-0")
-            for price_label in price_labels:
-                label_text = price_label.get_text(strip=True).lower()
-                if "pris" in label_text:
-                    price_elem = price_section.find("span", class_="t2")
-                    if price_elem:
-                        data["price"] = price_elem.get_text(strip=True)
-                    break
-                elif "månadskostnad" in label_text:
-                    monthly_elem = price_section.find("h2", class_="t2")
-                    if monthly_elem:
-                        data["monthly_cost"] = monthly_elem.get_text(strip=True)
-                    break
+            price_elem = price_section.find("span", class_="t2")
+            if price_elem:
+                data["price"] = price_elem.get_text(strip=True)
 
-    def _extract_description(self, grid: Tag, data: dict[str, Any]) -> None:
-        desc_sections = grid.find_all("section", class_="border-t mt-40 pt-40")
-        for section in desc_sections:
+    def _extract_description(self, grid: Tag, data: dict) -> None:
+        for section in grid.find_all("section", class_="border-t mt-40 pt-40"):
             h2 = section.find("h2", class_="t3 mb-0")
             if h2 and "beskrivning" in h2.get_text(strip=True).lower():
                 desc_div = section.find("div", class_="whitespace-pre-wrap")
                 if desc_div:
                     data["description"] = desc_div.get_text(strip=True)
-                break
+                return
 
-    def _extract_specifications(self, grid: Tag, data: dict[str, Any]) -> None:
+    def _extract_specifications(self, grid: Tag, data: dict) -> None:
         specs_section = grid.find("section", class_="key-info-section")
         if not specs_section:
             return
-
         dl = specs_section.find("dl")
         if not dl:
             return
 
-        specifications: dict[str, str] = {}
-        divs = dl.find_all("div", style="break-inside:avoid-column")
-        for div in divs:
+        specifications = {}
+        for div in dl.find_all("div", style="break-inside:avoid-column"):
             dt = div.find("dt")
             dd = div.find("dd")
             if dt and dd:
-                key_text = dt.get_text(strip=True)
-                value_text = dd.get_text(strip=True)
-                specifications[key_text] = value_text
+                specifications[dt.get_text(strip=True)] = dd.get_text(strip=True)
 
         if specifications:
             data["specifications"] = specifications
 
-    def _extract_equipment(self, grid: Tag, data: dict[str, Any]) -> None:
-        equipment_section: Tag | None = None
-        for section in grid.find_all("section", class_="border-t pt-40 mt-40"):
-            h2 = section.find("h2", class_="t3 mb-0")
-            if h2 and "utrustning" in h2.get_text(strip=True).lower():
-                equipment_section = section
-                break
-
-        if not equipment_section:
-            return
-
-        equipment_list = equipment_section.find("ul")
-        if equipment_list:
-            equipment_items: list[str] = [
-                li.get_text(strip=True) for li in equipment_list.find_all("li")
-            ]
-            if equipment_items:
-                data["equipment"] = equipment_items
-
-    def _extract_seller_type(self, soup: BeautifulSoup, data: dict[str, Any]) -> None:
-        seller_type = (
+    def _extract_seller_type(self, soup: BeautifulSoup, data: dict) -> None:
+        # Look for a div whose class contains "dealer"
+        data["seller_type"] = (
             "dealer"
-            if soup.find("div", class_=lambda x: x and "dealer" in str(x).lower())
+            if soup.find("div", class_=lambda x: x and "dealer" in x.lower())
             else "private"
         )
-        data["seller_type"] = seller_type
 
-    def _extract_ad_id(self, soup: BeautifulSoup, data: dict[str, Any]) -> None:
-        ad_info_divs = soup.find_all(
-            "div", class_="text-m flex md:flex-row flex-col md:gap-x-56 gap-y-16"
+    def _extract_ad_id(self, soup: BeautifulSoup, data: dict) -> None:
+        label = next(
+            (
+                p
+                for p in soup.find_all("p")
+                if isinstance(p.string, NavigableString) and "Annons-ID" in p.string
+            ),
+            None,
         )
-        for div in ad_info_divs:
-            ad_id_labels = div.find_all("p", class_="s-text-subtle mb-0")
-            for ad_id_label in ad_id_labels:
-                if "Annons-ID" in ad_id_label.get_text(strip=True):
-                    ad_id_elem = ad_id_label.find_next_sibling("p")
-                    if ad_id_elem:
-                        data["ad_id"] = ad_id_elem.get_text(strip=True)
-                        break
+        if label:
+            elem = label.find_next("p")
+            if elem:
+                data["ad_id"] = elem.get_text(strip=True)
+
+    def extend(self, data: dict, soup: BeautifulSoup, grid: Tag) -> None:
+        pass
+
+
+class CarAd(MobilityAd):
+    quick_spec_mapping = {
+        "Modellår": "model_year",
+        "Miltal": "mileage",
+        "Växellåda": "transmission",
+        "Drivmedel": "fuel",
+    }
+
+    def extend(self, data: dict, soup: BeautifulSoup, grid: Tag) -> None:
+        equip_section = next(
+            (
+                h2
+                for h2 in grid.find_all("h2")
+                if isinstance(h2.string, NavigableString) and "Utrustning" in h2.string
+            ),
+            None,
+        )
+        if equip_section:
+            parent = equip_section.find_parent("section")
+            if parent:
+                items = [li.get_text(strip=True) for li in parent.find_all("li")]
+                if items:
+                    data["equipment"] = items
+
+
+class BoatAd(MobilityAd):
+    quick_spec_mapping = {
+        "Modellår": "model_year",
+        "Längd": "length",
+        "Motortyp": "engine_type",
+        "Säten": "seats",
+    }
+
+    def extend(self, data: dict, soup: BeautifulSoup, grid: Tag) -> None:
+        if place_h2 := soup.find(
+            "h2", text=lambda t: isinstance(t, NavigableString) and "Plats" in t
+        ):
+            if link := place_h2.find_parent():
+                data["location"] = link.get_text(strip=True)

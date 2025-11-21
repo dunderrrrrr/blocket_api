@@ -3,6 +3,7 @@ import respx
 
 from blocket_api import (
     BlocketAPI,
+    BoatType,
     CarAd,
     CarModel,
     CarSortOrder,
@@ -123,6 +124,35 @@ class Test_SearchCar:
             price_from=1000,
             price_to=50000,
             transmissions=[CarTransmission.AUTOMATIC],
+        )
+        assert result == {"status": "ok"}
+
+
+class Test_SearchBoat:
+    @respx.mock
+    def test_search_boat(self) -> None:
+        expected_url = (
+            f"{SITE_URL}/mobility/search/api/search/SEARCH_ID_BOAT_USED"
+            "?q=Mercury"
+            "&sort=RELEVANCE"
+            "&class=2184"
+            "&location=0.300001"
+            "&price_from=20000"
+            "&price_to=90000"
+            "&length_feet_from=10"
+            "&length_feet_to=15"
+        )
+        respx.get(expected_url).mock(
+            return_value=httpx.Response(200, json={"status": "ok"})
+        )
+        result = api.search_boat(
+            "Mercury",
+            types=[BoatType.DAYCRUISER],
+            locations=[Location.STOCKHOLM],
+            length_from=10,
+            length_to=15,
+            price_from=20000,
+            price_to=90000,
         )
         assert result == {"status": "ok"}
 
