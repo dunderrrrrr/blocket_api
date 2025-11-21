@@ -53,13 +53,17 @@ class BlocketAPI:
             raise AssertionError("Cannot specify both category and sub_categories")
 
         url = f"{SITE_URL}/recommerce-search-page/api/search/SEARCH_ID_BAP_COMMON"
-        params = [
-            QueryParam("q", query),
-            QueryParam("sort", sort_order.value),
-            *[QueryParam("location", location.value) for location in locations],
-            *([QueryParam("category", category.value)] if category else []),
-            *([QueryParam("sub_category", sub_category.value)] if sub_category else []),
-        ]
+
+        param_dict = {
+            "q": query,
+            "sort": sort_order.value,
+            "category": category.value if category else None,
+            "sub_category": sub_category.value if sub_category else None,
+        }
+
+        params = [QueryParam(k, v) for k, v in param_dict.items() if v is not None]
+
+        params.extend(QueryParam("location", loc.value) for loc in locations)
 
         return _request(url=url, params=params).json()
 
@@ -80,20 +84,25 @@ class BlocketAPI:
         transmissions: list[CarTransmission] = [],
     ) -> Any:
         url = f"{SITE_URL}/mobility/search/api/search/SEARCH_ID_CAR_USED"
-        params = [
-            *([QueryParam("q", query)] if query else []),
-            QueryParam("sort", sort_order.value),
-            *[QueryParam("location", location.value) for location in locations],
-            *[QueryParam("make", model.value) for model in models],
-            *([QueryParam("price_from", price_from)] if price_from else []),
-            *([QueryParam("price_to", price_to)] if price_to else []),
-            *([QueryParam("year_from", year_from)] if year_from else []),
-            *([QueryParam("year_to", year_to)] if year_to else []),
-            *([QueryParam("milage_from", milage_from)] if milage_from else []),
-            *([QueryParam("milage_to", milage_to)] if milage_to else []),
-            *[QueryParam("exterior_colour", color.value) for color in colors],
-            *[QueryParam("transmission", t.value) for t in transmissions],
-        ]
+
+        param_dict = {
+            "q": query,
+            "sort": sort_order.value,
+            "price_from": price_from,
+            "price_to": price_to,
+            "year_from": year_from,
+            "year_to": year_to,
+            "milage_from": milage_from,
+            "milage_to": milage_to,
+        }
+
+        params = [QueryParam(k, v) for k, v in param_dict.items() if v is not None]
+
+        # Multi-value params
+        params.extend(QueryParam("location", loc.value) for loc in locations)
+        params.extend(QueryParam("make", model.value) for model in models)
+        params.extend(QueryParam("exterior_colour", color.value) for color in colors)
+        params.extend(QueryParam("transmission", t.value) for t in transmissions)
 
         return _request(url=url, params=params).json()
 
@@ -110,16 +119,21 @@ class BlocketAPI:
         length_to: int | None = None,
     ) -> Any:
         url = f"{SITE_URL}/mobility/search/api/search/SEARCH_ID_BOAT_USED"
-        params = [
-            *([QueryParam("q", query)] if query else []),
-            QueryParam("sort", sort_order.value),
-            *[QueryParam("class", t.value) for t in types],
-            *[QueryParam("location", location.value) for location in locations],
-            *([QueryParam("price_from", price_from)] if price_from else []),
-            *([QueryParam("price_to", price_to)] if price_to else []),
-            *([QueryParam("length_feet_from", length_from)] if length_from else []),
-            *([QueryParam("length_feet_to", length_to)] if length_to else []),
-        ]
+
+        param_dict = {
+            "q": query,
+            "sort": sort_order.value,
+            "price_from": price_from,
+            "price_to": price_to,
+            "length_feet_from": length_from,
+            "length_feet_to": length_to,
+        }
+
+        params = [QueryParam(k, v) for k, v in param_dict.items() if v is not None]
+
+        params.extend(QueryParam("class", t.value) for t in types)
+        params.extend(QueryParam("location", loc.value) for loc in locations)
+
         return _request(url=url, params=params).json()
 
     def get_ad(self, ad: RecommerceAd | CarAd | BoatAd) -> dict:
