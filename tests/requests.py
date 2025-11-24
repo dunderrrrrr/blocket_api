@@ -25,6 +25,7 @@ class Test_Search:
         expected_url = (
             f"{SITE_URL}/recommerce-search-page/api/search/SEARCH_ID_BAP_COMMON"
             "?q=audi+q5"
+            "&page=1"
             "&sort=RELEVANCE"
         )
         respx.get(expected_url).mock(
@@ -38,6 +39,7 @@ class Test_Search:
         expected_url = (
             f"{SITE_URL}/recommerce-search-page/api/search/SEARCH_ID_BAP_COMMON"
             "?q=audi+q5"
+            "&page=1"
             "&sort=PUBLISHED_DESC"
         )
         respx.get(expected_url).mock(
@@ -51,6 +53,7 @@ class Test_Search:
         expected_url = (
             f"{SITE_URL}/recommerce-search-page/api/search/SEARCH_ID_BAP_COMMON"
             "?q=audi+q5"
+            "&page=1"
             "&sort=PUBLISHED_DESC"
             "&location=0.300003"
             "&location=0.300001"
@@ -73,6 +76,7 @@ class Test_Search:
         expected_url = (
             f"{SITE_URL}/recommerce-search-page/api/search/SEARCH_ID_BAP_COMMON"
             "?q=audi+q5"
+            "&page=1"
             "&sort=PUBLISHED_DESC"
             "&category=0.90"
         )
@@ -91,6 +95,7 @@ class Test_Search:
         expected_url = (
             f"{SITE_URL}/recommerce-search-page/api/search/SEARCH_ID_BAP_COMMON"
             "?q=hammare"
+            "&page=1"
             "&sort=RELEVANCE"
             "&sub_category=1.67.5219"
         )
@@ -110,6 +115,7 @@ class Test_SearchCar:
         expected_url = (
             f"{SITE_URL}/mobility/search/api/search/SEARCH_ID_CAR_USED"
             "?sort=MILEAGE_ASC"
+            "&page=1"
             "&make=0.744"
             "&price_from=1000"
             "&price_to=50000"
@@ -134,6 +140,7 @@ class Test_SearchBoat:
         expected_url = (
             f"{SITE_URL}/mobility/search/api/search/SEARCH_ID_BOAT_USED"
             "?q=Mercury"
+            "&page=1"
             "&sort=RELEVANCE"
             "&class=2184"
             "&location=0.300001"

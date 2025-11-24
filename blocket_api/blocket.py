@@ -44,6 +44,7 @@ class BlocketAPI:
         self,
         query: str,
         *,
+        page: int = 1,
         sort_order: SortOrder = SortOrder.RELEVANCE,
         locations: list[Location] = [],
         category: Category | None = None,
@@ -54,8 +55,9 @@ class BlocketAPI:
 
         url = f"{SITE_URL}/recommerce-search-page/api/search/SEARCH_ID_BAP_COMMON"
 
-        param_dict = {
+        param_dict: dict[str, str | int | None] = {
             "q": query,
+            "page": page,
             "sort": sort_order.value,
             "category": category.value if category else None,
             "sub_category": sub_category.value if sub_category else None,
@@ -71,6 +73,7 @@ class BlocketAPI:
         self,
         query: str | None = None,
         *,
+        page: int = 1,
         sort_order: CarSortOrder = CarSortOrder.RELEVANCE,
         locations: list[Location] = [],
         models: list[CarModel] = [],
@@ -85,8 +88,9 @@ class BlocketAPI:
     ) -> Any:
         url = f"{SITE_URL}/mobility/search/api/search/SEARCH_ID_CAR_USED"
 
-        param_dict = {
+        param_dict: dict[str, str | int | None] = {
             "q": query,
+            "page": page,
             "sort": sort_order.value,
             "price_from": price_from,
             "price_to": price_to,
@@ -110,6 +114,7 @@ class BlocketAPI:
         self,
         query: str | None = None,
         *,
+        page: int = 1,
         sort_order: CarSortOrder = CarSortOrder.RELEVANCE,
         types: list[BoatType] = [],
         locations: list[Location] = [],
@@ -120,8 +125,9 @@ class BlocketAPI:
     ) -> Any:
         url = f"{SITE_URL}/mobility/search/api/search/SEARCH_ID_BOAT_USED"
 
-        param_dict = {
+        param_dict: dict[str, str | int | None] = {
             "q": query,
+            "page": page,
             "sort": sort_order.value,
             "price_from": price_from,
             "price_to": price_to,
