@@ -1,4 +1,4 @@
-from .ad_parser import BoatAd, CarAd, RecommerceAd
+from .ad_parser import BoatAd, CarAd, McAd, RecommerceAd
 from .blocket import BlocketAPI, Location
 from .constants import (
     BoatSortOrder,
@@ -8,6 +8,9 @@ from .constants import (
     CarSortOrder,
     CarTransmission,
     Category,
+    McModel,
+    McSortOrder,
+    McType,
     SortOrder,
     SubCategory,
 )
@@ -27,4 +30,8 @@ __all__ = [
     "SortOrder",
     "SubCategory",
     "RecommerceAd",
+    "McModel",
+    "McSortOrder",
+    "McType",
+    "McAd",
 ]

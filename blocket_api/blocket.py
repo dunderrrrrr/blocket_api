@@ -6,7 +6,7 @@ from typing import Any
 import httpx
 from httpx import Response
 
-from .ad_parser import BoatAd, CarAd, RecommerceAd
+from .ad_parser import BoatAd, CarAd, McAd, RecommerceAd
 from .constants import (
     HEADERS,
     SITE_URL,
@@ -17,6 +17,9 @@ from .constants import (
     CarTransmission,
     Category,
     Location,
+    McModel,
+    McSortOrder,
+    McType,
     SortOrder,
     SubCategory,
 )
@@ -142,6 +145,40 @@ class BlocketAPI:
 
         return _request(url=url, params=params).json()
 
-    def get_ad(self, ad: RecommerceAd | CarAd | BoatAd) -> dict:
+    def search_mc(
+        self,
+        query: str | None = None,
+        *,
+        page: int = 1,
+        sort_order: McSortOrder = McSortOrder.RELEVANCE,
+        models: list[McModel] = [],
+        types: list[McType] = [],
+        locations: list[Location] = [],
+        price_from: int | None = None,
+        price_to: int | None = None,
+        engine_volume_from: int | None = None,
+        engine_volume_to: int | None = None,
+    ) -> Any:
+        url = f"{SITE_URL}/mobility/search/api/search/SEARCH_ID_MC_USED"
+
+        param_dict: dict[str, str | int | None] = {
+            "q": query,
+            "page": page,
+            "sort": sort_order.value,
+            "price_from": price_from,
+            "price_to": price_to,
+            "engine_volume_from": engine_volume_from,
+            "engine_volume_to": engine_volume_to,
+        }
+
+        params = [QueryParam(k, v) for k, v in param_dict.items() if v is not None]
+
+        params.extend(QueryParam("make", m.value) for m in models)
+        params.extend(QueryParam("location", loc.value) for loc in locations)
+        params.extend(QueryParam("type", t.value) for t in types)
+
+        return _request(url=url, params=params).json()
+
+    def get_ad(self, ad: RecommerceAd | CarAd | BoatAd | McAd) -> dict:
         response = _request(url=ad.url, params=[])
         return ad.parse(response)

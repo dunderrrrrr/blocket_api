@@ -68,13 +68,28 @@ api.search_boat(
     price_to=90000,
 )
 
+# search for motorcycles
+from blocket_api import McType, McModel
+
+api.search_mc(
+    "TC 150", # query is optional
+    types=[McType.SPORT],
+    locations=[Location.STOCKHOLM],
+    models=[McModel.DUCATI],
+    price_from=20000,
+    price_to=90000,
+    engine_volume_from=100,
+    engine_volume_to=200,
+)
+
 
 # get ad details
-from blocket_api import CarAd, RecommerceAd, BoatAd
+from blocket_api import CarAd, RecommerceAd, BoatAd, McAd
 
 api.get_ad(RecommerceAd(12345678))
 api.get_ad(CarAd(12345678))
 api.get_ad(BoatAd(12345678))
+api.get_ad(McAd(12345678))
 ```
 
 ## 📝 Notes

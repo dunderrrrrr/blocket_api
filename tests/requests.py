@@ -10,6 +10,9 @@ from blocket_api import (
     CarTransmission,
     Category,
     Location,
+    McAd,
+    McModel,
+    McType,
     RecommerceAd,
     SortOrder,
     SubCategory,
@@ -164,6 +167,38 @@ class Test_SearchBoat:
         assert result == {"status": "ok"}
 
 
+class Test_McSearch:
+    @respx.mock
+    def test_search_boat(self) -> None:
+        expected_url = (
+            f"{SITE_URL}/mobility/search/api/search/SEARCH_ID_MC_USED"
+            "?q=snabb"
+            "&page=1"
+            "&sort=RELEVANCE"
+            "&price_from=20000"
+            "&price_to=90000"
+            "&engine_volume_from=10"
+            "&engine_volume_to=15"
+            "&make=1484"
+            "&location=0.300001"
+            "&type=11"
+        )
+        respx.get(expected_url).mock(
+            return_value=httpx.Response(200, json={"status": "ok"})
+        )
+        result = api.search_mc(
+            "snabb",
+            types=[McType.SPORT],
+            locations=[Location.STOCKHOLM],
+            models=[McModel.DUCATI],
+            price_from=20000,
+            price_to=90000,
+            engine_volume_from=10,
+            engine_volume_to=15,
+        )
+        assert result == {"status": "ok"}
+
+
 class Test_GetAd:
     @respx.mock
     def test_get_ad_recommerce(self) -> None:
@@ -238,5 +273,64 @@ class Test_GetAd:
             "description": "Mycket fin bil i nyskick.",
             "equipment": ["ACC Klimatanläggning", "Adaptiv farthållare"],
             "seller_type": "dealer",
+            "ad_id": "123456",
+        }
+
+    @respx.mock
+    def test_get_mc_ad(self) -> None:
+        expected_url = f"{SITE_URL}/mobility/item/123456"
+        html = """
+            <div class="grid grid-cols-1 md:grid-cols-3 md:gap-x-32">
+
+                <h1 class="t1">Ducati</h1>
+                <p class="s-text-subtle mt-8">Snabb båge</p>
+
+                <div class="grid gap-24">
+                    <div class="flex gap-16 hyphens-auto">
+                        <span class="s-text-subtle">Modellår</span>
+                        <p class="m-0 font-bold">2020</p>
+                    </div>
+                    <div class="flex gap-16 hyphens-auto">
+                        <span class="s-text-subtle">Miltal</span>
+                        <p class="m-0 font-bold">4500</p>
+                    </div>
+                    <div class="flex gap-16 hyphens-auto">
+                        <span class="s-text-subtle">Motorvolym</span>
+                        <p class="m-0 font-bold">150 cc</p>
+                    </div>                    
+                </div>
+
+                <div class="border-t pt-40 mt-40">
+                    <p class="s-text-subtle mb-0">Pris</p>
+                    <span class="t2">110 000 kr</span>
+                </div>
+
+                <section class="border-t mt-40 pt-40">
+                    <h2 class="t3 mb-0">Beskrivning</h2>
+                    <div class="whitespace-pre-wrap">Snabb båge</div>
+                </section>
+
+            </div>
+
+            <div class="text-m flex md:flex-row flex-col md:gap-x-56 gap-y-16">
+                <p class="s-text-subtle mb-0">Annons-ID</p>
+                <p>123456</p>
+            </div>
+        """
+        respx.get(expected_url).mock(
+            return_value=httpx.Response(200, content=html.encode("utf-8"))
+        )
+        result = api.get_ad(McAd(123456))
+
+        assert result == {
+            "url": "https://www.blocket.se/mobility/item/123456",
+            "title": "Ducati",
+            "subtitle": "Snabb båge",
+            "model_year": "2020",
+            "miltal": "4500",
+            "engine_volume": "150 cc",
+            "price": "110 000 kr",
+            "description": "Snabb båge",
+            "seller_type": "private",
             "ad_id": "123456",
         }
