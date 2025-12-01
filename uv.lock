@@ -64,7 +64,7 @@ wheels = [
 
 [[package]]
 name = "blocket-api"
-version = "0.3.93"
+version = "0.3.94"
 source = { virtual = "." }
 dependencies = [
     { name = "beautifulsoup4" },
