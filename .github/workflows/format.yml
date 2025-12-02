@@ -1,9 +1,9 @@
 name: "ruff and mypy"
 on:
-  push:
-    branches: [main]
   pull_request:
-    branches: [main]
+  push:
+    branches:
+      - main
     
 jobs:
   format:
