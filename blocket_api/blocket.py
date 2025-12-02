@@ -52,7 +52,7 @@ class BlocketAPI:
         locations: list[Location] = [],
         category: Category | None = None,
         sub_category: SubCategory | None = None,
-    ) -> Any:
+    ) -> dict[str, Any]:
         if category and sub_category:
             raise AssertionError("Cannot specify both category and sub_categories")
 
@@ -88,7 +88,7 @@ class BlocketAPI:
         milage_to: int | None = None,
         colors: list[CarColor] = [],
         transmissions: list[CarTransmission] = [],
-    ) -> Any:
+    ) -> dict[str, Any]:
         url = f"{SITE_URL}/mobility/search/api/search/SEARCH_ID_CAR_USED"
 
         param_dict: dict[str, str | int | None] = {
@@ -158,7 +158,7 @@ class BlocketAPI:
         price_to: int | None = None,
         engine_volume_from: int | None = None,
         engine_volume_to: int | None = None,
-    ) -> Any:
+    ) -> dict[str, Any]:
         url = f"{SITE_URL}/mobility/search/api/search/SEARCH_ID_MC_USED"
 
         param_dict: dict[str, str | int | None] = {
@@ -179,6 +179,6 @@ class BlocketAPI:
 
         return _request(url=url, params=params).json()
 
-    def get_ad(self, ad: RecommerceAd | CarAd | BoatAd | McAd) -> dict:
+    def get_ad(self, ad: RecommerceAd | CarAd | BoatAd | McAd) -> dict[str, Any]:
         response = _request(url=ad.url, params=[])
         return ad.parse(response)

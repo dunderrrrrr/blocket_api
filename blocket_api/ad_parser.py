@@ -17,7 +17,7 @@ class RecommerceAd:
     def url(self) -> str:
         return f"{SITE_URL}/recommerce/forsale/item/{self.id}"
 
-    def parse(self, response: Response) -> Any:
+    def parse(self, response: Response) -> dict[str, Any]:
         soup = BeautifulSoup(response.content, "html.parser")
         json_script_tag = soup.select_one(
             'script:-soup-contains("window.__staticRouterHydrationData")'
@@ -41,7 +41,7 @@ class MobilityAd:
     def url(self) -> str:
         return f"{SITE_URL}/mobility/item/{self.id}"
 
-    def parse(self, response: Response) -> dict:
+    def parse(self, response: Response) -> dict[str, Any]:
         soup = BeautifulSoup(response.content, "html.parser")
         grid = soup.find("div", class_="grid grid-cols-1 md:grid-cols-3 md:gap-x-32")
 
