@@ -6,8 +6,15 @@ repos:
         entry: ruff format --no-cache
         language: system
         types_or: [python]
+
       - id: ruff-check
         name: ruff-check
         entry: ruff check --fix --no-cache
         language: system
         types: [python]
+
+      - id: check-all-exports
+        name: all-check
+        entry: python scripts/check_all_exports.py
+        language: system
+        pass_filenames: false
