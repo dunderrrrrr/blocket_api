@@ -1,225 +1,95 @@
 # Examples
 
-## Making a custom search
+This is some very basic examples of how to use the API. For more details, see the [API reference](https://blocket-api.se/api-reference).
 
-```bash
-curl -X 'GET' \
-  'https://blocket-api.se/v1/custom-search?query=pool&region=dalarna&category=for_hemmet&limit=99' \
-  -H 'accept: application/json'
-```
+## Searching
 
-```python
-import httpx
+### Search everything
 
-response = httpx.get(
-    "https://blocket-api.se/v1/custom-search",
-    params={
-        "query": "pool",
-        "region": "dalarna",
-        "category": "for_hemmet",
-        "limit": 99,
-    },
-    headers={"accept": "application/json"}
-)
-print(response.json())
-
-```
-
-## Searching for a specific car
-
-```bash
-curl -X 'GET' \
-  'https://blocket-api.se/v1/motor-search?page=0&make=Audi&make=BMW&fuel=Diesel&fuel=Bensin&chassi=Kombi&chassi=SUV&chassi=Sedan&gearbox=Automat&price_lower=10000&price_upper=50000&model_year_lower=2010&model_year_upper=2025&milage_lower=10&milage_upper=70000' \
-  -H 'accept: application/json'
-```
+Search for everything using keyword.
 
 ```python
 import httpx
 
-response = httpx.get(
-    "https://blocket-api.se/v1/motor-search",
-    params={
-        "page": 0,
-        "make": ["Audi", "BMW"],
-        "fuel": ["Diesel", "Bensin"],
-        "chassi": ["Kombi", "SUV", "Sedan"],
-        "gearbox": "Automat",
-        "price_lower": 10000,
-        "price_upper": 50000,
-        "model_year_lower": 2010,
-        "model_year_upper": 2025,
-        "milage_lower": 10,
-        "milage_upper": 70000
-    },
-    headers={"accept": "application/json"}
-)
-print(response.json())
+items = httpx.get(
+    "https://blocket-api.se/v1/search",
+    params={"query": "flipper zero", "sort_order": "PUBLISHED_DESC"},
+).json()["docs"]
 
-```
+for item in items:
+    data = httpx.get(
+        "https://blocket-api.se/v1/ad/recommerce",
+        params={"id": item["id"]},
+    ).json()["loaderData"]["item-recommerce"]["itemData"]
 
-## Using your saved searches
-```python
-import httpx
-
-BASE_URL = "https://blocket-api.se/v1"
-TOKEN = "replace_with_your_token"
-
-def get_saved_searches(token: str):
-    response = httpx.get(f"{BASE_URL}/saved-searches", params={"token": token})
-    response.raise_for_status()
-    return response.json()
-
-def get_listings_for_search(token: str, search_id: str):
-    response = httpx.get(
-        f"{BASE_URL}/get-listings", params={"token": token, "search_id": search_id}
-    )
-    response.raise_for_status()
-    return response.json()["data"]
-
-def print_listing(ad):
-    ad_data = ad["ad"]
     print(
-        f"Subject: {ad_data['subject']}\n"
-        f"Is New: {ad['is_new']}\n"
-        f"Price: {ad_data['price']}\n"
-        "------------------------"
+        f"{data['title']}\n{data['description']}\n{data['price']}\n"
+        f"{data['location']['postalName']}\n{item['canonical_url']}"
     )
-
-if __name__ == "__main__":
-    saved_searches = get_saved_searches(TOKEN)
-
-    for custom_search in saved_searches:
-        listings = get_listings_for_search(TOKEN, custom_search["id"])
-        for ad in listings:
-            print_listing(ad)
-
+    print("=" * 50)
 ```
 
-### Creating a saved search
-
-Blocket.se has a bunch of filters. All filters are not available as query parameters yet. But do not fear! All options/filters blocket has can be used by this api and the python library. 
-
-Over at Blocket, you can make a custom search (or a so called saved search). This custom search can then be used as a "pre-made filter", which can then be used by the api. Blocket calls it [bevakningar](https://blocket.zendesk.com/hc/sv/articles/22875498207506-Bevakningar). 
-
-Let's say we want to filter to red Volkswagens. Go ahead and make the filtering at blocket.se. Once done, click "Skapa bevakning". When your search is saved you can use `/v1/saved-searches` to list all your saved searches. Grab the `id` and use that together with `/v1/get-listings`. See example above.
-
-This endpoint will require a `token` parameter, since it's an endpoint that's only available to logged in users.
-
-## Get a specific ad by id
-
-```bash
-curl -X 'GET' \
-  'https://blocket-api.se/v1/get-ad-by-id?ad_id=123456789' \
-  -H 'accept: application/json'
+Will return: 
 ```
+Flipper zero
+Fin flipper zero, knappt använd! Kan skickas.
+2500
+Stockholm
+https://www.blocket.se/recommerce/forsale/item/19075245
+==================================================
+Flipper Zero oanvänd
+Säljer Flipper Zero som bara legat och samlat damm efter att jag införskaffade den på en konferens i Sverige.
+Förpackningen är endast öppnad för att fota innehållet.
+2500
+Linköping
+https://www.blocket.se/recommerce/forsale/item/19053126
+==================================================
+Flipper zero
+Flipper Zero säljes tillsammans med silikonskydd och extra tillbehör. Kort och flera taggar av olika slag följer med. Alla tillbehör är nya och oanvända. Flipper zero i nyskick. Se bilder för detaljer.
+2450
+Helsingborg
+https://www.blocket.se/recommerce/forsale/item/18847358
+==================================================
+```
+
+### Search for cars
 
 ```python
 import httpx
 
 response = httpx.get(
-    "https://blocket-api.se/v1/get-ad-by-id",
-    params={"ad_id": 123456789},
-    headers={"accept": "application/json"}
-)
-print(response.json())
-```
-
-## Get a user from id
-
-The user id can be found in the url or in ads data using any other endpoint. 
-
-```bash
-curl -X 'GET' \
-  'https://blocket-api.se/v1/get-user-by-id?user_id=123456789' \
-  -H 'accept: application/json'
-```
-
-```python
-import httpx
-
-response = httpx.get(
-    "https://blocket-api.se/v1/get-user-by-id",
-    params={"ad_id": 123456789},
-    headers={"accept": "application/json"}
-)
-print(response.json())
-```
-
-## Using endpoints with token
-
-```sh
-# Token as header (preferred)
-curl -X 'GET' \
-  'https://blocket-api.se/v1/save-ad?ad_id=1234' \
-  -H 'accept: application/json' \
-  -H 'X-Token: abc123'
-
-# Token as query parameter
-curl -X 'GET' \
-  'https://blocket-api.se/v1/save-ad?ad_id=1234&token=abc123' \
-  -H 'accept: application/json'
-```
-
-```python
-# Token as header (preferred)
-httpx.get(
-    "https://blocket-api.se/v1/save-ad",
-    params={"ad_id": 1234},
-    headers={
-        "accept": "application/json",
-        "X-Token": "abc123",
-    }
-)
-
-# Token as query parameter
-httpx.get(
-    "https://blocket-api.se/v1/save-ad",
+    "https://blocket-api.se/v1/search/car",
     params={
-        "ad_id": 1234,
-        "token": "abc123",
+        "page": 1,
+        "locations": "STOCKHOLM",
+        "models": "AUDI",
+        "price_from": 10000,
+        "price_to": 50000,
+        "year_from": 2010,
+        "year_to": 2025,
     },
-    headers={"accept": "application/json"}
 )
+
+for item in response.json()["docs"]:
+    print(f"({item["id"]})", item["price"]["amount"], "SEK -", item["heading"])
 ```
 
-## List threads and messages
-
-You can list all your threads and get messages related to that thread using two different endpoints. One lists all threads, the other fetches messages based on a thread id (called channel id). 
-
-This is a very simple script that loops through all threads and prints the messages.
-
-```py
-import json
-import httpx
-
-threads = httpx.get(
-    "https://blocket-api.se/v1/get-threads?limit=15&token=token"
-).json()["channels"]
-
-
-for thread in threads:
-    channel_url = thread["channel_url"]
-    subject = json.loads(thread["data"])["ad"]["subject"]
-    print(f"Subject: {subject}\n")
-
-    messages = httpx.get(
-        f"https://blocket-api.se/v1/get-messages-from-thread?channel_id={channel_url}&token=token"
-    ).json()["messages"]
-
-    for m in messages:
-        print(f'{m["user"]["nickname"]}: {m["message"]}')
-    print("------------------------")
+Will return: 
 
 ```
-
-Returns:
-
+(18460933) 45000 SEK - Audi A4 Avant 2.0 TDI DPF Euro 5
+(18566460) 45000 SEK - Audi A4 Avant 2.0 TFSI E85 Euro 5
+(13436700) 10819 SEK - Audi A6 Avant e-tron Proline - Operationell leasing
+(18712562) 50000 SEK - Audi A4 2.0 TDI Avant quattro (170hk)
 ```
-------------------------
-Subject: Grästrimmer (el), som ny!
 
-Kalle: Tja! Finns denna kvar? 😊
-Nisse: Det går bra, hämta den nu så är den din 👍
-Kalle: Jättebra, kommer direkt!
-------------------------
+## Get full ad details
+
+Use the `/v1/ad/` endpoint to get full ad details.
+
+```python
+httpx.get(
+    "https://blocket-api.se/v1/ad/car",
+    params={"id": 1234},
+)
 ```
