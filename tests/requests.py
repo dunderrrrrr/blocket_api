@@ -26,7 +26,7 @@ class Test_Search:
     @respx.mock
     def test_search(self) -> None:
         expected_url = (
-            f"{SITE_URL}/recommerce-search-page/api/search/SEARCH_ID_BAP_COMMON"
+            f"{SITE_URL}/recommerce/forsale/search/api/search/SEARCH_ID_BAP_COMMON"
             "?q=audi+q5"
             "&page=1"
             "&sort=RELEVANCE"
@@ -40,7 +40,7 @@ class Test_Search:
     @respx.mock
     def test_search_sortorder_published_desc(self) -> None:
         expected_url = (
-            f"{SITE_URL}/recommerce-search-page/api/search/SEARCH_ID_BAP_COMMON"
+            f"{SITE_URL}/recommerce/forsale/search/api/search/SEARCH_ID_BAP_COMMON"
             "?q=audi+q5"
             "&page=1"
             "&sort=PUBLISHED_DESC"
@@ -54,7 +54,7 @@ class Test_Search:
     @respx.mock
     def test_search_location(self) -> None:
         expected_url = (
-            f"{SITE_URL}/recommerce-search-page/api/search/SEARCH_ID_BAP_COMMON"
+            f"{SITE_URL}/recommerce/forsale/search/api/search/SEARCH_ID_BAP_COMMON"
             "?q=audi+q5"
             "&page=1"
             "&sort=PUBLISHED_DESC"
@@ -77,7 +77,7 @@ class Test_Search:
     @respx.mock
     def test_search_category(self) -> None:
         expected_url = (
-            f"{SITE_URL}/recommerce-search-page/api/search/SEARCH_ID_BAP_COMMON"
+            f"{SITE_URL}/recommerce/forsale/search/api/search/SEARCH_ID_BAP_COMMON"
             "?q=audi+q5"
             "&page=1"
             "&sort=PUBLISHED_DESC"
@@ -96,7 +96,7 @@ class Test_Search:
     @respx.mock
     def test_sub_category(self) -> None:
         expected_url = (
-            f"{SITE_URL}/recommerce-search-page/api/search/SEARCH_ID_BAP_COMMON"
+            f"{SITE_URL}/recommerce/forsale/search/api/search/SEARCH_ID_BAP_COMMON"
             "?q=hammare"
             "&page=1"
             "&sort=RELEVANCE"

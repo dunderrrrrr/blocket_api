@@ -56,7 +56,7 @@ class BlocketAPI:
         if category and sub_category:
             raise AssertionError("Cannot specify both category and sub_categories")
 
-        url = f"{SITE_URL}/recommerce-search-page/api/search/SEARCH_ID_BAP_COMMON"
+        url = f"{SITE_URL}/recommerce/forsale/search/api/search/SEARCH_ID_BAP_COMMON"
 
         param_dict: dict[str, str | int | None] = {
             "q": query,
