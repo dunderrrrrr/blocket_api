@@ -83,6 +83,22 @@ Will return:
 (18712562) 50000 SEK - Audi A4 2.0 TDI Avant quattro (170hk)
 ```
 
+### Get specific store ads
+
+The id of the store can be found in the URL of the store page. For example, `https://www.blocket.se/mobility/search/car?orgId=XXXXXXXX` or `https://www.blocket.se/mobility/dealer/XXXXXX/store-name`.
+
+```python
+import httpx
+
+response = httpx.get(
+    "https://blocket-api.se/v1/search/car",
+    params={
+        "org_id": 1337,
+        # see all available params in the swagger documentation
+    },
+)
+```
+
 ## Get full ad details
 
 Use the `/v1/ad/` endpoint to get full ad details.
