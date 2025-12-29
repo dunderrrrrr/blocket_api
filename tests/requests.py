@@ -123,6 +123,7 @@ class Test_SearchCar:
             "&price_from=1000"
             "&price_to=50000"
             "&transmission=2"
+            "&org_id=1337"
         )
         respx.get(expected_url).mock(
             return_value=httpx.Response(200, json={"status": "ok"})
@@ -133,6 +134,7 @@ class Test_SearchCar:
             price_from=1000,
             price_to=50000,
             transmissions=[CarTransmission.AUTOMATIC],
+            org_id=1337,
         )
         assert result == {"status": "ok"}
 
@@ -151,6 +153,7 @@ class Test_SearchBoat:
             "&price_to=90000"
             "&length_feet_from=10"
             "&length_feet_to=15"
+            "&org_id=1337"
         )
         respx.get(expected_url).mock(
             return_value=httpx.Response(200, json={"status": "ok"})
@@ -163,13 +166,14 @@ class Test_SearchBoat:
             length_to=15,
             price_from=20000,
             price_to=90000,
+            org_id=1337,
         )
         assert result == {"status": "ok"}
 
 
 class Test_McSearch:
     @respx.mock
-    def test_search_boat(self) -> None:
+    def test_search_mc(self) -> None:
         expected_url = (
             f"{SITE_URL}/mobility/search/api/search/SEARCH_ID_MC_USED"
             "?q=snabb"
@@ -182,6 +186,7 @@ class Test_McSearch:
             "&make=1484"
             "&location=0.300001"
             "&type=11"
+            "&org_id=1337"
         )
         respx.get(expected_url).mock(
             return_value=httpx.Response(200, json={"status": "ok"})
@@ -195,6 +200,7 @@ class Test_McSearch:
             price_to=90000,
             engine_volume_from=10,
             engine_volume_to=15,
+            org_id=1337,
         )
         assert result == {"status": "ok"}
 
