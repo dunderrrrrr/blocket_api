@@ -123,7 +123,7 @@ class Test_SearchCar:
             "&price_from=1000"
             "&price_to=50000"
             "&transmission=2"
-            "&org_id=1337"
+            "&orgId=1337"
         )
         respx.get(expected_url).mock(
             return_value=httpx.Response(200, json={"status": "ok"})
@@ -153,7 +153,7 @@ class Test_SearchBoat:
             "&price_to=90000"
             "&length_feet_from=10"
             "&length_feet_to=15"
-            "&org_id=1337"
+            "&orgId=1337"
         )
         respx.get(expected_url).mock(
             return_value=httpx.Response(200, json={"status": "ok"})
@@ -186,7 +186,7 @@ class Test_McSearch:
             "&make=1484"
             "&location=0.300001"
             "&type=11"
-            "&org_id=1337"
+            "&orgId=1337"
         )
         respx.get(expected_url).mock(
             return_value=httpx.Response(200, json={"status": "ok"})

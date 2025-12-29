@@ -102,7 +102,7 @@ class BlocketAPI:
             "year_to": year_to,
             "milage_from": milage_from,
             "milage_to": milage_to,
-            "org_id": org_id,
+            "orgId": org_id,
         }
 
         params = [QueryParam(k, v) for k, v in param_dict.items() if v is not None]
@@ -139,7 +139,7 @@ class BlocketAPI:
             "price_to": price_to,
             "length_feet_from": length_from,
             "length_feet_to": length_to,
-            "org_id": org_id,
+            "orgId": org_id,
         }
 
         params = [QueryParam(k, v) for k, v in param_dict.items() if v is not None]
@@ -174,7 +174,7 @@ class BlocketAPI:
             "price_to": price_to,
             "engine_volume_from": engine_volume_from,
             "engine_volume_to": engine_volume_to,
-            "org_id": org_id,
+            "orgId": org_id,
         }
 
         params = [QueryParam(k, v) for k, v in param_dict.items() if v is not None]
