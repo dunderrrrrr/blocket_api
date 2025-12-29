@@ -53,6 +53,7 @@ api.search_car(
     price_to=50000,
     transmissions=[CarTransmission.MANUAL],
     locations=[Location.STOCKHOLM],
+    org_id=1337, # dealer or store id
 )
 
 # search for boats
@@ -66,6 +67,7 @@ api.search_boat(
     length_to=15,    
     price_from=20000,
     price_to=90000,
+    org_id=1337, # dealer or store id
 )
 
 # search for motorcycles
@@ -80,6 +82,7 @@ api.search_mc(
     price_to=90000,
     engine_volume_from=100,
     engine_volume_to=200,
+    org_id=1337, # dealer or store id
 )
 
 

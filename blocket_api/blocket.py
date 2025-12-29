@@ -88,6 +88,7 @@ class BlocketAPI:
         milage_to: int | None = None,
         colors: list[CarColor] = [],
         transmissions: list[CarTransmission] = [],
+        org_id: int | None = None,
     ) -> dict[str, Any]:
         url = f"{SITE_URL}/mobility/search/api/search/SEARCH_ID_CAR_USED"
 
@@ -101,6 +102,7 @@ class BlocketAPI:
             "year_to": year_to,
             "milage_from": milage_from,
             "milage_to": milage_to,
+            "org_id": org_id,
         }
 
         params = [QueryParam(k, v) for k, v in param_dict.items() if v is not None]
@@ -125,6 +127,7 @@ class BlocketAPI:
         price_to: int | None = None,
         length_from: int | None = None,
         length_to: int | None = None,
+        org_id: int | None = None,
     ) -> Any:
         url = f"{SITE_URL}/mobility/search/api/search/SEARCH_ID_BOAT_USED"
 
@@ -136,6 +139,7 @@ class BlocketAPI:
             "price_to": price_to,
             "length_feet_from": length_from,
             "length_feet_to": length_to,
+            "org_id": org_id,
         }
 
         params = [QueryParam(k, v) for k, v in param_dict.items() if v is not None]
@@ -158,6 +162,7 @@ class BlocketAPI:
         price_to: int | None = None,
         engine_volume_from: int | None = None,
         engine_volume_to: int | None = None,
+        org_id: int | None = None,
     ) -> dict[str, Any]:
         url = f"{SITE_URL}/mobility/search/api/search/SEARCH_ID_MC_USED"
 
@@ -169,6 +174,7 @@ class BlocketAPI:
             "price_to": price_to,
             "engine_volume_from": engine_volume_from,
             "engine_volume_to": engine_volume_to,
+            "org_id": org_id,
         }
 
         params = [QueryParam(k, v) for k, v in param_dict.items() if v is not None]
