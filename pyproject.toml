@@ -7,15 +7,14 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "httpx>=0.28.1",
-    "pre-commit>=3.7.1",
-    "pytest>=8.2.2",
-    "respx>=0.21.1",
-    "mypy>=1.15.0",
-    "pydantic>=2.11.7",
+    "pre-commit>=4.5.1",
+    "pytest>=9.0.2",
+    "respx>=0.22.0",
+    "mypy>=1.19.1",
     "mkdocs>=1.6.1",
-    "mkdocs-material>=9.6.21",
+    "mkdocs-material>=9.7.1",
     "mkdocs-swagger-ui-tag>=0.7.2",
-    "beautifulsoup4>=4.14.2",
+    "beautifulsoup4>=4.14.3",
 ]
 
 

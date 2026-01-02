@@ -29,7 +29,7 @@ def get_all_exports(init_file: Path) -> set[str]:
                 if isinstance(target, ast.Name) and target.id == "__all__":
                     if isinstance(node.value, ast.List):
                         return {
-                            elt.value
+                            elt.value  # type: ignore[misc]
                             for elt in node.value.elts
                             if isinstance(elt, ast.Constant)
                         }
