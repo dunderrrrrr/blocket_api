@@ -91,7 +91,7 @@ class MobilityAd:
                 data["price"] = price_elem.get_text(strip=True)
 
     def _extract_description(self, grid: Tag, data: dict) -> None:
-        for section in grid.find_all("section", class_="border-t mt-40 pt-40"):
+        for section in grid.find_all("section", class_="pt-40 border-t mt-40"):
             h2 = section.find("h2", class_="t3 mb-0")
             if h2 and "beskrivning" in h2.get_text(strip=True).lower():
                 desc_div = section.find("div", class_="whitespace-pre-wrap")
