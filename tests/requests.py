@@ -243,7 +243,7 @@ class Test_GetAd:
                     <span class="t2">389 000 kr</span>
                 </div>
 
-                <section class="border-t mt-40 pt-40">
+                <section class="pt-40 border-t mt-40">
                     <h2 class="t3 mb-0">Beskrivning</h2>
                     <div class="whitespace-pre-wrap">Mycket fin bil i nyskick.</div>
                 </section>
@@ -311,7 +311,7 @@ class Test_GetAd:
                     <span class="t2">110 000 kr</span>
                 </div>
 
-                <section class="border-t mt-40 pt-40">
+                <section class="pt-40 border-t mt-40">
                     <h2 class="t3 mb-0">Beskrivning</h2>
                     <div class="whitespace-pre-wrap">Snabb båge</div>
                 </section>
