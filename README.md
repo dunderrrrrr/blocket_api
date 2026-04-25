@@ -53,6 +53,8 @@ api.search_car(
     price_to=50000,
     transmissions=[CarTransmission.MANUAL],
     locations=[Location.STOCKHOLM],
+    horsepower_from=200,
+    horsepower_to=300,
     org_id=1337, # dealer or store id
 )
 
