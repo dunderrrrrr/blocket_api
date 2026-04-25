@@ -88,6 +88,8 @@ class BlocketAPI:
         milage_to: int | None = None,
         colors: list[CarColor] = [],
         transmissions: list[CarTransmission] = [],
+        horsepower_from: int | None = None,
+        horsepower_to: int | None = None,
         org_id: int | None = None,
     ) -> dict[str, Any]:
         url = f"{SITE_URL}/mobility/search/api/search/SEARCH_ID_CAR_USED"
@@ -102,12 +104,13 @@ class BlocketAPI:
             "year_to": year_to,
             "milage_from": milage_from,
             "milage_to": milage_to,
+            "engine_effect_from": horsepower_from,
+            "engine_effect_to": horsepower_to,
             "orgId": org_id,
         }
 
         params = [QueryParam(k, v) for k, v in param_dict.items() if v is not None]
 
-        # Multi-value params
         params.extend(QueryParam("location", loc.value) for loc in locations)
         params.extend(QueryParam("make", model.value) for model in models)
         params.extend(QueryParam("exterior_colour", color.value) for color in colors)

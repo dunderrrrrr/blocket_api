@@ -123,6 +123,8 @@ class Test_SearchCar:
             "&price_from=1000"
             "&price_to=50000"
             "&transmission=2"
+            "&engine_effect_from=200"
+            "&engine_effect_to=300"
             "&orgId=1337"
         )
         respx.get(expected_url).mock(
@@ -134,6 +136,8 @@ class Test_SearchCar:
             price_from=1000,
             price_to=50000,
             transmissions=[CarTransmission.AUTOMATIC],
+            horsepower_from=200,
+            horsepower_to=300,
             org_id=1337,
         )
         assert result == {"status": "ok"}
@@ -303,7 +307,7 @@ class Test_GetAd:
                     <div class="flex gap-16 hyphens-auto">
                         <span class="s-text-subtle">Motorvolym</span>
                         <p class="m-0 font-bold">150 cc</p>
-                    </div>                    
+                    </div>
                 </div>
 
                 <div class="border-t pt-40 mt-40">
