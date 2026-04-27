@@ -15,6 +15,7 @@ from .constants import (
     CarModel,
     CarSortOrder,
     CarTransmission,
+    CarWheelDrive,
     Category,
     Location,
     McModel,
@@ -90,6 +91,7 @@ class BlocketAPI:
         transmissions: list[CarTransmission] = [],
         horsepower_from: int | None = None,
         horsepower_to: int | None = None,
+        wheel_drive: list[CarWheelDrive] = [],
         org_id: int | None = None,
     ) -> dict[str, Any]:
         url = f"{SITE_URL}/mobility/search/api/search/SEARCH_ID_CAR_USED"
@@ -115,6 +117,7 @@ class BlocketAPI:
         params.extend(QueryParam("make", model.value) for model in models)
         params.extend(QueryParam("exterior_colour", color.value) for color in colors)
         params.extend(QueryParam("transmission", t.value) for t in transmissions)
+        params.extend(QueryParam("wheel_drive", w.value) for w in wheel_drive)
 
         return _request(url=url, params=params).json()
 

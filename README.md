@@ -30,6 +30,7 @@ from blocket_api import (
     CarModel,
     CarSortOrder,
     CarTransmission,
+    CarWheelDrive,
     Location,
 )
 
@@ -52,6 +53,7 @@ api.search_car(
     price_from=10000,
     price_to=50000,
     transmissions=[CarTransmission.MANUAL],
+    wheel_drive=[CarWheelDrive.RWD],
     locations=[Location.STOCKHOLM],
     horsepower_from=200,
     horsepower_to=300,
