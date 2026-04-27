@@ -8,6 +8,7 @@ from blocket_api import (
     CarModel,
     CarSortOrder,
     CarTransmission,
+    CarWheelDrive,
     Category,
     Location,
     McAd,
@@ -123,6 +124,7 @@ class Test_SearchCar:
             "&price_from=1000"
             "&price_to=50000"
             "&transmission=2"
+            "&wheel_drive=3"
             "&engine_effect_from=200"
             "&engine_effect_to=300"
             "&orgId=1337"
@@ -136,6 +138,7 @@ class Test_SearchCar:
             price_from=1000,
             price_to=50000,
             transmissions=[CarTransmission.AUTOMATIC],
+            wheel_drive=[CarWheelDrive.FWD],
             horsepower_from=200,
             horsepower_to=300,
             org_id=1337,

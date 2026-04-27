@@ -381,6 +381,13 @@ class CarTransmission(IntEnum):
     MANUAL = 1
 
 
+class CarWheelDrive(IntEnum):
+    FWD = 3
+    RWD = 1
+    FOUR = 2
+    TWO = 1729
+
+
 class BoatType(IntEnum):
     BOWRIDER = 7961
     DAYCRUISER = 2184
