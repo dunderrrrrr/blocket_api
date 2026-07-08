@@ -59,6 +59,11 @@ uv run ruff check .
 uv run mypy .
 ```
 
+## Running docs suite
+```sh
+flask --app docs/app --debug run --host 0.0.0.0
+```
+
 ## Submitting Pull Requests
 
 1.  Commit your changes with a clear and descriptive commit message. Please try to follow the [Conventional Commits](https://www.conventionalcommits.org/) specification if possible.
