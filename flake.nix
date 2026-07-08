@@ -23,16 +23,10 @@
             pkgs.uv
             pkgs.ruff
             python
-            (pkgs.writeShellScriptBin "build" ''
-              git pull
-              mkdocs build -d /srv/blocket-api/
-            '') 
-
           ];
           shellHook = ''
-            uv venv
+            uv sync --extra dev
             source .venv/bin/activate
-            uv pip sync requirements.txt
             pre-commit install --overwrite
             set -a
             source .env 2> /dev/null

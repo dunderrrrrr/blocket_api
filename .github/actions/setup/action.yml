@@ -12,8 +12,5 @@ runs:
       run: curl -LsSf https://astral.sh/uv/install.sh | sh
       shell: bash
     - name: Install dependencies
-      run: |
-        uv venv
-        uv pip sync requirements.txt
-        uv add ruff
+      run: uv sync --extra dev
       shell: bash
