@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="https://blocket-api.se/blocket-api.png" />
-</p>
-
 # BlocketAPI
 
 [![PyPI version](https://img.shields.io/pypi/v/blocket_api?style=for-the-badge)](https://pypi.org/project/blocket_api/) [![License](https://img.shields.io/badge/license-WTFPL-green?style=for-the-badge)](https://github.com/dunderrrrrr/blocket_api/blob/main/LICENSE) ![Python](https://img.shields.io/badge/Python-3.10-blue?style=for-the-badge) ![PyPI - Downloads](https://img.shields.io/pypi/dm/blocket_api?style=for-the-badge&color=%23dbce58) 
@@ -15,10 +11,13 @@ BlocketAPI allows users to search [blocket.se](https://blocket.se/) for ads.
 Install BlocketAPI via PyPI...
 
 ```sh
-pip install blocket-api
+pip install blocket-api # using pip
+uv add blocket-api # using uv
 ```
 
-or use [blocket-api.se](https://blocket-api.se) without installing anything!
+## 📜 Docs 
+
+The full documentation can be found at [blocket-api.se](https://blocket-api.se/).
 
 ## 💁‍♀️ Usage
 
