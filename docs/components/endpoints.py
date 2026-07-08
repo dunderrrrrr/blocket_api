@@ -35,7 +35,7 @@ def _enum_values(schema: dict, schemas: dict) -> list:
     return []
 
 
-def _param_row(p: dict, schemas: dict):
+def _param_row(p: dict, schemas: dict) -> h.Node:
     schema = p.get("schema", {})
     required = p.get("required", False)
     type_label = _type_label(schema, schemas)
@@ -59,7 +59,7 @@ def _slugify(path: str) -> str:
     return path.replace("/", "-").replace("{", "").replace("}", "").lstrip("-")
 
 
-def _endpoint_block(path: str, op: dict, schemas: dict):
+def _endpoint_block(path: str, op: dict, schemas: dict) -> h.Node:
     params = op.get("parameters", [])
     slug = _slugify(path)
     required_params = [p for p in params if p.get("required")]
@@ -97,7 +97,7 @@ def _endpoint_block(path: str, op: dict, schemas: dict):
     ]
 
 
-def _sidebar(paths: dict):
+def _sidebar(paths: dict) -> list[h.Node]:
     links = [
         sidebar_link(
             op.get("summary", path),
@@ -119,7 +119,7 @@ def _sidebar(paths: dict):
     ]
 
 
-def render(spec: dict):
+def render(spec: dict) -> h.Node:
     schemas = spec.get("components", {}).get("schemas", {})
     paths = spec.get("paths", {})
 

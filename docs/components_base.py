@@ -4,6 +4,7 @@ import json
 import threading
 import time
 import urllib.request
+from collections.abc import Callable
 
 import htpy as h
 from flask import url_for
@@ -80,14 +81,16 @@ def _htmx(ep: str) -> dict:
     )
 
 
-def _logo():
+def _logo() -> h.Node:
     return h.a(".nav-logo", href=url_for("index"), **_htmx("index"))[
         _LOGO_SVG,
         h.span["BlocketAPI"],
     ]
 
 
-def _nav_links(active: str = "", mobile: bool = False):
+def _nav_links(
+    active: str = "", mobile: bool = False
+) -> tuple[list[h.Element], list[h.Element]]:
     extra = (
         {"onclick": "document.getElementById('mobileMenu').classList.remove('open')"}
         if mobile
@@ -126,7 +129,7 @@ _ICON_TAG = Markup(
 )
 
 
-def _gh_badges():
+def _gh_badges() -> h.Node:
     stats = _gh_stats()
     facts = []
     if stats.get("version"):
@@ -144,7 +147,7 @@ def _gh_badges():
     ]
 
 
-def nav(active: str = ""):
+def nav(active: str = "") -> h.Node:
     internal, external = _nav_links(active)
     return h.nav[
         h.div(".nav-inner")[
@@ -157,7 +160,7 @@ def nav(active: str = ""):
     ]
 
 
-def mobile_menu(active: str = ""):
+def mobile_menu(active: str = "") -> h.Node:
     internal, external = _nav_links(active, mobile=True)
     return h.div(".mobile-menu", id="mobileMenu")[internal, external]
 
@@ -165,7 +168,7 @@ def mobile_menu(active: str = ""):
 # ── Footer ────────────────────────────────────────────────────────────────────
 
 
-def footer():
+def footer() -> h.Node:
     return h.footer[
         h.div(".footer-inner")[
             h.div(".footer-brand")[
@@ -215,8 +218,12 @@ _OG_IMAGE = f"{SITE_ROOT}/static/blocket-api.png"
 
 
 def page(
-    active: str, title: str, description: str, content_fn, extra_css: str | None = None
-):
+    active: str,
+    title: str,
+    description: str,
+    content_fn: Callable[[], h.Node],
+    extra_css: str | None = None,
+) -> Markup:
     """Render a full page. content_fn() returns the page body (htpy nodes)."""
     from flask import request
 
@@ -280,7 +287,7 @@ def page(
     return Markup(doc)
 
 
-def fragment(content_fn) -> str:
+def fragment(content_fn: Callable[[], h.Node]) -> str:
     """Render only the inner content nodes — returned for htmx requests."""
     return str(h.div("#content")[content_fn()])
 
@@ -296,7 +303,7 @@ _LANG_CLASS = {
 }
 
 
-def code_block(filename: str, lang: str, code: str):
+def code_block(filename: str, lang: str, code: str | h.Node) -> h.Node:
     lang_class = _LANG_CLASS.get(lang, "language-plaintext")
     return h.div(".code-block")[
         h.div(".code-header")[
@@ -310,7 +317,7 @@ def code_block(filename: str, lang: str, code: str):
 _tab_counter = [0]
 
 
-def code_tabs(*variants):
+def code_tabs(*variants: tuple[str, h.Node]) -> h.Node:
     """Render a tabbed code block with tabs embedded in the code header."""
     _tab_counter[0] += 1
     prefix = f"ct{_tab_counter[0]}"
@@ -341,14 +348,14 @@ def code_tabs(*variants):
     ]
 
 
-def tip_box(icon: str, content, kind: str = ""):
+def tip_box(icon: str, content: h.Node, kind: str = "") -> h.Node:
     return h.div(f".tip.{kind}" if kind else ".tip")[
         h.div(".tip-icon")[icon],
         h.p[content],
     ]
 
 
-def section_header(label: str, title: str, description: str = ""):
+def section_header(label: str, title: str, description: str = "") -> h.Node:
     return h.div(".section-header")[
         h.span(".section-label")[label],
         h.h2[title],
@@ -356,7 +363,7 @@ def section_header(label: str, title: str, description: str = ""):
     ]
 
 
-def page_hero(title: str, description, crumb: str):
+def page_hero(title: str, description: str | h.Node, crumb: str) -> h.Node:
     return h.div(".page-hero", style="padding-left:1.5rem;padding-right:1.5rem;")[
         h.div(".breadcrumb")[
             h.a(href=url_for("index"))["Home"],
@@ -368,12 +375,12 @@ def page_hero(title: str, description, crumb: str):
     ]
 
 
-def ic(text: str):
+def ic(text: str) -> h.Node:
     """Inline code span."""
     return h.span(".inline-code")[text]
 
 
-def doc_layout(sidebar_content, main_content):
+def doc_layout(sidebar_content: h.Node, main_content: h.Node) -> h.Node:
     return h.div(style="max-width:1200px;margin:0 auto;")[
         h.div(".doc-layout")[
             h.aside(".sidebar")[sidebar_content],
@@ -382,14 +389,14 @@ def doc_layout(sidebar_content, main_content):
     ]
 
 
-def sidebar_section(title: str, links: list):
+def sidebar_section(title: str, links: list[h.Node]) -> h.Node:
     return h.div(".sidebar-section")[
         h.h4[title],
         links,
     ]
 
 
-def sidebar_link(label: str, href: str, active: bool = False):
+def sidebar_link(label: str, href: str, active: bool = False) -> h.Node:
     ep = next(
         (
             ep

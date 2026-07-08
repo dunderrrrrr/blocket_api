@@ -1,6 +1,7 @@
 import htpy as h
 
 from docs.components import examples as c
+from markupsafe import Markup
 from docs.components_base import (
     GITHUB,
     fragment,
@@ -11,7 +12,7 @@ from docs.components_base import (
 )
 
 
-def content():
+def content() -> list[h.Node]:
     return [
         page_hero(
             "Examples",
@@ -42,7 +43,7 @@ def content():
     ]
 
 
-def view():
+def view() -> Markup:
     return page(
         active="examples",
         title="Examples — BlocketAPI",
@@ -51,5 +52,5 @@ def view():
     )
 
 
-def fragment_view():
+def fragment_view() -> str:
     return fragment(content)

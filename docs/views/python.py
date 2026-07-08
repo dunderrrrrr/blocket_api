@@ -1,10 +1,11 @@
 import htpy as h
 
 from docs.components import python_lib as c
+from markupsafe import Markup
 from docs.components_base import doc_layout, fragment, page, page_hero
 
 
-def content():
+def content() -> list[h.Node]:
     return [
         page_hero(
             "Python Library",
@@ -25,7 +26,7 @@ def content():
     ]
 
 
-def view():
+def view() -> Markup:
     return page(
         active="python",
         title="Python Library — BlocketAPI",
@@ -34,5 +35,5 @@ def view():
     )
 
 
-def fragment_view():
+def fragment_view() -> str:
     return fragment(content)

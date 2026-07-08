@@ -1,10 +1,11 @@
 import htpy as h
 
 from docs.components import tips as c
+from markupsafe import Markup
 from docs.components_base import doc_layout, fragment, page, page_hero
 
 
-def content():
+def content() -> list[h.Node]:
     return [
         page_hero(
             "Tips & Tricks",
@@ -30,7 +31,7 @@ def content():
     ]
 
 
-def view():
+def view() -> Markup:
     return page(
         active="tips",
         title="Tips & Tricks — BlocketAPI",
@@ -39,5 +40,5 @@ def view():
     )
 
 
-def fragment_view():
+def fragment_view() -> str:
     return fragment(content)

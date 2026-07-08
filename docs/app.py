@@ -18,7 +18,7 @@ app.add_url_rule("/_/endpoints", "endpoints_fragment", endpoints.fragment_view)
 app.add_url_rule("/_/changelog", "changelog_fragment", changelog.fragment_view)
 
 
-def endpoints_body():
+def endpoints_body() -> str:
     from docs.components import endpoints as ep_c
 
     spec = httpx.get("https://blocket-api.se/swagger/openapi.json", timeout=10).json()
@@ -28,7 +28,7 @@ def endpoints_body():
 app.add_url_rule("/_/endpoints-body", "endpoints_body", endpoints_body)
 
 
-def robots_txt():
+def robots_txt() -> Response:
     body = (
         "User-agent: *\n"
         "Allow: /\n"
@@ -42,7 +42,7 @@ def robots_txt():
 app.add_url_rule("/robots.txt", "robots_txt", robots_txt)
 
 
-def sitemap_xml():
+def sitemap_xml() -> Response:
     from docs.components_base import SITE_ROOT
 
     pages = ["", "/quickstart", "/python", "/endpoints", "/changelog"]
@@ -54,7 +54,7 @@ def sitemap_xml():
 app.add_url_rule("/sitemap.xml", "sitemap_xml", sitemap_xml)
 
 
-def changelog_body():
+def changelog_body() -> str:
     from docs.components import changelog as cl_c
 
     prs = httpx.get(

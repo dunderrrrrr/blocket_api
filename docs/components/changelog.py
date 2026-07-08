@@ -24,12 +24,12 @@ def _parse_type(title: str) -> tuple[str, str]:
     return "feat", title.strip()
 
 
-def _badge(kind: str):
+def _badge(kind: str) -> h.Node:
     cls = _BADGE_CLASS.get(kind, "badge-feat")
     return h.span(f".badge.{cls}")[kind]
 
 
-def _pr_row(pr: dict):
+def _pr_row(pr: dict) -> h.Node:
     kind, title = _parse_type(pr["title"])
     date = datetime.fromisoformat(pr["merged_at"].replace("Z", "+00:00"))
     user = pr.get("user", {})
@@ -60,7 +60,7 @@ def _pr_row(pr: dict):
     ]
 
 
-def render(prs: list):
+def render(prs: list) -> h.Node:
     merged = [
         pr
         for pr in prs

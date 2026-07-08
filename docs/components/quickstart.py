@@ -16,21 +16,21 @@ from docs.components_base import (
 )
 
 
-def tab_btn(key: str, label: str, active: bool = False):
+def tab_btn(key: str, label: str, active: bool = False) -> h.Node:
     return h.button(
         ".tab-btn.active" if active else ".tab-btn",
         onclick=f"switchTab(this,'{key}')",
     )[label]
 
 
-def tab_panel(key: str, content, active: bool = False):
+def tab_panel(key: str, content: h.Node, active: bool = False) -> h.Node:
     return h.div(".tab-panel.active" if active else ".tab-panel", id=key)[content]
 
 
 # ── Code snippets ─────────────────────────────────────────────────────────────
 
 
-def install_uv():
+def install_uv() -> h.Node:
     return code_block(
         "terminal",
         "SH",
@@ -43,11 +43,11 @@ uv add blocket-api""",
     )
 
 
-def install_pip():
+def install_pip() -> h.Node:
     return code_block("terminal", "SH", "pip install blocket-api")
 
 
-def first_search_py():
+def first_search_py() -> h.Node:
     return code_block(
         "hello_blocket.py",
         "PY",
@@ -62,7 +62,7 @@ for item in results["docs"]:
     )
 
 
-def first_search_rest():
+def first_search_rest() -> h.Node:
     return code_block(
         "terminal",
         "SH",
@@ -72,7 +72,7 @@ curl "{API_BASE}/v1/search?query=iPhone+15" | python3 -m json.tool""",
     )
 
 
-def first_search_js():
+def first_search_js() -> h.Node:
     return code_block(
         "search.js",
         "JS",
@@ -87,7 +87,7 @@ res.docs.forEach(item => {{
     )
 
 
-def car_search():
+def car_search() -> h.Node:
     return code_block(
         "car_search.py",
         "PY",
@@ -109,7 +109,7 @@ for car in cars["docs"]:
     )
 
 
-def uv_script():
+def uv_script() -> h.Node:
     return code_block(
         "my_search.py",
         "PY",
@@ -127,14 +127,14 @@ print(results["docs"][0])""",
     )
 
 
-def uv_run():
+def uv_run() -> h.Node:
     return code_block("terminal", "SH", "uv run my_search.py")
 
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 
 
-def sidebar():
+def sidebar() -> list[h.Node]:
     return [
         sidebar_section(
             "Getting started",
@@ -159,7 +159,7 @@ def sidebar():
 # ── Page sections ─────────────────────────────────────────────────────────────
 
 
-def installation():
+def installation() -> list[h.Node]:
     return [
         h.h2(id="installation")["Installation"],
         h.p["BlocketAPI is available as a Python library or via direct REST calls."],
@@ -205,7 +205,7 @@ def installation():
     ]
 
 
-def first_search():
+def first_search() -> list[h.Node]:
     return [
         h.h2(".section-h2", id="first-search")["Your first search"],
         h.p[
@@ -244,7 +244,7 @@ def first_search():
     ]
 
 
-def car_search_curl():
+def car_search_curl() -> h.Node:
     return code_block(
         "terminal",
         "SH",
@@ -252,7 +252,7 @@ def car_search_curl():
     )
 
 
-def car_section():
+def car_section() -> list[h.Node]:
     return [
         h.h2(".section-h2", id="car-search")["Car search"],
         h.p[
@@ -285,7 +285,7 @@ def car_section():
     ]
 
 
-def uv_section():
+def uv_section() -> list[h.Node]:
     return [
         h.h2(".section-h2", id="uv")["Run scripts with uv"],
         h.p[

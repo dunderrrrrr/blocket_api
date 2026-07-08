@@ -3,7 +3,7 @@ import htpy as h
 from docs.components_base import API_BASE, code_block, code_tabs, ic, tip_box
 
 
-def example_card(id_: str, icon: str, title: str, desc: str, *blocks):
+def example_card(id_: str, icon: str, title: str, desc: str, *blocks: h.Node) -> h.Node:
     return h.div(".example-full-card", id=id_)[
         h.div(".example-card-header")[
             h.div(".example-card-icon")[icon],
@@ -16,7 +16,7 @@ def example_card(id_: str, icon: str, title: str, desc: str, *blocks):
 # ── Python snippets ───────────────────────────────────────────────────────────
 
 
-def general_py():
+def general_py() -> h.Node:
     return code_block(
         "general_search.py",
         "PY",
@@ -67,7 +67,7 @@ def general_py():
     )
 
 
-def general_curl():
+def general_curl() -> h.Node:
     return code_block(
         "terminal",
         "SH",
@@ -77,7 +77,7 @@ def general_curl():
     )
 
 
-def car_py():
+def car_py() -> h.Node:
     return code_block(
         "car_filter.py",
         "PY",
@@ -160,7 +160,7 @@ def car_py():
     )
 
 
-def car_curl():
+def car_curl() -> h.Node:
     return code_block(
         "terminal",
         "SH",
@@ -172,7 +172,7 @@ def car_curl():
     )
 
 
-def alert_py():
+def alert_py() -> h.Node:
     return code_block(
         "price_alert.py",
         "PY",
@@ -288,7 +288,7 @@ def alert_py():
     )
 
 
-def alert_curl():
+def alert_curl() -> h.Node:
     return code_block(
         "terminal",
         "SH",
@@ -303,7 +303,7 @@ def alert_curl():
     )
 
 
-def alert_run():
+def alert_run() -> h.Node:
     return code_block(
         "terminal",
         "SH",
@@ -314,7 +314,7 @@ def alert_run():
     )
 
 
-def csv_py():
+def csv_py() -> h.Node:
     return code_block(
         "to_csv.py",
         "PY",
@@ -408,7 +408,7 @@ def csv_py():
     )
 
 
-def csv_curl():
+def csv_curl() -> h.Node:
     return code_block(
         "terminal",
         "SH",
@@ -421,7 +421,7 @@ def csv_curl():
     )
 
 
-def paginate_py():
+def paginate_py() -> h.Node:
     return code_block(
         "paginate.py",
         "PY",
@@ -475,7 +475,7 @@ def paginate_py():
     )
 
 
-def paginate_curl():
+def paginate_curl() -> h.Node:
     return code_block(
         "terminal",
         "SH",
@@ -489,7 +489,7 @@ def paginate_curl():
     )
 
 
-def dealer_py():
+def dealer_py() -> h.Node:
     return code_block(
         "dealer_stock.py",
         "PY",
@@ -530,7 +530,7 @@ def dealer_py():
     )
 
 
-def dealer_curl():
+def dealer_curl() -> h.Node:
     return code_block(
         "terminal",
         "SH",
@@ -540,7 +540,7 @@ def dealer_curl():
     )
 
 
-def boat_py():
+def boat_py() -> h.Node:
     return code_block(
         "boat_search.py",
         "PY",
@@ -595,7 +595,7 @@ def boat_py():
     )
 
 
-def boat_curl():
+def boat_curl() -> h.Node:
     return code_block(
         "terminal",
         "SH",
@@ -608,7 +608,7 @@ def boat_curl():
 # ── Assembled cards ───────────────────────────────────────────────────────────
 
 
-def cards():
+def cards() -> list[h.Node]:
     return [
         example_card(
             "general",

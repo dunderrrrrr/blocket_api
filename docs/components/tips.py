@@ -13,7 +13,7 @@ from docs.components_base import (
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 
 
-def sidebar():
+def sidebar() -> list[h.Node]:
     return [
         sidebar_section(
             "Tips",
@@ -41,7 +41,7 @@ def sidebar():
 # ── Code snippets ─────────────────────────────────────────────────────────────
 
 
-def uv_global():
+def uv_global() -> h.Node:
     return code_block(
         "terminal",
         "SH",
@@ -56,7 +56,7 @@ def uv_global():
     )
 
 
-def uv_inline():
+def uv_inline() -> h.Node:
     return code_block(
         "script.py",
         "PY",
@@ -99,7 +99,7 @@ def uv_inline():
     )
 
 
-def cron():
+def cron() -> h.Node:
     return code_block(
         "crontab -e",
         "SH",
@@ -114,7 +114,7 @@ def cron():
     )
 
 
-def pagination():
+def pagination() -> h.Node:
     return code_block(
         "paginate_all.py",
         "PY",
@@ -172,7 +172,7 @@ def pagination():
     )
 
 
-def sort_filter():
+def sort_filter() -> h.Node:
     return code_block(
         "sort_tip.py",
         "PY",
@@ -209,7 +209,7 @@ def sort_filter():
     )
 
 
-def multi_location():
+def multi_location() -> h.Node:
     return code_block(
         "multi_location.py",
         "PY",
@@ -255,7 +255,7 @@ def multi_location():
     )
 
 
-def org_id():
+def org_id() -> h.Node:
     return code_block(
         "org_id_scan.py",
         "PY",
@@ -289,7 +289,7 @@ def org_id():
     )
 
 
-def median_price():
+def median_price() -> h.Node:
     return code_block(
         "median_price.py",
         "PY",
@@ -360,7 +360,7 @@ def median_price():
 # ── Page sections ─────────────────────────────────────────────────────────────
 
 
-def uv_tip():
+def uv_tip() -> list[h.Node]:
     return [
         h.h2(id="uv")["Run scripts with uv"],
         h.p[
@@ -382,7 +382,7 @@ def uv_tip():
     ]
 
 
-def cron_tip():
+def cron_tip() -> list[h.Node]:
     return [
         h.h2(".section-h2", id="cron")["Schedule with cron"],
         h.p[
@@ -402,7 +402,7 @@ def cron_tip():
     ]
 
 
-def pagination_tip():
+def pagination_tip() -> list[h.Node]:
     return [
         h.h2(".section-h2", id="pagination")["Pagination"],
         h.p[
@@ -425,7 +425,7 @@ def pagination_tip():
     ]
 
 
-def sorting_tip():
+def sorting_tip() -> list[h.Node]:
     return [
         h.h2(".section-h2", id="sorting")["Sorting & price filters"],
         h.p[
@@ -456,7 +456,7 @@ def sorting_tip():
     ]
 
 
-def location_tip():
+def location_tip() -> list[h.Node]:
     return [
         h.h2(".section-h2", id="location")["Multi-location search"],
         h.p[
@@ -468,7 +468,7 @@ def location_tip():
     ]
 
 
-def orgid_tip():
+def orgid_tip() -> list[h.Node]:
     return [
         h.h2(".section-h2", id="orgid")["Filter by dealer (org_id)"],
         h.p[
@@ -481,7 +481,7 @@ def orgid_tip():
     ]
 
 
-def analysis_tip():
+def analysis_tip() -> list[h.Node]:
     return [
         h.h2(".section-h2", id="analysis")["Market analysis & price stats"],
         h.p[

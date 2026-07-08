@@ -14,7 +14,7 @@ from docs.components_base import (
 )
 
 
-def search_py():
+def search_py() -> h.Node:
     return code_block(
         "search.py",
         "PY",
@@ -33,7 +33,7 @@ for item in results["docs"]:
     )
 
 
-def search_curl():
+def search_curl() -> h.Node:
     return code_block(
         "terminal",
         "SH",
@@ -41,7 +41,7 @@ def search_curl():
     )
 
 
-def search_car_py():
+def search_car_py() -> h.Node:
     return code_block(
         "search_car.py",
         "PY",
@@ -66,7 +66,7 @@ for car in cars["docs"]:
     )
 
 
-def search_car_curl():
+def search_car_curl() -> h.Node:
     return code_block(
         "terminal",
         "SH",
@@ -74,7 +74,7 @@ def search_car_curl():
     )
 
 
-def search_boat_py():
+def search_boat_py() -> h.Node:
     return code_block(
         "search_boat.py",
         "PY",
@@ -92,7 +92,7 @@ for boat in boats["docs"]:
     )
 
 
-def search_boat_curl():
+def search_boat_curl() -> h.Node:
     return code_block(
         "terminal",
         "SH",
@@ -100,7 +100,7 @@ def search_boat_curl():
     )
 
 
-def search_mc_py():
+def search_mc_py() -> h.Node:
     return code_block(
         "search_mc.py",
         "PY",
@@ -119,7 +119,7 @@ for bike in bikes["docs"]:
     )
 
 
-def search_mc_curl():
+def search_mc_curl() -> h.Node:
     return code_block(
         "terminal",
         "SH",
@@ -127,7 +127,7 @@ def search_mc_curl():
     )
 
 
-def get_ad_py():
+def get_ad_py() -> h.Node:
     return code_block(
         "get_ad.py",
         "PY",
@@ -146,13 +146,17 @@ print(detail)""",
     )
 
 
-def get_ad_curl():
+def get_ad_curl() -> h.Node:
     return code_block("terminal", "SH", f'curl "{API_BASE}/v1/ad/car?id=12345678"')
 
 
 def method_card(
-    id_: str, signature: str, desc: str, params: list[tuple[str, str, str]], *blocks
-):
+    id_: str,
+    signature: str,
+    desc: str,
+    params: list[tuple[str, str, str]],
+    *blocks: h.Node,
+) -> h.Node:
     return h.div(".example-full-card", id=id_)[
         h.div(".example-card-header")[
             h.div(".example-card-icon")[h.code(".ep-path")[signature]],
@@ -179,7 +183,7 @@ def method_card(
     ]
 
 
-def sidebar():
+def sidebar() -> list[h.Node]:
     return [
         sidebar_section(
             "Methods",
@@ -202,7 +206,7 @@ def sidebar():
     ]
 
 
-def install_section():
+def install_section() -> list[h.Node]:
     return [
         h.h2(id="install")["Installation"],
         h.p["Install via ", ic("uv"), " or ", ic("pip"), ":"],
@@ -223,7 +227,7 @@ def install_section():
     ]
 
 
-def methods_section():
+def methods_section() -> list[h.Node]:
     return [
         h.h2(".section-h2", id="methods")["Methods"],
         method_card(

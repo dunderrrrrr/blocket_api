@@ -1,8 +1,10 @@
+import htpy as h
 from docs.components import index as c
+from markupsafe import Markup
 from docs.components_base import fragment, page
 
 
-def content():
+def content() -> list[h.Node]:
     return [
         c.hero(),
         c.examples_section(),
@@ -12,7 +14,7 @@ def content():
     ]
 
 
-def view():
+def view() -> Markup:
     return page(
         active="index",
         title="BlocketAPI — The unofficial API for blocket.se",
@@ -21,5 +23,5 @@ def view():
     )
 
 
-def fragment_view():
+def fragment_view() -> str:
     return fragment(content)

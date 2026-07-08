@@ -1,10 +1,11 @@
 import htpy as h
 from flask import url_for
 
+from markupsafe import Markup
 from docs.components_base import fragment, page, page_hero
 
 
-def content():
+def content() -> list[h.Node]:
     return [
         page_hero(
             "Endpoint Reference",
@@ -29,7 +30,7 @@ def content():
     ]
 
 
-def view():
+def view() -> Markup:
     return page(
         active="endpoints",
         title="Endpoints — BlocketAPI",
@@ -38,5 +39,5 @@ def view():
     )
 
 
-def fragment_view():
+def fragment_view() -> str:
     return fragment(content)

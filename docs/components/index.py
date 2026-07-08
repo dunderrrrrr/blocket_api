@@ -12,11 +12,11 @@ from docs.components_base import (
 )
 
 
-def pill(text: str):
+def pill(text: str) -> h.Node:
     return h.span(".pill")[h.span(".dot"), text]
 
 
-def install_body(id_: str, cmd_id: str, cmd: str, active: bool = False):
+def install_body(id_: str, cmd_id: str, cmd: str, active: bool = False) -> h.Node:
     return h.div(
         ".install-body.active" if active else ".install-body",
         id=id_,
@@ -29,7 +29,7 @@ def install_body(id_: str, cmd_id: str, cmd: str, active: bool = False):
     ]
 
 
-def install_block():
+def install_block() -> h.Node:
     return h.div(".install-block")[
         h.div(".install-tabs")[
             h.button(".install-tab.active", onclick="switchInstall(this,'uv')")["uv"],
@@ -54,7 +54,7 @@ def install_block():
 # ── Code snippets ─────────────────────────────────────────────────────────────
 
 
-def hero_code():
+def hero_code() -> h.Node:
     return code_block(
         "search.py",
         "PY",
@@ -73,7 +73,7 @@ for item in results["docs"]:
     )
 
 
-def hero_response():
+def hero_response() -> h.Node:
     return code_block(
         "output",
         "JSON",
@@ -90,7 +90,7 @@ def hero_response():
     )
 
 
-def car_code():
+def car_code() -> h.Node:
     return code_block(
         "cars.py",
         "PY",
@@ -110,7 +110,7 @@ cars = BlocketAPI().search_car(
     )
 
 
-def alert_code():
+def alert_code() -> h.Node:
     return code_block(
         "alert.py",
         "PY",
@@ -139,7 +139,7 @@ SEEN.write_text(json.dumps(list(seen)))""",
     )
 
 
-def uv_inline_code():
+def uv_inline_code() -> h.Node:
     return code_block(
         "blocket.py",
         "PY",
@@ -157,14 +157,14 @@ print(results["docs"][:5])""",
     )
 
 
-def uv_run_code():
+def uv_run_code() -> h.Node:
     return code_block("terminal", "SH", "uv run blocket.py")
 
 
 # ── Page sections ─────────────────────────────────────────────────────────────
 
 
-def hero():
+def hero() -> h.Node:
     return h.div(".hero-wrapper")[
         h.div(".hero-center")[
             h.div(".hero-title")[
@@ -186,7 +186,7 @@ def hero():
     ]
 
 
-def search_boat_code():
+def search_boat_code() -> h.Node:
     return code_block(
         "boats.py",
         "PY",
@@ -204,7 +204,7 @@ for boat in boats["docs"]:
     )
 
 
-def search_mc_code():
+def search_mc_code() -> h.Node:
     return code_block(
         "mc.py",
         "PY",
@@ -223,7 +223,7 @@ for bike in bikes["docs"]:
     )
 
 
-def examples_section():
+def examples_section() -> h.Node:
     return h.section(".section.section-alt")[
         h.div(".container")[
             h.div(".section-header")[h.h2["Common patterns"],],
@@ -345,7 +345,7 @@ def examples_section():
     ]
 
 
-def feature(icon: str, title: str, desc: str):
+def feature(icon: str, title: str, desc: str) -> h.Node:
     return h.div(".feature-cell")[
         h.div(".feature-icon")[icon],
         h.div[
@@ -355,7 +355,7 @@ def feature(icon: str, title: str, desc: str):
     ]
 
 
-def features():
+def features() -> h.Node:
     return h.section(".section.section-alt")[
         h.div(".container")[
             h.div(".section-header")[
@@ -398,7 +398,7 @@ def features():
     ]
 
 
-def uv_section():
+def uv_section() -> h.Node:
     return h.section(".section")[
         h.div(".container")[
             h.div(".uv-grid")[
@@ -450,7 +450,7 @@ def uv_section():
     ]
 
 
-def cta():
+def cta() -> h.Node:
     return h.section(".section.section-cta")[
         h.div(".container")[
             h.div(".cta-terminal")[
