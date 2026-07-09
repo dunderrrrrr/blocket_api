@@ -35,15 +35,41 @@ def _enum_values(schema: dict, schemas: dict) -> list:
     return []
 
 
+_ENUM_PREVIEW_COUNT = 5
+
+
+def _enum_cell(enums: list) -> h.Node:
+    if not enums:
+        return h.td(".ep-values-cell")["—"]
+    if len(enums) <= _ENUM_PREVIEW_COUNT:
+        return h.td(".ep-values-cell")[h.div(".ep-values")[[h.code[v] for v in enums]]]
+
+    preview, rest = enums[:_ENUM_PREVIEW_COUNT], enums[_ENUM_PREVIEW_COUNT:]
+    return h.td(".ep-values-cell")[
+        h.details(".ep-values-toggle")[
+            h.div(".ep-values")[[h.code[v] for v in preview]],
+            h.div(".ep-values.ep-values-rest")[[h.code[v] for v in rest]],
+            h.summary(".ep-values-btn")[
+                h.span(".ep-values-btn-more")[f"Show all ({len(enums)}) ▾"],
+                h.span(".ep-values-btn-less")["Show less ▴"],
+            ],
+        ]
+    ]
+
+
 def _param_row(p: dict, schemas: dict) -> h.Node:
     schema = p.get("schema", {})
     required = p.get("required", False)
+    in_path = p.get("in") == "path"
     type_label = _type_label(schema, schemas)
     default = _resolve(schema, schemas).get("default", "")
     enums = _enum_values(schema, schemas)
 
     return h.tr[
-        h.td[h.code[p["name"]]],
+        h.td[
+            h.code[p["name"]],
+            h.span(".param-in-path")["path"] if in_path else "",
+        ],
         h.td[
             h.span(".param-required" if required else ".param-optional")[
                 "required" if required else "optional"
@@ -51,7 +77,7 @@ def _param_row(p: dict, schemas: dict) -> h.Node:
         ],
         h.td(".type-code")[type_label],
         h.td[h.code(".default-code")[str(default)] if default != "" else "—"],
-        h.td(".ep-enum-cell")[[h.code[v] for v in enums] if enums else "—"],
+        _enum_cell(enums),
     ]
 
 
@@ -63,8 +89,14 @@ def _endpoint_block(path: str, op: dict, schemas: dict) -> h.Node:
     params = op.get("parameters", [])
     slug = _slugify(path)
     required_params = [p for p in params if p.get("required")]
-    qs = "&".join(f"{p['name']}=VALUE" for p in required_params)
-    curl_url = f"https://blocket-api.se{path}" + (f"?{qs}" if qs else "")
+    resolved_path = path
+    for p in required_params:
+        if p.get("in") == "path":
+            resolved_path = resolved_path.replace(f"{{{p['name']}}}", "VALUE")
+    qs = "&".join(
+        f"{p['name']}=VALUE" for p in required_params if p.get("in") != "path"
+    )
+    curl_url = f"https://blocket-api.se{resolved_path}" + (f"?{qs}" if qs else "")
 
     return h.div(".ep-block", id=slug)[
         h.div(".ep-block-header")[
