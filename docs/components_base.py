@@ -238,6 +238,15 @@ def page(
             href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Mono:wght@400;700&display=swap",
             rel="stylesheet",
         ),
+        Markup(
+            '<script data-name="BMC-Widget" data-cfasync="false" '
+            'src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" '
+            'data-id="dunderrrrrr" '
+            'data-description="Support me on Buy me a coffee!" '
+            'data-message="This API is free, please consider buying me a coffee. Thanks!" '
+            'data-color="#e02b20" data-position="Right" '
+            'data-x_margin="18" data-y_margin="18"></script>'
+        ),
     ]
     if extra_css:
         head_links.append(
