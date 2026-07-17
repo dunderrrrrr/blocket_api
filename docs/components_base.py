@@ -229,7 +229,7 @@ def page(
 
     canonical = SITE_ROOT + request.path
 
-    head_links = [
+    head_links: list[h.Node] = [
         h.link(rel="canonical", href=canonical),
         h.link(rel="stylesheet", href=url_for("static", filename="style.css")),
         h.link(rel="preconnect", href="https://fonts.googleapis.com"),
