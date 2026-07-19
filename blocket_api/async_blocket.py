@@ -11,7 +11,13 @@ from ._params import (
     build_search_params,
 )
 from .ad_parser import BoatAd, CarAd, McAd, RecommerceAd
-from .constants import HEADERS
+from .constants import (
+    BOAT_SEARCH_URL,
+    CAR_SEARCH_URL,
+    HEADERS,
+    MC_SEARCH_URL,
+    SEARCH_URL,
+)
 from .constants import (
     BoatType,
     CarColor,
@@ -53,7 +59,7 @@ class AsyncBlocketAPI:
         category: Category | None = None,
         sub_category: SubCategory | None = None,
     ) -> dict[str, Any]:
-        url, params = build_search_params(
+        params = build_search_params(
             query,
             page=page,
             sort_order=sort_order,
@@ -61,7 +67,7 @@ class AsyncBlocketAPI:
             category=category,
             sub_category=sub_category,
         )
-        response = await self._client.get(url, headers=HEADERS, params=params)
+        response = await self._client.get(SEARCH_URL, headers=HEADERS, params=params)
         response.raise_for_status()
         return response.json()
 
@@ -86,7 +92,7 @@ class AsyncBlocketAPI:
         wheel_drive: list[CarWheelDrive] = [],
         org_id: int | None = None,
     ) -> dict[str, Any]:
-        url, params = build_car_params(
+        params = build_car_params(
             query,
             page=page,
             sort_order=sort_order,
@@ -105,7 +111,7 @@ class AsyncBlocketAPI:
             wheel_drive=wheel_drive,
             org_id=org_id,
         )
-        response = await self._client.get(url, headers=HEADERS, params=params)
+        response = await self._client.get(CAR_SEARCH_URL, headers=HEADERS, params=params)
         response.raise_for_status()
         return response.json()
 
@@ -123,7 +129,7 @@ class AsyncBlocketAPI:
         length_to: int | None = None,
         org_id: int | None = None,
     ) -> Any:
-        url, params = build_boat_params(
+        params = build_boat_params(
             query,
             page=page,
             sort_order=sort_order,
@@ -135,7 +141,7 @@ class AsyncBlocketAPI:
             length_to=length_to,
             org_id=org_id,
         )
-        response = await self._client.get(url, headers=HEADERS, params=params)
+        response = await self._client.get(BOAT_SEARCH_URL, headers=HEADERS, params=params)
         response.raise_for_status()
         return response.json()
 
@@ -154,7 +160,7 @@ class AsyncBlocketAPI:
         engine_volume_to: int | None = None,
         org_id: int | None = None,
     ) -> dict[str, Any]:
-        url, params = build_mc_params(
+        params = build_mc_params(
             query,
             page=page,
             sort_order=sort_order,
@@ -167,7 +173,7 @@ class AsyncBlocketAPI:
             engine_volume_to=engine_volume_to,
             org_id=org_id,
         )
-        response = await self._client.get(url, headers=HEADERS, params=params)
+        response = await self._client.get(MC_SEARCH_URL, headers=HEADERS, params=params)
         response.raise_for_status()
         return response.json()
 

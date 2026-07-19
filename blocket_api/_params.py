@@ -4,7 +4,6 @@ from collections.abc import Sequence
 from typing import Any
 
 from .constants import (
-    SITE_URL,
     BoatType,
     CarColor,
     CarModel,
@@ -42,11 +41,9 @@ def build_search_params(
     locations: list[Location] = [],
     category: Category | None = None,
     sub_category: SubCategory | None = None,
-) -> tuple[str, list[tuple[str, _ParamValue]]]:
+) -> list[tuple[str, _ParamValue]]:
     if category and sub_category:
         raise AssertionError("Cannot specify both category and sub_categories")
-
-    url = f"{SITE_URL}/recommerce/forsale/search/api/search/SEARCH_ID_BAP_COMMON"
 
     defaults: dict[str, _ParamValue] = {
         "q": query,
@@ -58,7 +55,7 @@ def build_search_params(
 
     extras = [("location", loc.value) for loc in locations]
 
-    return url, _build_params(defaults, extras)
+    return _build_params(defaults, extras)
 
 
 def build_car_params(
@@ -80,9 +77,7 @@ def build_car_params(
     horsepower_to: int | None = None,
     wheel_drive: list[CarWheelDrive] = [],
     org_id: int | None = None,
-) -> tuple[str, list[tuple[str, _ParamValue]]]:
-    url = f"{SITE_URL}/mobility/search/api/search/SEARCH_ID_CAR_USED"
-
+) -> list[tuple[str, _ParamValue]]:
     defaults: dict[str, _ParamValue] = {
         "q": query,
         "page": page,
@@ -105,7 +100,7 @@ def build_car_params(
     extras.extend(("transmission", t.value) for t in transmissions)
     extras.extend(("wheel_drive", w.value) for w in wheel_drive)
 
-    return url, _build_params(defaults, extras)
+    return _build_params(defaults, extras)
 
 
 def build_boat_params(
@@ -120,9 +115,7 @@ def build_boat_params(
     length_from: int | None = None,
     length_to: int | None = None,
     org_id: int | None = None,
-) -> tuple[str, list[tuple[str, _ParamValue]]]:
-    url = f"{SITE_URL}/mobility/search/api/search/SEARCH_ID_BOAT_USED"
-
+) -> list[tuple[str, _ParamValue]]:
     defaults: dict[str, _ParamValue] = {
         "q": query,
         "page": page,
@@ -138,7 +131,7 @@ def build_boat_params(
     extras.extend(("class", t.value) for t in types)
     extras.extend(("location", loc.value) for loc in locations)
 
-    return url, _build_params(defaults, extras)
+    return _build_params(defaults, extras)
 
 
 def build_mc_params(
@@ -154,9 +147,7 @@ def build_mc_params(
     engine_volume_from: int | None = None,
     engine_volume_to: int | None = None,
     org_id: int | None = None,
-) -> tuple[str, list[tuple[str, _ParamValue]]]:
-    url = f"{SITE_URL}/mobility/search/api/search/SEARCH_ID_MC_USED"
-
+) -> list[tuple[str, _ParamValue]]:
     defaults: dict[str, _ParamValue] = {
         "q": query,
         "page": page,
@@ -173,4 +164,4 @@ def build_mc_params(
     extras.extend(("location", loc.value) for loc in locations)
     extras.extend(("type", t.value) for t in types)
 
-    return url, _build_params(defaults, extras)
+    return _build_params(defaults, extras)

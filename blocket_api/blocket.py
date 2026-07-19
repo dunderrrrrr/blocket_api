@@ -12,7 +12,13 @@ from ._params import (
     build_search_params,
 )
 from .ad_parser import BoatAd, CarAd, McAd, RecommerceAd
-from .constants import HEADERS
+from .constants import (
+    BOAT_SEARCH_URL,
+    CAR_SEARCH_URL,
+    HEADERS,
+    MC_SEARCH_URL,
+    SEARCH_URL,
+)
 from .constants import (
     BoatType,
     CarColor,
@@ -47,7 +53,7 @@ class BlocketAPI:
         category: Category | None = None,
         sub_category: SubCategory | None = None,
     ) -> dict[str, Any]:
-        url, params = build_search_params(
+        params = build_search_params(
             query,
             page=page,
             sort_order=sort_order,
@@ -55,7 +61,7 @@ class BlocketAPI:
             category=category,
             sub_category=sub_category,
         )
-        return _request(url=url, params=params).json()
+        return _request(url=SEARCH_URL, params=params).json()
 
     def search_car(
         self,
@@ -78,7 +84,7 @@ class BlocketAPI:
         wheel_drive: list[CarWheelDrive] = [],
         org_id: int | None = None,
     ) -> dict[str, Any]:
-        url, params = build_car_params(
+        params = build_car_params(
             query,
             page=page,
             sort_order=sort_order,
@@ -97,7 +103,7 @@ class BlocketAPI:
             wheel_drive=wheel_drive,
             org_id=org_id,
         )
-        return _request(url=url, params=params).json()
+        return _request(url=CAR_SEARCH_URL, params=params).json()
 
     def search_boat(
         self,
@@ -113,7 +119,7 @@ class BlocketAPI:
         length_to: int | None = None,
         org_id: int | None = None,
     ) -> Any:
-        url, params = build_boat_params(
+        params = build_boat_params(
             query,
             page=page,
             sort_order=sort_order,
@@ -125,7 +131,7 @@ class BlocketAPI:
             length_to=length_to,
             org_id=org_id,
         )
-        return _request(url=url, params=params).json()
+        return _request(url=BOAT_SEARCH_URL, params=params).json()
 
     def search_mc(
         self,
@@ -142,7 +148,7 @@ class BlocketAPI:
         engine_volume_to: int | None = None,
         org_id: int | None = None,
     ) -> dict[str, Any]:
-        url, params = build_mc_params(
+        params = build_mc_params(
             query,
             page=page,
             sort_order=sort_order,
@@ -155,7 +161,7 @@ class BlocketAPI:
             engine_volume_to=engine_volume_to,
             org_id=org_id,
         )
-        return _request(url=url, params=params).json()
+        return _request(url=MC_SEARCH_URL, params=params).json()
 
     def get_ad(self, ad: RecommerceAd | CarAd | BoatAd | McAd) -> dict[str, Any]:
         response = _request(url=ad.url, params=[])
