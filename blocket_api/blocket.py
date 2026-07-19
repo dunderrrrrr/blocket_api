@@ -1,15 +1,19 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import Any
 
 import httpx
-from httpx import Response
 
+from ._params import (
+    _ParamValue,
+    build_boat_params,
+    build_car_params,
+    build_mc_params,
+    build_search_params,
+)
 from .ad_parser import BoatAd, CarAd, McAd, RecommerceAd
+from .constants import HEADERS
 from .constants import (
-    HEADERS,
-    SITE_URL,
     BoatType,
     CarColor,
     CarModel,
@@ -26,23 +30,12 @@ from .constants import (
 )
 
 
-@dataclass(frozen=True)
-class QueryParam:
-    name: str
-    value: str | int
-
-
-def _request(*, url: str, params: list[QueryParam]) -> Response:
-    response = httpx.get(
-        url,
-        headers=HEADERS,
-        params=[(param.name, param.value) for param in params],
-    )
+def _request(*, url: str, params: list[tuple[str, _ParamValue]]) -> httpx.Response:
+    response = httpx.get(url, headers=HEADERS, params=params)
     response.raise_for_status()
     return response
 
 
-@dataclass(frozen=True)
 class BlocketAPI:
     def search(
         self,
@@ -54,23 +47,14 @@ class BlocketAPI:
         category: Category | None = None,
         sub_category: SubCategory | None = None,
     ) -> dict[str, Any]:
-        if category and sub_category:
-            raise AssertionError("Cannot specify both category and sub_categories")
-
-        url = f"{SITE_URL}/recommerce/forsale/search/api/search/SEARCH_ID_BAP_COMMON"
-
-        param_dict: dict[str, str | int | None] = {
-            "q": query,
-            "page": page,
-            "sort": sort_order.value,
-            "category": category.value if category else None,
-            "sub_category": sub_category.value if sub_category else None,
-        }
-
-        params = [QueryParam(k, v) for k, v in param_dict.items() if v is not None]
-
-        params.extend(QueryParam("location", loc.value) for loc in locations)
-
+        url, params = build_search_params(
+            query,
+            page=page,
+            sort_order=sort_order,
+            locations=locations,
+            category=category,
+            sub_category=sub_category,
+        )
         return _request(url=url, params=params).json()
 
     def search_car(
@@ -94,31 +78,25 @@ class BlocketAPI:
         wheel_drive: list[CarWheelDrive] = [],
         org_id: int | None = None,
     ) -> dict[str, Any]:
-        url = f"{SITE_URL}/mobility/search/api/search/SEARCH_ID_CAR_USED"
-
-        param_dict: dict[str, str | int | None] = {
-            "q": query,
-            "page": page,
-            "sort": sort_order.value,
-            "price_from": price_from,
-            "price_to": price_to,
-            "year_from": year_from,
-            "year_to": year_to,
-            "milage_from": milage_from,
-            "milage_to": milage_to,
-            "engine_effect_from": horsepower_from,
-            "engine_effect_to": horsepower_to,
-            "orgId": org_id,
-        }
-
-        params = [QueryParam(k, v) for k, v in param_dict.items() if v is not None]
-
-        params.extend(QueryParam("location", loc.value) for loc in locations)
-        params.extend(QueryParam("make", model.value) for model in models)
-        params.extend(QueryParam("exterior_colour", color.value) for color in colors)
-        params.extend(QueryParam("transmission", t.value) for t in transmissions)
-        params.extend(QueryParam("wheel_drive", w.value) for w in wheel_drive)
-
+        url, params = build_car_params(
+            query,
+            page=page,
+            sort_order=sort_order,
+            locations=locations,
+            models=models,
+            price_from=price_from,
+            price_to=price_to,
+            year_from=year_from,
+            year_to=year_to,
+            milage_from=milage_from,
+            milage_to=milage_to,
+            colors=colors,
+            transmissions=transmissions,
+            horsepower_from=horsepower_from,
+            horsepower_to=horsepower_to,
+            wheel_drive=wheel_drive,
+            org_id=org_id,
+        )
         return _request(url=url, params=params).json()
 
     def search_boat(
@@ -135,24 +113,18 @@ class BlocketAPI:
         length_to: int | None = None,
         org_id: int | None = None,
     ) -> Any:
-        url = f"{SITE_URL}/mobility/search/api/search/SEARCH_ID_BOAT_USED"
-
-        param_dict: dict[str, str | int | None] = {
-            "q": query,
-            "page": page,
-            "sort": sort_order.value,
-            "price_from": price_from,
-            "price_to": price_to,
-            "length_feet_from": length_from,
-            "length_feet_to": length_to,
-            "orgId": org_id,
-        }
-
-        params = [QueryParam(k, v) for k, v in param_dict.items() if v is not None]
-
-        params.extend(QueryParam("class", t.value) for t in types)
-        params.extend(QueryParam("location", loc.value) for loc in locations)
-
+        url, params = build_boat_params(
+            query,
+            page=page,
+            sort_order=sort_order,
+            types=types,
+            locations=locations,
+            price_from=price_from,
+            price_to=price_to,
+            length_from=length_from,
+            length_to=length_to,
+            org_id=org_id,
+        )
         return _request(url=url, params=params).json()
 
     def search_mc(
@@ -170,25 +142,19 @@ class BlocketAPI:
         engine_volume_to: int | None = None,
         org_id: int | None = None,
     ) -> dict[str, Any]:
-        url = f"{SITE_URL}/mobility/search/api/search/SEARCH_ID_MC_USED"
-
-        param_dict: dict[str, str | int | None] = {
-            "q": query,
-            "page": page,
-            "sort": sort_order.value,
-            "price_from": price_from,
-            "price_to": price_to,
-            "engine_volume_from": engine_volume_from,
-            "engine_volume_to": engine_volume_to,
-            "orgId": org_id,
-        }
-
-        params = [QueryParam(k, v) for k, v in param_dict.items() if v is not None]
-
-        params.extend(QueryParam("make", m.value) for m in models)
-        params.extend(QueryParam("location", loc.value) for loc in locations)
-        params.extend(QueryParam("type", t.value) for t in types)
-
+        url, params = build_mc_params(
+            query,
+            page=page,
+            sort_order=sort_order,
+            models=models,
+            types=types,
+            locations=locations,
+            price_from=price_from,
+            price_to=price_to,
+            engine_volume_from=engine_volume_from,
+            engine_volume_to=engine_volume_to,
+            org_id=org_id,
+        )
         return _request(url=url, params=params).json()
 
     def get_ad(self, ad: RecommerceAd | CarAd | BoatAd | McAd) -> dict[str, Any]:
