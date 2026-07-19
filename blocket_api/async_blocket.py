@@ -111,7 +111,9 @@ class AsyncBlocketAPI:
             wheel_drive=wheel_drive,
             org_id=org_id,
         )
-        response = await self._client.get(CAR_SEARCH_URL, headers=HEADERS, params=params)
+        response = await self._client.get(
+            CAR_SEARCH_URL, headers=HEADERS, params=params
+        )
         response.raise_for_status()
         return response.json()
 
@@ -141,7 +143,9 @@ class AsyncBlocketAPI:
             length_to=length_to,
             org_id=org_id,
         )
-        response = await self._client.get(BOAT_SEARCH_URL, headers=HEADERS, params=params)
+        response = await self._client.get(
+            BOAT_SEARCH_URL, headers=HEADERS, params=params
+        )
         response.raise_for_status()
         return response.json()
 
@@ -177,9 +181,7 @@ class AsyncBlocketAPI:
         response.raise_for_status()
         return response.json()
 
-    async def get_ad(
-        self, ad: RecommerceAd | CarAd | BoatAd | McAd
-    ) -> dict[str, Any]:
+    async def get_ad(self, ad: RecommerceAd | CarAd | BoatAd | McAd) -> dict[str, Any]:
         response = await self._client.get(ad.url, headers=HEADERS)
         response.raise_for_status()
         return ad.parse(response)

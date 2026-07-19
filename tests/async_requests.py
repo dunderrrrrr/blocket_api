@@ -49,9 +49,7 @@ class Test_AsyncSearch:
             return_value=httpx.Response(200, json={"status": "ok"})
         )
         async with AsyncBlocketAPI() as api:
-            result = await api.search(
-                "audi q5", sort_order=SortOrder.PUBLISHED_DESC
-            )
+            result = await api.search("audi q5", sort_order=SortOrder.PUBLISHED_DESC)
         assert result == {"status": "ok"}
 
     @respx.mock
