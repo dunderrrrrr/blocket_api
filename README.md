@@ -1,6 +1,6 @@
 # BlocketAPI
 
-[![PyPI version](https://img.shields.io/pypi/v/blocket_api?style=for-the-badge)](https://pypi.org/project/blocket_api/) [![License](https://img.shields.io/badge/license-WTFPL-green?style=for-the-badge)](https://github.com/dunderrrrrr/blocket_api/blob/main/LICENSE) ![Python](https://img.shields.io/badge/Python-3.10-blue?style=for-the-badge) ![PyPI - Downloads](https://img.shields.io/pypi/dm/blocket_api?style=for-the-badge&color=%23dbce58) 
+[![PyPI version](https://img.shields.io/pypi/v/blocket_api)](https://pypi.org/project/blocket_api/) [![License](https://img.shields.io/badge/license-WTFPL-green)](https://github.com/dunderrrrrr/blocket_api/blob/main/LICENSE) ![Python](https://img.shields.io/badge/Python-3.10-blue) ![PyPI - Downloads](https://static.pepy.tech/personalized-badge/blocket-api?period=monthly&units=INTERNATIONAL_SYSTEM&left_color=GREY&right_color=RED&left_text=downloads%2Fmonth)
 
 BlocketAPI allows users to search [blocket.se](https://blocket.se/) for ads.
 
