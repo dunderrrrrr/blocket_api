@@ -98,6 +98,19 @@ api.get_ad(BoatAd(12345678))
 api.get_ad(McAd(12345678))
 ```
 
+### Async support
+
+```py
+import asyncio
+from blocket_api import AsyncBlocketAPI
+
+async def main():
+    async with AsyncBlocketAPI() as api:
+        results = await api.search("iPhone 15")
+
+asyncio.run(main())
+```
+
 ## 📝 Notes
 
 - REST API: https://blocket-api.se

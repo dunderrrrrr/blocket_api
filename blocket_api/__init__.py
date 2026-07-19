@@ -1,4 +1,5 @@
 from .ad_parser import BoatAd, CarAd, McAd, RecommerceAd
+from .async_blocket import AsyncBlocketAPI
 from .blocket import BlocketAPI, Location
 from .constants import (
     BoatSortOrder,
@@ -17,6 +18,7 @@ from .constants import (
 )
 
 __all__ = [
+    "AsyncBlocketAPI",
     "BlocketAPI",
     "Location",
     "BoatAd",

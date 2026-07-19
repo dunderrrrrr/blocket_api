@@ -5,7 +5,6 @@ from typing import Any
 import httpx
 
 from ._params import (
-    _ParamValue,
     build_boat_params,
     build_car_params,
     build_mc_params,
@@ -36,14 +35,21 @@ from .constants import (
 )
 
 
-def _request(*, url: str, params: list[tuple[str, _ParamValue]]) -> httpx.Response:
-    response = httpx.get(url, headers=HEADERS, params=params)
-    response.raise_for_status()
-    return response
+class AsyncBlocketAPI:
+    def __init__(self, client: httpx.AsyncClient | None = None) -> None:
+        self._client = client or httpx.AsyncClient()
+        self._owns_client = client is None
 
+    async def __aenter__(self) -> AsyncBlocketAPI:
+        return self
 
-class BlocketAPI:
-    def search(
+    async def __aexit__(self, *_: Any) -> None:
+        await self.aclose()
+
+    async def aclose(self) -> None:
+        await self._client.aclose()
+
+    async def search(
         self,
         query: str,
         *,
@@ -61,9 +67,11 @@ class BlocketAPI:
             category=category,
             sub_category=sub_category,
         )
-        return _request(url=SEARCH_URL, params=params).json()
+        response = await self._client.get(SEARCH_URL, headers=HEADERS, params=params)
+        response.raise_for_status()
+        return response.json()
 
-    def search_car(
+    async def search_car(
         self,
         query: str | None = None,
         *,
@@ -103,9 +111,13 @@ class BlocketAPI:
             wheel_drive=wheel_drive,
             org_id=org_id,
         )
-        return _request(url=CAR_SEARCH_URL, params=params).json()
+        response = await self._client.get(
+            CAR_SEARCH_URL, headers=HEADERS, params=params
+        )
+        response.raise_for_status()
+        return response.json()
 
-    def search_boat(
+    async def search_boat(
         self,
         query: str | None = None,
         *,
@@ -131,9 +143,13 @@ class BlocketAPI:
             length_to=length_to,
             org_id=org_id,
         )
-        return _request(url=BOAT_SEARCH_URL, params=params).json()
+        response = await self._client.get(
+            BOAT_SEARCH_URL, headers=HEADERS, params=params
+        )
+        response.raise_for_status()
+        return response.json()
 
-    def search_mc(
+    async def search_mc(
         self,
         query: str | None = None,
         *,
@@ -161,8 +177,11 @@ class BlocketAPI:
             engine_volume_to=engine_volume_to,
             org_id=org_id,
         )
-        return _request(url=MC_SEARCH_URL, params=params).json()
+        response = await self._client.get(MC_SEARCH_URL, headers=HEADERS, params=params)
+        response.raise_for_status()
+        return response.json()
 
-    def get_ad(self, ad: RecommerceAd | CarAd | BoatAd | McAd) -> dict[str, Any]:
-        response = _request(url=ad.url, params=[])
+    async def get_ad(self, ad: RecommerceAd | CarAd | BoatAd | McAd) -> dict[str, Any]:
+        response = await self._client.get(ad.url, headers=HEADERS)
+        response.raise_for_status()
         return ad.parse(response)
