@@ -4,7 +4,7 @@
 
 BlocketAPI allows users to search [blocket.se](https://blocket.se/) for ads.
 
-> Blocket is one of Sweden's largest online marketplaces. It was founded in 1996 and allows users to buy and sell a wide range of items, including cars, real estate, jobs, services, and second-hand goods. The platform is known for its extensive reach and user-friendly interface, making it a popular choice for Swedes looking to purchase or sell items quickly and efficiently.
+> Blocket is one of Sweden's largest online marketplaces. It was founded in 1996 and allows users to buy and sell a wide range of items, including cars, real estate, jobs, services, and second-hand goods. The platform is known for its extensive reach ~~and user-friendly interface~~, making it a popular choice for Swedes looking to purchase or sell items quickly and efficiently.
 
 ## 🧑‍💻️ Install
 
