@@ -365,8 +365,10 @@ def uv_tip() -> list[h.Node]:
         h.h2(id="uv")["Run scripts with uv"],
         h.p[
             h.a(".link", href="https://github.com/astral-sh/uv", target="_blank")["uv"],
-            " is an ultra-fast Python package manager. Use PEP 723 inline script metadata to declare "
-            "dependencies inside your file — no setup required.",
+            (
+                " is an ultra-fast Python package manager. Use PEP 723 inline script metadata to declare "
+                "dependencies inside your file — no setup required."
+            ),
         ],
         uv_global(),
         uv_inline(),
@@ -474,8 +476,10 @@ def orgid_tip() -> list[h.Node]:
         h.p[
             "Use the ",
             ic("org_id"),
-            " parameter to fetch all ads from a specific dealer. "
-            "You can find a seller's org_id by inspecting a listing on Blocket.se.",
+            (
+                " parameter to fetch all ads from a specific dealer. "
+                "You can find a seller's org_id by inspecting a listing on Blocket.se."
+            ),
         ],
         org_id(),
     ]

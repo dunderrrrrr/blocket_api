@@ -1,7 +1,7 @@
 import htpy as h
+from markupsafe import Markup
 
 from docs.components import examples as c
-from markupsafe import Markup
 from docs.components_base import (
     GITHUB,
     fragment,

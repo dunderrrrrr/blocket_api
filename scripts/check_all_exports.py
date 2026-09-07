@@ -9,13 +9,12 @@ def get_public_names_from_file(filepath: Path) -> dict[str, Path]:
 
     public_names = {}
     for node in ast.walk(tree):
-        if isinstance(node, ast.ClassDef):
-            if not node.name.startswith("_"):
-                public_names[node.name] = filepath
-        elif isinstance(node, ast.FunctionDef):
-            if not node.name.startswith("_"):
-                public_names[node.name] = filepath
-
+        if (
+            isinstance(node, ast.ClassDef)
+            and not node.name.startswith("_")
+            or (isinstance(node, ast.FunctionDef) and not node.name.startswith("_"))
+        ):
+            public_names[node.name] = filepath
     return public_names
 
 
@@ -26,13 +25,16 @@ def get_all_exports(init_file: Path) -> set[str]:
     for node in ast.walk(tree):
         if isinstance(node, ast.Assign):
             for target in node.targets:
-                if isinstance(target, ast.Name) and target.id == "__all__":
-                    if isinstance(node.value, ast.List):
-                        return {
-                            elt.value  # type: ignore[misc]
-                            for elt in node.value.elts
-                            if isinstance(elt, ast.Constant)
-                        }
+                if (
+                    isinstance(target, ast.Name)
+                    and target.id == "__all__"
+                    and isinstance(node.value, ast.List)
+                ):
+                    return {
+                        elt.value  # type: ignore[misc]
+                        for elt in node.value.elts
+                        if isinstance(elt, ast.Constant)
+                    }
     return set()
 
 

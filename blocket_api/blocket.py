@@ -18,8 +18,6 @@ from .constants import (
     HEADERS,
     MC_SEARCH_URL,
     SEARCH_URL,
-)
-from .constants import (
     BoatType,
     CarColor,
     CarModel,
