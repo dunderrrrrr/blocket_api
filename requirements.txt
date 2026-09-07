@@ -2,7 +2,7 @@
 #    uv pip compile pyproject.toml -o requirements.txt
 anyio==4.9.0
     # via httpx
-beautifulsoup4==4.14.3
+beautifulsoup4==4.15.0
     # via blocket-api (pyproject.toml)
 certifi==2025.6.15
     # via
