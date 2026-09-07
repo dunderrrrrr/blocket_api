@@ -193,7 +193,7 @@ class McAd(MobilityAd):
 
     def extend(self, data: dict, soup: BeautifulSoup, grid: Tag) -> None:
         if place_h2 := soup.find(
-            "h2", text=lambda t: isinstance(t, NavigableString) and "Plats" in t
+            "h2", string=lambda t: isinstance(t, NavigableString) and "Plats" in t
         ):
             if link := place_h2.find_parent():
                 data["location"] = link.get_text(strip=True)
