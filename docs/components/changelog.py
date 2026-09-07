@@ -3,7 +3,6 @@ from datetime import datetime
 
 import htpy as h
 
-
 _BADGE_CLASS = {
     "feat": "badge-feat",
     "fix": "badge-fix",

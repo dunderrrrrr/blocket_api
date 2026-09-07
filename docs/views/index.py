@@ -1,6 +1,7 @@
 import htpy as h
-from docs.components import index as c
 from markupsafe import Markup
+
+from docs.components import index as c
 from docs.components_base import fragment, page
 
 

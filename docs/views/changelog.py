@@ -1,7 +1,7 @@
 import htpy as h
 from flask import url_for
-
 from markupsafe import Markup
+
 from docs.components_base import fragment, page, page_hero
 
 

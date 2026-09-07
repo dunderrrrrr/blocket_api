@@ -30,7 +30,7 @@ def _gh_stats() -> dict:
             "version": None,
             "ts": now,
         }
-    except Exception:
+    except Exception:  # noqa: BLE001
         result = {**_gh_cache, "ts": now}
     try:
         with urllib.request.urlopen(
@@ -39,7 +39,7 @@ def _gh_stats() -> dict:
         ) as r:
             data = json.loads(r.read())
         result["version"] = data.get("tag_name")
-    except Exception:
+    except Exception:  # noqa: S110, BLE001
         pass
     with _gh_lock:
         _gh_cache.update(result)
@@ -73,12 +73,12 @@ _LOGO_SVG = Markup(
 
 def _htmx(ep: str) -> dict:
     """Return htmx attributes for an internal page endpoint name."""
-    return dict(
-        hx_get=url_for(f"{ep}_fragment"),
-        hx_target="#content",
-        hx_swap="outerHTML",
-        hx_push_url=url_for(ep),
-    )
+    return {
+        "hx_get": url_for(f"{ep}_fragment"),
+        "hx_target": "#content",
+        "hx_swap": "outerHTML",
+        "hx_push_url": url_for(ep),
+    }
 
 
 def _logo() -> h.Node:

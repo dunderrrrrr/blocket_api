@@ -17,8 +17,6 @@ from .constants import (
     HEADERS,
     MC_SEARCH_URL,
     SEARCH_URL,
-)
-from .constants import (
     BoatType,
     CarColor,
     CarModel,
@@ -43,7 +41,7 @@ class AsyncBlocketAPI:
     async def __aenter__(self) -> AsyncBlocketAPI:
         return self
 
-    async def __aexit__(self, *_: Any) -> None:
+    async def __aexit__(self, *_: object) -> None:
         await self.aclose()
 
     async def aclose(self) -> None:

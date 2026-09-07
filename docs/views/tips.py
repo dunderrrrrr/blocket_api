@@ -1,7 +1,7 @@
 import htpy as h
+from markupsafe import Markup
 
 from docs.components import tips as c
-from markupsafe import Markup
 from docs.components_base import doc_layout, fragment, page, page_hero
 
 
