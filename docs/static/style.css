@@ -815,6 +815,62 @@ code {
     margin-bottom: 1rem;
 }
 
+/* ── USED BY ── */
+.used-by-strip {
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+}
+.used-by-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.9rem;
+    padding: 1.5rem var(--px);
+}
+.used-by-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+}
+.used-by-logos {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1.75rem 2.75rem;
+}
+.used-by-logo {
+    display: block;
+    line-height: 0;
+    opacity: 0.7;
+    filter: grayscale(1);
+    transition: opacity 0.15s ease, filter 0.15s ease;
+}
+.used-by-logo:hover {
+    opacity: 1;
+    filter: grayscale(0);
+}
+.used-by-logo img {
+    display: block;
+    height: 38px;
+    width: auto;
+}
+.used-by-logo-plate {
+    opacity: 0.85;
+}
+.used-by-logo-plate:hover {
+    opacity: 1;
+}
+.used-by-logo-plate img {
+    height: 34px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
 /* ── UV SECTION ── */
 .uv-grid {
     display: grid;
