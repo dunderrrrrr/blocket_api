@@ -345,6 +345,52 @@ def examples_section() -> h.Node:
     ]
 
 
+def used_by() -> h.Node:
+    return h.div(".used-by-strip")[
+        h.div(".container.used-by-col")[
+            h.span(".used-by-label")["Used in production by"],
+            h.div(".used-by-logos")[
+                h.a(
+                    ".used-by-logo",
+                    href="https://lorries.se",
+                    target="_blank",
+                )[
+                    h.img(
+                        src=url_for("static", filename="lorries.png"),
+                        loading="lazy",
+                        width="330",
+                        height="160",
+                    )
+                ],
+                h.a(
+                    ".used-by-logo.used-by-logo-plate",
+                    href="https://platinumcars.se/",
+                    target="_blank",
+                )[
+                    h.img(
+                        src=url_for("static", filename="platinumcars.png"),
+                        loading="lazy",
+                        width="802",
+                        height="209",
+                    )
+                ],
+                h.a(
+                    ".used-by-logo.used-by-logo-plate",
+                    href="https://hittagira.se",
+                    target="_blank",
+                )[
+                    h.img(
+                        src=url_for("static", filename="hittagira.png"),
+                        loading="lazy",
+                        width="299",
+                        height="86",
+                    )
+                ],
+            ],
+        ],
+    ]
+
+
 def feature(icon: str, title: str, desc: str) -> h.Node:
     return h.div(".feature-cell")[
         h.div(".feature-icon")[icon],

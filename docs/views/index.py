@@ -8,6 +8,7 @@ from docs.components_base import fragment, page
 def content() -> list[h.Node]:
     return [
         c.hero(),
+        c.used_by(),
         c.examples_section(),
         c.features(),
         c.uv_section(),
