@@ -1532,9 +1532,12 @@ footer {
     font-size: 0.8rem;
 }
 .changelog-ref {
-    color: var(--text-dim);
+    color: var(--text-muted);
     font-size: 0.8rem;
     font-family: var(--font-mono);
+}
+.changelog-entry:hover .changelog-ref {
+    color: var(--text);
 }
 .changelog-title {
     font-size: 0.9rem;
@@ -1545,6 +1548,18 @@ footer {
 .changelog-desc {
     font-size: 0.8rem;
     color: var(--text-muted);
+    white-space: pre-wrap;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    cursor: default;
+    transition: -webkit-line-clamp 0.15s ease;
+}
+.changelog-entry:hover .changelog-desc {
+    -webkit-line-clamp: unset;
+    line-clamp: unset;
 }
 .changelog-author {
     display: inline-flex;
