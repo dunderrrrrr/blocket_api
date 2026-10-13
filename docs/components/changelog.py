@@ -32,7 +32,7 @@ def _pr_row(pr: dict) -> h.Node:
     kind, title = _parse_type(pr["title"])
     date = datetime.fromisoformat(pr["merged_at"].replace("Z", "+00:00"))
     user = pr.get("user", {})
-    first_body_line = (pr.get("body") or "").strip().split("\n")[0].strip()
+    body = re.sub(r"<!--.*?-->", "", pr.get("body") or "", flags=re.DOTALL).strip()
     return h.div(".changelog-entry")[
         h.div(".changelog-line")[h.div(".changelog-dot")],
         h.div(".changelog-body")[
@@ -54,7 +54,7 @@ def _pr_row(pr: dict) -> h.Node:
                 ],
             ],
             h.p(".changelog-title")[title],
-            h.p(".changelog-desc")[first_body_line] if first_body_line else "",
+            h.p(".changelog-desc")[body] if body else "",
         ],
     ]
 
