@@ -100,7 +100,7 @@ class MobilityAd:
                 return
 
     def _extract_specifications(self, grid: Tag, data: dict) -> None:
-        specs_section = grid.find("section", class_="key-info-section")
+        specs_section = grid.find("section", class_=lambda x: x and "key-info" in x)
         if not specs_section:
             return
         dl = specs_section.find("dl")
@@ -108,9 +108,8 @@ class MobilityAd:
             return
 
         specifications = {}
-        for div in dl.find_all("div", style="break-inside:avoid-column"):
-            dt = div.find("dt")
-            dd = div.find("dd")
+        for dt in dl.find_all("dt"):
+            dd = dt.find_next_sibling("dd")
             if dt and dd:
                 specifications[dt.get_text(strip=True)] = dd.get_text(strip=True)
 
