@@ -267,6 +267,20 @@ class Test_AsyncGetAd:
                     </ul>
                 </section>
 
+                <section class="key-info">
+                    <h2 class="t3 mb-0">Specifikationer</h2>
+                    <dl class="emptycheck columns-2 md:columns-3 break-words mb-0 mt-16 relative">
+                        <div class="pb-16 md:pb-20 " style="break-inside:avoid-column">
+                            <dt class="m-0 s-text-subtle">Märke</dt>
+                            <dd class="t4 m-0">Volvo</dd>
+                        </div>
+                        <div class="pb-16 md:pb-20 " style="break-inside:avoid-column">
+                            <dt class="m-0 s-text-subtle">Modell</dt>
+                            <dd class="t4 m-0">V60</dd>
+                        </div>
+                    </dl>
+                </section>
+
             </div>
 
             <div class="dealer">Återförsäljare</div>
@@ -290,9 +304,46 @@ class Test_AsyncGetAd:
             "price": "389 000 kr",
             "description": "Mycket fin bil i nyskick.",
             "equipment": ["ACC Klimatanläggning", "Adaptiv farthållare"],
+            "specifications": {"Märke": "Volvo", "Modell": "V60"},
             "seller_type": "dealer",
             "ad_id": "123456",
         }
+
+    @respx.mock
+    async def test_get_ad_car_missing_specifications(self) -> None:
+        expected_url = f"{SITE_URL}/mobility/item/123456"
+        html = """
+            <div class="grid grid-cols-1 md:grid-cols-3 md:gap-x-32">
+
+                <h1 class="t1">Volvo V60</h1>
+                <p class="s-text-subtle mt-8">D4 AWD Momentum</p>
+
+                <div class="grid gap-24">
+                    <div class="flex gap-16 hyphens-auto">
+                        <span class="s-text-subtle">Modellår</span>
+                        <p class="m-0 font-bold">2020</p>
+                    </div>
+                </div>
+
+                <div class="border-t pt-40 mt-40">
+                    <p class="s-text-subtle mb-0">Pris</p>
+                    <span class="t2">389 000 kr</span>
+                </div>
+
+            </div>
+
+            <div class="text-m flex md:flex-row flex-col md:gap-x-56 gap-y-16">
+                <p class="s-text-subtle mb-0">Annons-ID</p>
+                <p>123456</p>
+            </div>
+        """
+        respx.get(expected_url).mock(
+            return_value=httpx.Response(200, content=html.encode("utf-8"))
+        )
+        async with AsyncBlocketAPI() as api:
+            result = await api.get_ad(CarAd(123456))
+        assert "specifications" not in result
+        assert result["title"] == "Volvo V60"
 
     @respx.mock
     async def test_get_mc_ad(self) -> None:
