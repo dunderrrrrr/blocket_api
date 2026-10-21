@@ -164,9 +164,22 @@ def uv_run_code() -> h.Node:
 # ── Page sections ─────────────────────────────────────────────────────────────
 
 
+def announcement_banner() -> h.Node:
+    return h.a(
+        ".announcement-banner",
+        href="https://webhooks.blocket-api.se",
+        target="_blank",
+    )[
+        h.span(".announcement-badge")["New"],
+        h.span["We now offer webhooks"],
+        h.span(".announcement-arrow")["→"],
+    ]
+
+
 def hero() -> h.Node:
     return h.div(".hero-wrapper")[
         h.div(".hero-center")[
+            announcement_banner(),
             h.div(".hero-title")[
                 h.span(".hero-comment")["// "],
                 h.span(".hero-wordmark")["BlocketAPI"],
