@@ -235,6 +235,44 @@ nav {
     justify-content: center;
 }
 
+.announcement-banner {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 99px;
+    padding: 0.4rem 0.9rem 0.4rem 0.5rem;
+    margin-bottom: 1.75rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: border-color 0.15s ease, color 0.15s ease;
+}
+.announcement-banner:hover {
+    border-color: var(--accent);
+    color: var(--text);
+}
+.announcement-banner:hover .announcement-arrow {
+    transform: translateX(2px);
+}
+.announcement-badge {
+    display: inline-flex;
+    align-items: center;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    border-radius: 99px;
+    padding: 0.18rem 0.55rem;
+}
+.announcement-arrow {
+    color: var(--accent);
+    transition: transform 0.15s ease;
+}
+
 .hero-split {
     max-width: 1100px;
     margin: 0 auto;
