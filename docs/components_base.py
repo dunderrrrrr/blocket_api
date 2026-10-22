@@ -50,6 +50,7 @@ API_BASE = "https://blocket-api.se"
 GITHUB = "https://github.com/dunderrrrrr/blocket_api"
 PYPI = "https://pypi.org/project/blocket-api/"
 SWAGGER = f"{API_BASE}/swagger"
+WEBHOOKS = "https://webhooks.blocket-api.se/"
 
 _NAV_PAGES = [
     ("index", "Home"),
@@ -106,6 +107,7 @@ def _nav_links(
         for ep, label in _NAV_PAGES
     ]
     external = [
+        h.a(".nav-external", href=WEBHOOKS, target="_blank")["Webhooks ↗"],
         h.a(".nav-external", href=SWAGGER, target="_blank")["Swagger ↗"],
     ]
     return internal, external
@@ -193,6 +195,7 @@ def footer() -> h.Node:
             h.div(".footer-col")[
                 h.h4["Resources"],
                 h.a(href=SWAGGER, target="_blank")["Swagger ↗"],
+                h.a(href=WEBHOOKS, target="_blank")["Webhooks ↗"],
                 h.a(href=GITHUB, target="_blank")["GitHub"],
                 h.a(href=PYPI, target="_blank")["PyPI"],
             ],

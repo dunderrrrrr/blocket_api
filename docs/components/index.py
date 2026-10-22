@@ -5,6 +5,7 @@ from docs.components_base import (
     API_BASE,
     GITHUB,
     SWAGGER,
+    WEBHOOKS,
     _htmx,
     code_block,
     code_tabs,
@@ -167,7 +168,7 @@ def uv_run_code() -> h.Node:
 def announcement_banner() -> h.Node:
     return h.a(
         ".announcement-banner",
-        href="https://webhooks.blocket-api.se",
+        href=WEBHOOKS,
         target="_blank",
     )[
         h.span(".announcement-badge")["New"],
@@ -192,6 +193,7 @@ def hero() -> h.Node:
             install_block(),
             h.div(".hero-links")[
                 h.a(href=url_for("quickstart"), **_htmx("quickstart"))["Quickstart →"],
+                h.a(href=WEBHOOKS, target="_blank")["Webhooks ↗"],
                 h.a(href=SWAGGER, target="_blank")["Swagger ↗"],
                 h.a(href=GITHUB, target="_blank")["GitHub ↗"],
             ],
@@ -438,9 +440,9 @@ def features() -> h.Node:
                     "Cars, motorcycles, and boats each have dedicated endpoints with rich filters.",
                 ),
                 feature(
-                    "📄",
-                    "Consistent JSON",
-                    "Every endpoint returns docs[], total, query. Predictable, easy to parse.",
+                    "🎣",
+                    "Webhooks",
+                    "A simple way to get notified for ad changes and updates.",
                 ),
                 feature(
                     "⚡",

@@ -247,11 +247,14 @@ nav {
     font-size: 0.85rem;
     color: var(--text-muted);
     text-decoration: none;
-    transition: border-color 0.15s ease, color 0.15s ease;
+    transition:
+        border-color 0.15s ease,
+        color 0.15s ease;
 }
 .announcement-banner:hover {
     border-color: var(--accent);
     color: var(--text);
+    text-decoration: none;
 }
 .announcement-banner:hover .announcement-arrow {
     transform: translateX(2px);
@@ -886,7 +889,9 @@ code {
     line-height: 0;
     opacity: 0.7;
     filter: grayscale(1);
-    transition: opacity 0.15s ease, filter 0.15s ease;
+    transition:
+        opacity 0.15s ease,
+        filter 0.15s ease;
 }
 .used-by-logo:hover {
     opacity: 1;
