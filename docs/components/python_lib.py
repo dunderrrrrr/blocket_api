@@ -257,6 +257,7 @@ def methods_section() -> list[h.Node]:
                 ("milage_from", "int", "Minimum mileage (km)"),
                 ("milage_to", "int", "Maximum mileage (km)"),
                 ("transmissions", "list[CarTransmission]", "AUTOMATIC or MANUAL"),
+                ("fuels", "list[CarFuel]", "BENSIN, DIESEL, EL, …"),
                 ("wheel_drive", "list[CarWheelDrive]", "FWD, RWD, AWD, …"),
                 ("colors", "list[CarColor]", "Exterior colour"),
                 ("horsepower_from", "int", "Min horsepower"),
