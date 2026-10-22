@@ -1,6 +1,6 @@
 import htpy as h
 
-from docs.components_base import SWAGGER, sidebar_link, sidebar_section
+from docs.components_base import SWAGGER, WEBHOOKS, sidebar_link, sidebar_section
 
 
 def _resolve(schema: dict, schemas: dict) -> dict:
@@ -146,6 +146,7 @@ def _sidebar(paths: dict) -> list[h.Node]:
                 sidebar_link("Quickstart", "/quickstart"),
                 sidebar_link("Examples", "/examples"),
                 sidebar_link("Swagger ↗", SWAGGER),
+                sidebar_link("Webhooks ↗", WEBHOOKS),
             ],
         ),
     ]
