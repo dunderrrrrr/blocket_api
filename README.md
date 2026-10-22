@@ -52,7 +52,7 @@ api.search_car(
     colors=[CarColor.GULD],
     price_from=10000,
     price_to=50000,
-    transmissions=[CarTransmission.MANUAL],
+    transmissions=[CarTransmission.AUTOMATIC],
     fuels=[CarFuel.EL],
     wheel_drive=[CarWheelDrive.RWD],
     locations=[Location.STOCKHOLM],
