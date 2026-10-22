@@ -114,5 +114,6 @@ asyncio.run(main())
 ## 📝 Notes
 
 - REST API: https://blocket-api.se
+- Webhooks: https://webhooks.blocket-api.se
 - Source repo: https://github.com/dunderrrrrr/blocket_api
 - PyPI: https://pypi.org/project/blocket-api/
