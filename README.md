@@ -119,3 +119,4 @@ asyncio.run(main())
 - Webhooks: https://webhooks.blocket-api.se
 - Source repo: https://github.com/dunderrrrrr/blocket_api
 - PyPI: https://pypi.org/project/blocket-api/
+- Email: hello@blocket-api.se

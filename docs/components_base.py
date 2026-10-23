@@ -200,10 +200,8 @@ def footer() -> h.Node:
                 h.a(href=PYPI, target="_blank")["PyPI"],
             ],
             h.div(".footer-col")[
-                h.h4["Legal"],
-                h.a(href=f"{GITHUB}/blob/main/LICENSE", target="_blank")[
-                    "License (WTFPL)"
-                ],
+                h.h4["Contact"],
+                h.a(href="mailto:hello@blocket-api.se")["hello@blocket-api.se"],
             ],
         ],
         h.div(".footer-bottom")[
