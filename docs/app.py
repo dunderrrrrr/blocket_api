@@ -1,7 +1,7 @@
 import httpx
 from flask import Flask, Response
 
-from docs.views import changelog, endpoints, index, python, quickstart
+from docs.views import changelog, endpoints, index, not_found, python, quickstart
 
 app = Flask(__name__, static_folder="static")
 
@@ -10,6 +10,8 @@ app.add_url_rule("/quickstart", "quickstart", quickstart.view)
 app.add_url_rule("/python", "python", python.view)
 app.add_url_rule("/endpoints", "endpoints", endpoints.view)
 app.add_url_rule("/changelog", "changelog", changelog.view)
+
+app.register_error_handler(404, not_found.view)
 
 app.add_url_rule("/_/index", "index_fragment", index.fragment_view)
 app.add_url_rule("/_/quickstart", "quickstart_fragment", quickstart.fragment_view)
