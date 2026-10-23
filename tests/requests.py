@@ -5,6 +5,7 @@ from blocket_api import (
     BlocketAPI,
     BoatType,
     CarAd,
+    CarFuel,
     CarModel,
     CarSortOrder,
     CarTransmission,
@@ -143,6 +144,20 @@ class Test_SearchCar:
             horsepower_to=300,
             org_id=1337,
         )
+        assert result == {"status": "ok"}
+
+    @respx.mock
+    def test_search_car_fuel(self) -> None:
+        expected_url = (
+            f"{SITE_URL}/mobility/search/api/search/SEARCH_ID_CAR_USED"
+            "?sort=RELEVANCE"
+            "&page=1"
+            "&fuel=4"
+        )
+        respx.get(expected_url).mock(
+            return_value=httpx.Response(200, json={"status": "ok"})
+        )
+        result = api.search_car(fuels=[CarFuel.EL])
         assert result == {"status": "ok"}
 
 

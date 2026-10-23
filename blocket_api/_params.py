@@ -5,6 +5,7 @@ from collections.abc import Sequence
 from .constants import (
     BoatType,
     CarColor,
+    CarFuel,
     CarModel,
     CarSortOrder,
     CarTransmission,
@@ -72,6 +73,7 @@ def build_car_params(
     milage_to: int | None = None,
     colors: list[CarColor] = [],
     transmissions: list[CarTransmission] = [],
+    fuels: list[CarFuel] = [],
     horsepower_from: int | None = None,
     horsepower_to: int | None = None,
     wheel_drive: list[CarWheelDrive] = [],
@@ -97,6 +99,7 @@ def build_car_params(
     extras.extend(("make", model.value) for model in models)
     extras.extend(("exterior_colour", color.value) for color in colors)
     extras.extend(("transmission", t.value) for t in transmissions)
+    extras.extend(("fuel", f.value) for f in fuels)
     extras.extend(("wheel_drive", w.value) for w in wheel_drive)
 
     return _build_params(defaults, extras)

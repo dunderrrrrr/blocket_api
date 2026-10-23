@@ -386,6 +386,17 @@ class CarTransmission(IntEnum):
     MANUAL = 1
 
 
+class CarFuel(IntEnum):
+    BENSIN = 1
+    DIESEL = 2
+    FORDONSGAS = 3
+    EL = 4
+    HYBRID_GAS = 5
+    HYBRID_BENSIN = 6
+    HYBRID_DIESEL = 8
+    VATGAS = 9
+
+
 class CarWheelDrive(IntEnum):
     FWD = 3
     RWD = 1
