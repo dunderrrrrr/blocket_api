@@ -901,6 +901,7 @@ code {
     display: block;
     height: 38px;
     width: auto;
+    border-radius: 6px;
 }
 .used-by-logo-plate {
     opacity: 0.85;
@@ -911,7 +912,6 @@ code {
 .used-by-logo-plate img {
     height: 34px;
     margin-bottom: 10px;
-    border-radius: 4px;
 }
 
 /* ── UV SECTION ── */
