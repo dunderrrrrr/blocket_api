@@ -401,6 +401,18 @@ def used_by() -> h.Node:
                         height="86",
                     )
                 ],
+                h.a(
+                    ".used-by-logo.used-by-logo-plate",
+                    href="https://trifty.se",
+                    target="_blank",
+                )[
+                    h.img(
+                        src=url_for("static", filename="trifty.png"),
+                        loading="lazy",
+                        width="559",
+                        height="229",
+                    )
+                ],
             ],
         ],
     ]
