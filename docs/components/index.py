@@ -413,6 +413,18 @@ def used_by() -> h.Node:
                         height="229",
                     )
                 ],
+                h.a(
+                    ".used-by-logo.used-by-logo-plate",
+                    href="https://bilhandlare.se",
+                    target="_blank",
+                )[
+                    h.img(
+                        src=url_for("static", filename="bilhandlare.png"),
+                        loading="lazy",
+                        width="433",
+                        height="106",
+                    )
+                ],
             ],
         ],
     ]
